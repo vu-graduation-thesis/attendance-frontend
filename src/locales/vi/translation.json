@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "Hệ thống quản lý điểm danh sinh viên",
+    "dev": "Hệ thống quản lý điểm danh sinh viên",
+    "logout": "Đăng xuất",
+    "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái"
+  },
+  "menu": {
+    "user": "Quản lý người dùng"
+  }
+}

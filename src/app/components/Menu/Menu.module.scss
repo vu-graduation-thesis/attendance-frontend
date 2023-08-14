@@ -1,0 +1,9 @@
+.container {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  max-width: 300px;
+
+  .menu {
+    min-width: 100px;
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "Student attendance management system",
+    "dev": "Student attendance management system",
+    "logout": "Logout",
+    "homepageDesc": "Please select the function in the menu on the left"
+  },
+  "menu": {
+    "user": "Users management"
+  }
+}
