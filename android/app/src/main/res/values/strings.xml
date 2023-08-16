@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Fithou Attendance</string>
+    <string name="title_activity_main">Fithou Attendance</string>
+    <string name="package_name">pro.nguyenhuuvu.app</string>
+    <string name="custom_url_scheme">pro.nguyenhuuvu.app</string>
+</resources>
