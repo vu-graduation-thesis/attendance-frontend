@@ -6,6 +6,15 @@
     "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái"
   },
   "menu": {
-    "user": "Quản lý người dùng"
+    "user": "Quản lý người dùng",
+    "class": "Quản lý lớp học",
+    "config": "Quản lý cấu hình"
+  },
+  "user": {
+    "title": "Quản lý người dùng hệ thống",
+    "email": "Email",
+    "name": "Họ tên",
+    "createdAt": "Tạo lúc",
+    "action": "Hành động"
   }
 }

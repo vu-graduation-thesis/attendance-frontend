@@ -29,7 +29,6 @@ export const MenuOptions = (props: Props) => {
     () => getAllMenuItems(menuList, t, userPermissions),
     [t, userPermissions],
   );
-  console.log(menu)
   return (
     <div className={cx("container")}>
       <Menu

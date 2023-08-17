@@ -1,14 +1,13 @@
-
 import PERMISSIONS from "core/constants/user";
 import { routeConfig } from "core/routes/routeConfig";
 
 import { MenuItemProps } from "../types";
 
-import UserIcon from "core/assets/images/user.png"
+import ConfigIcon from "core/assets/images/settings.png"
 
-export const userMenu = {
-  transkey: "menu.user",
-  key: routeConfig.users,
-  icon: <img src={UserIcon} alt="" />,
+export const configMenu = {
+  transkey: "menu.config",
+  key: routeConfig.config,
+  icon: <img src={ConfigIcon} alt="" />,
   permission: PERMISSIONS.ALL,
 } as MenuItemProps;

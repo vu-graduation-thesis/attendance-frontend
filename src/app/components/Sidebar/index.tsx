@@ -58,7 +58,7 @@ export const Sidebar = () => {
         )}
       </div>
 
-      <MenuOptions collapsed={collapsed} onClick={handleClose} />
+      <MenuOptions collapsed={collapsed} />
     </div>
   );
 };

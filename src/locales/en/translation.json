@@ -6,6 +6,15 @@
     "homepageDesc": "Please select the function in the menu on the left"
   },
   "menu": {
-    "user": "Users management"
+    "user": "Users management",
+    "class": "Class Management",
+    "config": "Configuration management"
+  },
+  "user": {
+    "title": "Quản lý người dùng hệ thống",
+    "email": "Email",
+    "name": "Name",
+    "createdAt": "Created at",
+    "action": "Action"
   }
 }

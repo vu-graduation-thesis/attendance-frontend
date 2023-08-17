@@ -1,5 +1,7 @@
 export const routeConfig = {
   home: "/",
-  users: "/users",
+  users: "/users-management",
+  class: "/class-management",
+  config: "/config-management",
   notFound: "*",
 };
