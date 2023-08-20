@@ -6,6 +6,9 @@ import { UserPage } from "core/app/pages/UserPage";
 
 import { routeConfig } from "./routeConfig";
 import { PrivateRoutes } from "./type";
+import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
+import { ConfigPage } from "core/app/pages/ConfigPage";
+import { StatisticPage } from "core/app/pages/StatisticPage";
 
 const privateRoutes: PrivateRoutes[] = [
   {
@@ -15,6 +18,18 @@ const privateRoutes: PrivateRoutes[] = [
   {
     path: routeConfig.users,
     component: memo(UserPage),
+  },
+  {
+    path: routeConfig.class,
+    component: memo(ClassManagementPage),
+  },
+  {
+    path: routeConfig.config,
+    component: memo(ConfigPage),
+  },
+  {
+    path: routeConfig.statistic,
+    component: memo(StatisticPage),
   },
   {
     path: routeConfig.notFound,

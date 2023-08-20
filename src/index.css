@@ -1,0 +1,92 @@
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.none {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.select-none {
+  -webkit-user-select: none;
+  /* Safari */
+  -ms-user-select: none;
+  /* IE 10 and IE 11 */
+  user-select: none;
+  /* Standard syntax */
+}
+
+.mr-10 {
+  margin-right: 10px;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.text-28 {
+  font-size: 28px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+.round-full {
+  border-radius: 50%;
+}

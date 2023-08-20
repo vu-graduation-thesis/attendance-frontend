@@ -26,10 +26,6 @@ export const Sidebar = () => {
     [collapsed],
   );
 
-  const handleClose = useCallback(() => {
-    setCollapsed(true);
-  }, []);
-
   return (
     <div
       className={cx("container", {

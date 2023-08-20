@@ -5,7 +5,14 @@
     "stylelint-config-recommended"
   ],
   "rules": {
-    "alpha-value-notation": ["number", { "exceptProperties": ["opacity"] }],
+    "alpha-value-notation": [
+      "number",
+      {
+        "exceptProperties": [
+          "opacity"
+        ]
+      }
+    ],
     "color-function-notation": "legacy",
     "scss/double-slash-comment-empty-line-before": "never",
     "selector-class-pattern": [
@@ -14,5 +21,8 @@
         "message": "Expected class selector to be lowerCamelCase"
       }
     ]
-  }
+  },
+  "ignoreFiles": [
+    "src/index.css"
+  ]
 }

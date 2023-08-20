@@ -8,13 +8,25 @@
   "menu": {
     "user": "Users management",
     "class": "Class Management",
-    "config": "Configuration management"
+    "config": "Setting"
   },
   "user": {
     "title": "Quản lý người dùng hệ thống",
     "email": "Email",
     "name": "Name",
     "createdAt": "Created at",
-    "action": "Action"
+    "action": "Action",
+    "role": "Role"
+  },
+  "class": {
+    "title": "Class management",
+    "id": "Class ID",
+    "subject": "Subject name",
+    "teacher": "Teacher",
+    "credit": "Number of credit",
+    "createdAt": "Created at",
+    "action": "Action",
+    "teaching_schedule": "Teaching schedule",
+    "see": "See class"
   }
 }

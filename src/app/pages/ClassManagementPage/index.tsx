@@ -1,13 +1,16 @@
-import { Button, Popconfirm, Table, Typography, message } from "antd";
+import { Button, Table, Typography } from "antd";
 import classNames from "classnames/bind";
 import { DEFAULT_CURRENT_PAGE_START_WHITH_1, DEFAULT_PAGE_SIZE } from "core/constants";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { DateTime } from "luxon"
+import IntoIcon from "core/assets/images/into.png"
 import styles from "./styles.module.scss";
 const cx = classNames.bind(styles);
-export const UserPage = () => {
+
+
+export const ClassManagementPage = () => {
   const { t } = useTranslation();
 
   const [searchParams,] = useSearchParams();
@@ -35,25 +38,31 @@ export const UserPage = () => {
   const columns: any = useMemo(
     () => [
       {
-        title: t("user.email"),
-        dataIndex: "email",
-        key: "email",
+        title: t("class.id"),
+        dataIndex: "id",
+        key: "id",
         width: 250,
       },
       {
-        title: t("user.name"),
-        dataIndex: "name",
-        key: "name",
+        title: t("class.subject"),
+        dataIndex: "subject",
+        key: "subject",
         width: 250,
       },
       {
-        title: t("user.role"),
-        dataIndex: "role",
-        key: "role",
+        title: t("class.credit"),
+        dataIndex: "credit",
+        key: "credit",
+        width: 150,
+      },
+      {
+        title: t("class.teaching_schedule"),
+        dataIndex: "teaching_schedule",
+        key: "teaching_schedule",
         width: 250,
       },
       {
-        title: t("user.createdAt"),
+        title: t("class.createdAt"),
         dataIndex: "createdAt",
         key: "createdAt",
         width: 250,
@@ -61,21 +70,12 @@ export const UserPage = () => {
           DateTime.fromISO(value).toFormat("HH:mm:ss dd/MM/yyyy"),
       },
       {
-        title: t("user.action"),
+        title: t("class.see"),
         width: 250,
-        render: (record: any) => (
-          <Popconfirm
-            title={t("common.areYouSure")}
-            okText={t("common.yes")}
-            cancelText={t("common.no")}
-            onConfirm={async () => {
-              message.success(t("common.message.deleteSuccess"));
-              console.log(record)
-            }}
-          >
-            <Button type="link">{t("button.delete")}</Button>
-          </Popconfirm>
+        render: () => (
+          <img src={IntoIcon} alt="" className="cursor-pointer select-none" />
         ),
+        align: "center"
       },
     ],
     [t],
@@ -84,13 +84,13 @@ export const UserPage = () => {
   return <div className={cx("container")}>
     <div className="flex justify-between">
       <Typography.Title level={4} style={{ marginBottom: 16 }} className={cx("title")}>
-        {t("user.title")}
+        {t("class.title")}
       </Typography.Title>
-      <Button type="primary">Thêm mới</Button>
+      <Button type="primary">{t("class.syncCtmsData")}</Button>
     </div>
     <Table
       bordered
-      dataSource={[]}
+      dataSource={[{}]}
       columns={columns}
       loading={false}
       onChange={() => { }}

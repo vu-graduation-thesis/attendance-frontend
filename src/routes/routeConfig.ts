@@ -3,5 +3,6 @@ export const routeConfig = {
   users: "/users-management",
   class: "/class-management",
   config: "/config-management",
+  statistic: "/statistic",
   notFound: "*",
 };

@@ -1,0 +1,36 @@
+.container {
+  padding: 25px;
+}
+
+.title {
+  padding: 0 15px 0 10px;
+}
+
+.border {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.left {
+  flex-grow: 1;
+  height: 400px;
+  padding: 15px;
+}
+
+.right {
+  width: 280px;
+  margin-left: 20px;
+  height: fit-content;
+}
+
+.profileWrapper {
+  text-align: center;
+  padding: 15px 0
+}
+
+.input {
+  width: 300px;
+}
+
+.ctmsWrapper {
+  width: 300px;
+}

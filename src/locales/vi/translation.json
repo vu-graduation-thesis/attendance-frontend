@@ -8,13 +8,27 @@
   "menu": {
     "user": "Quản lý người dùng",
     "class": "Quản lý lớp học",
-    "config": "Quản lý cấu hình"
+    "config": "Cài đặt",
+    "statistic": "Thống kê"
   },
   "user": {
     "title": "Quản lý người dùng hệ thống",
     "email": "Email",
     "name": "Họ tên",
     "createdAt": "Tạo lúc",
-    "action": "Hành động"
+    "action": "Hành động",
+    "role": "Vai trò"
+  },
+  "class": {
+    "title": "Quản lý lớp học",
+    "id": "Mã lớp",
+    "subject": "Môn học",
+    "teacher": "Giảng viên",
+    "credit": "Số tín chỉ",
+    "createdAt": "Tạo lúc",
+    "action": "Hành động",
+    "teaching_schedule": "Lịch dạy",
+    "see": "Xem lớp",
+    "syncCtmsData": "Đồng bộ dữ liệu từ CTMS"
   }
 }
