@@ -9,7 +9,8 @@
     "user": "Quản lý người dùng",
     "class": "Quản lý lớp học",
     "config": "Cài đặt",
-    "statistic": "Thống kê"
+    "statistic": "Thống kê",
+    "student": "Quản lý sinh viên"
   },
   "user": {
     "title": "Quản lý người dùng hệ thống",
@@ -30,5 +31,9 @@
     "teaching_schedule": "Lịch dạy",
     "see": "Xem lớp",
     "syncCtmsData": "Đồng bộ dữ liệu từ CTMS"
+  },
+  "student": {
+    "uploadExcel": "Tải lên file excel",
+    "add": "Thêm sinh viên"
   }
 }
