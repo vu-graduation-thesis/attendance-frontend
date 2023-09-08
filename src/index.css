@@ -96,3 +96,7 @@
 .round-full {
   border-radius: 50%;
 }
+
+#cameraPreview video {
+  border-radius: 50%;
+}
