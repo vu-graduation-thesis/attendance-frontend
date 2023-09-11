@@ -1,9 +1,9 @@
-import { Button, Table, Typography } from "antd";
+import { Breadcrumb, Button, Table, Typography } from "antd";
 import classNames from "classnames/bind";
 import { DEFAULT_CURRENT_PAGE_START_WHITH_1, DEFAULT_PAGE_SIZE } from "core/constants";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { DateTime } from "luxon"
 import IntoIcon from "core/assets/images/into.png"
 import styles from "./styles.module.scss";
@@ -11,6 +11,7 @@ const cx = classNames.bind(styles);
 
 
 export const ClassManagementPage = () => {
+  const { id } = useParams();
   const { t } = useTranslation();
 
   const [searchParams,] = useSearchParams();
@@ -82,19 +83,27 @@ export const ClassManagementPage = () => {
   );
 
   return <div className={cx("container")}>
-    <div className="flex justify-between">
-      <Typography.Title level={4} style={{ marginBottom: 16 }} className={cx("title")}>
-        {t("class.title")}
-      </Typography.Title>
-      <Button type="primary">{t("class.syncCtmsData")}</Button>
-    </div>
-    <Table
-      bordered
-      dataSource={[{}]}
-      columns={columns}
-      loading={false}
-      onChange={() => { }}
-      {...tableParams}
-    />
+    {id ? <>
+      <Breadcrumb items={[{ title: 'sample' }, { title: "Lop AA93.FJS.39849" }]} className="mb-10" />
+    </> : (
+      <>
+        <div className="flex justify-between">
+          <Typography.Title level={4} style={{ marginBottom: 16 }} className={cx("title")}>
+            {t("class.title")}
+          </Typography.Title>
+          <Button type="primary">{t("class.syncCtmsData")}</Button>
+        </div>
+        <Table
+          bordered
+          dataSource={[{}]}
+          columns={columns}
+          loading={false}
+          onChange={() => { }}
+          {...tableParams}
+        />
+      </>
+
+    )}
+
   </div>;
 };

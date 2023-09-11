@@ -24,6 +24,10 @@ const privateRoutes: PrivateRoutes[] = [
     component: memo(ClassManagementPage),
   },
   {
+    path: routeConfig.specificClass,
+    component: memo(ClassManagementPage),
+  },
+  {
     path: routeConfig.config,
     component: memo(ConfigPage),
   },
