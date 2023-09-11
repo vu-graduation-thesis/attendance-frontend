@@ -9,6 +9,7 @@ import { PrivateRoutes } from "./type";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
 import { ConfigPage } from "core/app/pages/ConfigPage";
 import { StatisticPage } from "core/app/pages/StatisticPage";
+import { MobileHomePage } from "core/app/pages/Mobile";
 
 const privateRoutes: PrivateRoutes[] = [
   {
@@ -35,6 +36,10 @@ const privateRoutes: PrivateRoutes[] = [
     path: routeConfig.notFound,
     component: memo(NotFoundPage),
   },
+  {
+    path: routeConfig.mobile.home,
+    component: memo(MobileHomePage)
+  }
 ];
 
 export { privateRoutes };

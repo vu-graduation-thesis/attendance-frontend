@@ -5,6 +5,8 @@ import { privateRoutes } from "core/routes";
 
 // import { QuickShortCut } from "../components/QuickShortCut";
 import DefaultLayout from "./DefaultLayout";
+import configs from "core/configs";
+import MobileAppLayout from "./MobileAppLayout";
 
 const RootLayout = () => {
   return (
@@ -13,7 +15,7 @@ const RootLayout = () => {
         {privateRoutes.map((route, index) => {
           const PageComponent = route.component;
 
-          let Layout: any = DefaultLayout;
+          let Layout: any = configs.mode === 'HYBRID_APP' ? MobileAppLayout : DefaultLayout;
 
           if (route.layout) {
             Layout = route.layout;

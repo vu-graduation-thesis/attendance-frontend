@@ -30,5 +30,10 @@
     "teaching_schedule": "Lịch dạy",
     "see": "Xem lớp",
     "syncCtmsData": "Đồng bộ dữ liệu từ CTMS"
+  },
+  "label": {
+    "welcome": "Chào mừng",
+    "fastSearch": "Tìm kiếm nhanh",
+    "fastSearchDescription": "Bạn có thể tìm kiếm nhanh các chức năng"
   }
 }

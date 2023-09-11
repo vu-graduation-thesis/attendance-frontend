@@ -3,13 +3,15 @@ const env = {
   apiEndpointV2: import.meta.env.VITE_API_END_POINT_V2 as string,
   s3AssetUrl: import.meta.env.VITE_S3_ASSET_URL as string,
   env: import.meta.env.VITE_ENV as string,
+  mode: import.meta.env.VITE_MODE as string
 };
 
 const configs = {
   env: env.env,
   apiEndpoint: env.apiEndpoint,
   apiEndpointV2: env.apiEndpointV2,
-  s3AssetUrl: env.s3AssetUrl
+  s3AssetUrl: env.s3AssetUrl,
+  mode: env.mode
 };
 
 export default configs;

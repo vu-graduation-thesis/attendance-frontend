@@ -4,5 +4,8 @@ export const routeConfig = {
   class: "/class-management",
   config: "/config-management",
   statistic: "/statistic",
+  mobile: {
+    home: "/mobile"
+  },
   notFound: "*",
 };

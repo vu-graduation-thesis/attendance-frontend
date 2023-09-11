@@ -1,0 +1,152 @@
+.title {
+  margin: 25px 0;
+  text-align: center;
+}
+
+.container * {
+  font-size: 18px;
+  font-family: monospace;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.app_header {
+  display: flex;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app_header-welcome {
+  font-size: 18px;
+}
+
+.app_header-welcome-text {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.bell_icon {
+  height: 28px;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.bottom_item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.bottom_icon {
+  width: 80%;
+}
+
+.center_bottom_item {
+  position: relative;
+  top: -26%;
+  border-radius: 50%;
+  width: 60px;
+  flex-grow: 0;
+  padding: 4px;
+  background-color: white;
+  border: 1px solid rgba(100, 100, 111, 0.2);
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.center_bottom_wrapper {
+  box-sizing: border-box;
+  border: 1px solid;
+  border-radius: 50%;
+  border: 3px solid #e6c231;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6c231;
+  position: relative;
+  z-index: 100000;
+}
+
+.search {
+  padding: 0 16px 16px;
+}
+
+.search_wrapper {
+  border: 1px solid blue;
+  border-radius: 20px;
+  padding: 18px;
+  background-color: blue;
+}
+
+.search_title {
+  font-weight: bold;
+  color: white;
+  margin-top: 10px;
+}
+
+.search_description {
+  font-size: 14px;
+  color: white;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.pl-5 {
+  padding-right: 5px;
+}
+
+.seach_input {
+  border-radius: 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.tag {
+  padding: 8px 12px;
+  border-radius: 15px;
+  margin-right: 10px;
+  font-size: 14px !important;
+}
+
+.tag-wrapper {
+  padding: 0 16px;
+  margin-top: 15px;
+}
+
+.menu {
+  margin-top: 16px;
+  overflow-y: scroll;
+
+}
+
+.menu_wrapper {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+}
+
+.card {
+  height: 200px;
+  width: 300px;
+  background-color: wheat;
+  margin-left: 16px;
+  border-radius: 15px;
+}
+
+.menu::-webkit-scrollbar {
+  display: none;
+}
