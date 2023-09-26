@@ -99,4 +99,7 @@
 
 #cameraPreview video {
   border-radius: 50%;
+  transform: unset !important;
+  width: 100%;
+  height: 100%;
 }
