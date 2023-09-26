@@ -1,0 +1,23 @@
+.container {
+  margin: 25px 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.loginContainer {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.input {
+  padding: 6px;
+  width: 100%;
+}
+
+.btnLoginWithGG {
+  height: 42px;
+}

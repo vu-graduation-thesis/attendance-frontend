@@ -1,14 +1,18 @@
 import { memo } from "react";
 
+import NoLayout from "core/app/layouts/NoLayout/index";
+import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
+import { CollectFacePage } from "core/app/pages/CollectFacePage/index";
+import { ConfigPage } from "core/app/pages/ConfigPage";
 import { HomePage } from "core/app/pages/HomePage";
+import { LoginPage } from "core/app/pages/LoginPage/index";
 import { NotFoundPage } from "core/app/pages/NotFoundPage";
+import { StatisticPage } from "core/app/pages/StatisticPage";
+import { StudentManagementPage } from "core/app/pages/StudentManagementPage/index";
 import { UserPage } from "core/app/pages/UserPage";
 
 import { routeConfig } from "./routeConfig";
-import { PrivateRoutes } from "./type";
-import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
-import { ConfigPage } from "core/app/pages/ConfigPage";
-import { StatisticPage } from "core/app/pages/StatisticPage";
+import { PrivateRoutes, PublicRoutes } from "./type";
 
 const privateRoutes: PrivateRoutes[] = [
   {
@@ -32,9 +36,26 @@ const privateRoutes: PrivateRoutes[] = [
     component: memo(StatisticPage),
   },
   {
+    path: routeConfig.student,
+    component: memo(StudentManagementPage),
+  },
+  {
     path: routeConfig.notFound,
     component: memo(NotFoundPage),
   },
 ];
 
-export { privateRoutes };
+const publicRoutes: PublicRoutes[] = [
+  {
+    path: routeConfig.login,
+    component: memo(LoginPage),
+    layout: NoLayout,
+  },
+  {
+    path: routeConfig.collectFace,
+    component: memo(CollectFacePage),
+    layout: NoLayout,
+  },
+];
+
+export { privateRoutes, publicRoutes };

@@ -8,7 +8,8 @@
   "menu": {
     "user": "Users management",
     "class": "Class Management",
-    "config": "Setting"
+    "config": "Setting",
+    "student": "Student management"
   },
   "user": {
     "title": "Quản lý người dùng hệ thống",
@@ -28,5 +29,9 @@
     "action": "Action",
     "teaching_schedule": "Teaching schedule",
     "see": "See class"
+  },
+  "student": {
+    "uploadExcel": "Upload excel",
+    "add": "Add student"
   }
 }
