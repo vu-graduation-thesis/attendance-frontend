@@ -19,7 +19,8 @@
     "prettier:check": "prettier --list-different ./src/**/*.{js, jsx,ts,tsx,scss, css}",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "start-android": "npx cap run android"
+    "start-android": "npx cap run android",
+    "build-ios": "vite build && npx cap copy && npx cap open ios"
   },
   "dependencies": {
     "@capacitor-community/camera-preview": "^5.0.0",
@@ -31,6 +32,7 @@
     "axios": "^1.4.0",
     "chart.js": "^4.3.3",
     "classnames": "^2.3.2",
+    "cordova-plugin-safearea": "^1.0.0",
     "face-api.js": "^0.22.2",
     "i18next-browser-languagedetector": "^7.0.2",
     "keycloak-js": "^21.1.1",

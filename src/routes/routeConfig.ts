@@ -7,5 +7,9 @@ export const routeConfig = {
   student: "/student-management",
   login: "login",
   collectFace: "/collect-face",
+  mobile: {
+    home: "/app/home",
+    lesson: "/app/lesson",
+  },
   notFound: "*",
 };

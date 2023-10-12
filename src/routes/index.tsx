@@ -6,6 +6,8 @@ import { CollectFacePage } from "core/app/pages/CollectFacePage/index";
 import { ConfigPage } from "core/app/pages/ConfigPage";
 import { HomePage } from "core/app/pages/HomePage";
 import { LoginPage } from "core/app/pages/LoginPage/index";
+import { AttendancePage } from "core/app/pages/Mobile/AttendancePage/index.tsx";
+import { LessonPage } from "core/app/pages/Mobile/Lesson/index.tsx";
 import { NotFoundPage } from "core/app/pages/NotFoundPage";
 import { StatisticPage } from "core/app/pages/StatisticPage";
 import { StudentManagementPage } from "core/app/pages/StudentManagementPage/index";
@@ -54,6 +56,16 @@ const publicRoutes: PublicRoutes[] = [
   {
     path: routeConfig.collectFace,
     component: memo(CollectFacePage),
+    layout: NoLayout,
+  },
+  {
+    path: routeConfig.mobile.home,
+    component: memo(AttendancePage),
+    layout: NoLayout,
+  },
+  {
+    path: routeConfig.mobile.lesson,
+    component: memo(LessonPage),
     layout: NoLayout,
   },
 ];

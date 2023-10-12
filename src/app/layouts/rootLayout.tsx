@@ -1,5 +1,7 @@
-import { Fragment } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+
+import { Capacitor } from "@capacitor/core";
 
 import { privateRoutes, publicRoutes } from "core/routes";
 
@@ -7,6 +9,13 @@ import { privateRoutes, publicRoutes } from "core/routes";
 import DefaultLayout from "./DefaultLayout";
 
 const RootLayout = () => {
+  const navigator = useNavigate();
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      navigator("/app/home");
+    }
+  }, []);
+
   return (
     <div className="App">
       <Routes>
