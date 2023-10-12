@@ -5,7 +5,7 @@ export const routeConfig = {
   config: "/config-management",
   statistic: "/statistic",
   mobile: {
-    home: "/mobile"
+    home: "/mobile",
   },
   notFound: "*",
 };

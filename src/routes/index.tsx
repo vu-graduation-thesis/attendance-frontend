@@ -1,15 +1,15 @@
 import { memo } from "react";
 
+import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
+import { ConfigPage } from "core/app/pages/ConfigPage";
 import { HomePage } from "core/app/pages/HomePage";
+import { MobileHomePage } from "core/app/pages/Mobile";
 import { NotFoundPage } from "core/app/pages/NotFoundPage";
+import { StatisticPage } from "core/app/pages/StatisticPage";
 import { UserPage } from "core/app/pages/UserPage";
 
 import { routeConfig } from "./routeConfig";
 import { PrivateRoutes } from "./type";
-import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
-import { ConfigPage } from "core/app/pages/ConfigPage";
-import { StatisticPage } from "core/app/pages/StatisticPage";
-import { MobileHomePage } from "core/app/pages/Mobile";
 
 const privateRoutes: PrivateRoutes[] = [
   {
@@ -38,8 +38,8 @@ const privateRoutes: PrivateRoutes[] = [
   },
   {
     path: routeConfig.mobile.home,
-    component: memo(MobileHomePage)
-  }
+    component: memo(MobileHomePage),
+  },
 ];
 
 export { privateRoutes };
