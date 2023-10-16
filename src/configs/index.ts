@@ -9,7 +9,7 @@ const configs = {
   env: env.env,
   apiEndpoint: env.apiEndpoint,
   apiEndpointV2: env.apiEndpointV2,
-  s3AssetUrl: env.s3AssetUrl
+  s3AssetUrl: env.s3AssetUrl,
 };
 
 export default configs;
