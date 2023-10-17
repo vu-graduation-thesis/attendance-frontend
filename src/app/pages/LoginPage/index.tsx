@@ -1,42 +1,95 @@
-import { Button, Input } from "antd";
+import { Button, Input, Typography } from "antd";
 import classNames from "classnames/bind";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import GoogleIcon from "core/assets/images/google.png";
+import LogoIcon from "core/assets/images/logo.png";
+import { ACCOUNT_NOT_FOUND, ADMIN, TEACHER } from "core/constants/auth.js";
+import { useLogin } from "core/mutations/auth.js";
+import { jwtDecode } from "core/utils/jwt.js";
 
 import styles from "./styles.module.scss";
 
+const { Title, Text } = Typography;
 const cx = classNames.bind(styles);
 export const LoginPage = () => {
   const navigateTo = useNavigate();
+  const { mutateAsync: handleLogin, isLoading } = useLogin();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLoginClick = useCallback(async () => {
+    try {
+      const res = await handleLogin({
+        username,
+        password,
+      });
+      localStorage.setItem("token", res.token);
+      const { payload } = jwtDecode(res.token) || {};
+      if (payload?.role === ADMIN || payload?.role === TEACHER) {
+        navigateTo("/");
+      } else {
+        navigateTo("/collect-face");
+      }
+      console.log(payload);
+    } catch (error) {
+      const errorCode = (error as any)?.response?.data?.error?.code;
+      if (errorCode === ACCOUNT_NOT_FOUND) {
+        setMessage("Tài khoản không tồn tại trong hệ thống");
+      } else {
+        setMessage("Tài khoản hoặc mật khẩu không đúng");
+      }
+    }
+  }, [handleLogin, username, password]);
 
   return (
     <div className={cx("container")}>
+      <img className={cx("logo")} src={LogoIcon} alt="" />
       <h3 className={cx("title")}>Hệ thống điểm danh sinh viên</h3>
-      <h4>Đăng nhập vào hệ thống</h4>
-
+      {message && <Text className={cx("red", "font-16")}>{message}</Text>}
       <div className={cx("loginContainer")}>
-        <h5>Sử dụng tài khoản CTMS</h5>
-        <Input className={cx("input", "mb-10")} />
-        <Input className={cx("input", "mb-10")} />
+        <div className={cx("left")}>
+          <Title level={5}>Tên đăng nhập</Title>
+          <Input
+            className={cx("input", "mb-10")}
+            placeholder="Nhập tên đăng nhập..."
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            allowClear
+          />
+        </div>
+        <div className={cx("left", "mt-10")}>
+          <Title level={5}>Mật khẩu</Title>
+          <Input.Password
+            className={cx("input", "mb-10")}
+            placeholder="Nhập mật khẩu..."
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
+
         <Button
-          className={cx("input", "mb-10")}
+          className={cx("input", "mb-10", "mt-20")}
           type="primary"
-          onClick={() => {
-            navigateTo("/collect-face");
-          }}
+          onClick={handleLoginClick}
+          size="large"
+          loading={isLoading}
         >
           Đăng nhập
         </Button>
-        <h5>
-          Hoặc đăng nhập với <b>mail sinh viên</b>
+        <div className="mt-20">
+          <Text>
+            Hoặc đăng nhập với <b>mail sinh viên</b>
+          </Text>
           <Button
-            className={cx("btnLoginWithGG", "input", "mb-10")}
+            className={cx("btnLoginWithGG", "input", "mb-10", "mt-10")}
             icon={<img src={GoogleIcon} alt="" />}
           >
             Đăng nhập với Google
           </Button>
-        </h5>
+        </div>
       </div>
     </div>
   );

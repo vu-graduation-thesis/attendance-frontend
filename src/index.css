@@ -138,3 +138,23 @@ body {
 .visibile {
   visibility: hidden;
 }
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.font-16 {
+  font-size: 16px;
+}
+
+.font-18 {
+  font-size: 18px;
+}
+
+.font-24 {
+  font-size: 24px;
+}
+
+.w-24 {
+  width: 24px;
+}

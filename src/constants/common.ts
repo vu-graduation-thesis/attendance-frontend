@@ -37,3 +37,5 @@ export const DEFAULT_SORT_ORDER = SortOrder.DESC;
 export const DELAY_TIME_DEBOUNCE = 500;
 
 export const TZ = "Asia/Ho_Chi_Minh";
+
+export const ADD_PREFIX = "ADD_";

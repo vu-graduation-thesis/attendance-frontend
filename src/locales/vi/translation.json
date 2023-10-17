@@ -10,7 +10,18 @@
     "class": "Quản lý lớp học",
     "config": "Cài đặt",
     "statistic": "Thống kê",
-    "student": "Quản lý sinh viên"
+    "student": "Quản lý sinh viên",
+    "teacher": "Quản lý giảng viên",
+    "subject": "Quản lý môn học"
+  },
+  "label": {
+    "updatedAt": "Cập nhật lúc",
+    "createdAt": "Tạo lúc",
+    "name": "Họ tên",
+    "confirmSave": "Lưu thay đổi?",
+    "confirmDelete": "Xóa dữ liệu?",
+    "confirmCancel": "Hủy thay đổi?",
+    "action": "Hành động"
   },
   "user": {
     "title": "Quản lý người dùng hệ thống",
@@ -33,7 +44,15 @@
     "syncCtmsData": "Đồng bộ dữ liệu từ CTMS"
   },
   "student": {
+    "title": "Quản lý sinh viên",
     "uploadExcel": "Tải lên file excel",
-    "add": "Thêm sinh viên"
+    "add": "Thêm sinh viên",
+    "name": "Họ tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "username": "Tên đăng nhập",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "see": "Action"
   }
 }

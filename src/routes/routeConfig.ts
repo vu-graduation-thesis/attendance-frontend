@@ -5,6 +5,7 @@ export const routeConfig = {
   config: "/config-management",
   statistic: "/statistic",
   student: "/student-management",
+  teacher: "/teacher-management",
   login: "login",
   collectFace: "/collect-face",
   mobile: {
