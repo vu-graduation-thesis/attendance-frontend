@@ -1,4 +1,5 @@
 import { classMenu } from "./class";
+import { classroomMenu } from "./classroom";
 import { configMenu } from "./config";
 import { statisticMenu } from "./statistic";
 import { studentMenu } from "./student";
@@ -12,6 +13,7 @@ export const menuList = [
   classMenu,
   studentMenu,
   subjectMenu,
+  classroomMenu,
   userMenu,
   configMenu,
 ];

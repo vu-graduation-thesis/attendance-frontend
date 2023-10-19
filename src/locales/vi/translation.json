@@ -12,7 +12,8 @@
     "statistic": "Thống kê",
     "student": "Quản lý sinh viên",
     "teacher": "Quản lý giảng viên",
-    "subject": "Quản lý môn học"
+    "subject": "Quản lý môn học",
+    "classroom": "Quản lý phòng học"
   },
   "label": {
     "updatedAt": "Cập nhật lúc",
@@ -55,7 +56,7 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dung đã tồn tại"
+    "usernameExisted": "Tên người dùng đã tồn tại"
   },
   "teacher": {
     "id": "Mã giảng viên",
@@ -69,7 +70,7 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dung đã tồn tại"
+    "usernameExisted": "Tên người dùng đã tồn tại"
   },
   "subject": {
     "id": "Mã môn học",
@@ -81,6 +82,19 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dung đã tồn tại"
+    "usernameExisted": "Tên môn học đã tồn tại"
+  },
+  "classroom": {
+    "id": "Mã phòng học",
+    "title": "Quản lý phòng học",
+    "uploadExcel": "Tải lên file excel",
+    "add": "Thêm phòng học",
+    "name": "Tên phòng học",
+    "type": "Loại phòng",
+    "location": "Vị trí",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "see": "Action",
+    "numberOfSeats": "Số chỗ ngồi"
   }
 }

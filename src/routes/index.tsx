@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import NoLayout from "core/app/layouts/NoLayout/index";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
+import { ClassroomManagementPage } from "core/app/pages/ClassroomManagementPage/index.tsx";
 import { CollectFacePage } from "core/app/pages/CollectFacePage/index";
 import { ConfigPage } from "core/app/pages/ConfigPage";
 import { HomePage } from "core/app/pages/HomePage";
@@ -54,6 +55,10 @@ const privateRoutes: PrivateRoutes[] = [
   {
     path: routeConfig.subject,
     component: memo(SubjectManagementPage),
+  },
+  {
+    path: routeConfig.classroom,
+    component: memo(ClassroomManagementPage),
   },
 ];
 
