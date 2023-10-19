@@ -39,3 +39,5 @@ export const DELAY_TIME_DEBOUNCE = 500;
 export const TZ = "Asia/Ho_Chi_Minh";
 
 export const ADD_PREFIX = "ADD_";
+
+export const EXISTED_ERROR_CODE = "EXISTED_ERROR_CODE";

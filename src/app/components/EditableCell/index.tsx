@@ -11,12 +11,7 @@ export const EditableCell: React.FC<any> = ({
   children,
   ...restProps
 }) => {
-  const inputNode =
-    inputType === "number" ? (
-      <InputNumber />
-    ) : (
-      <Input value={record?.[dataIndex]} />
-    );
+  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
 
   return (
     <td {...restProps}>

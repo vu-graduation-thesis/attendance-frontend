@@ -14,7 +14,7 @@ import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
-import { ADD_PREFIX } from "core/constants/common.ts";
+import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
 import { useCreateStudent, useUpdateStudent } from "core/mutations/student.ts";
 import { useGetStudents } from "core/queries/student.ts";
 
@@ -71,6 +71,15 @@ export const StudentManagementPage = () => {
     form.resetFields();
   };
 
+  const handleDelete = async (record: any) => {
+    try {
+      await updateStudent({ id: record?._id, isDeleted: true });
+      refetch();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const save = async (record: any) => {
     try {
       const row = await form.validateFields();
@@ -84,7 +93,16 @@ export const StudentManagementPage = () => {
       form.resetFields();
       refetch();
     } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
+      if (
+        (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
+      ) {
+        form.setFields([
+          {
+            name: "username",
+            errors: [t("student.usernameExisted")],
+          },
+        ]);
+      }
     }
   };
   const pagination = useMemo(
@@ -112,13 +130,13 @@ export const StudentManagementPage = () => {
       {
         title: t("student.id"),
         dataIndex: ["student", "_id"],
-        key: "id",
+        key: ["student", "_id"],
         width: 250,
       },
       {
         title: t("student.name"),
         dataIndex: ["student", "name"],
-        key: "subject",
+        key: ["student", "name"],
         width: 250,
         editable: true,
       },
@@ -162,6 +180,7 @@ export const StudentManagementPage = () => {
       {
         title: t("label.action"),
         width: 250,
+        key: "action",
         render: (_: any, record: any) => {
           const editable = isEditing(record);
           return editable ? (
@@ -195,11 +214,16 @@ export const StudentManagementPage = () => {
                     className="cursor-pointer select-none mr-10 w-24"
                     onClick={() => edit(record)}
                   />
-                  <img
-                    src={DeleteIcon}
-                    alt=""
-                    className="cursor-pointer select-none mr-10 w-24"
-                  />
+                  <Popconfirm
+                    title={t("label.confirmDelete")}
+                    onConfirm={() => handleDelete(record)}
+                  >
+                    <img
+                      src={DeleteIcon}
+                      alt=""
+                      className="cursor-pointer select-none mr-10 w-24"
+                    />
+                  </Popconfirm>
                 </>
               )}
             </>
