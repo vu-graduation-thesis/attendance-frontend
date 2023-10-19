@@ -1,7 +1,8 @@
 import { Switch, Tooltip, Typography } from "antd";
 import classNames from "classnames/bind";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { LogoutOutlined } from "@ant-design/icons";
 
@@ -16,6 +17,7 @@ const cx = classNames.bind(styles);
 
 export const Header = () => {
   const { i18n, t } = useTranslation();
+  const navigateTo = useNavigate();
 
   const { data: userInfo } = useGetUserInfo();
 
@@ -28,6 +30,10 @@ export const Header = () => {
     [i18n],
   );
 
+  useEffect(() => {
+    if (userInfo) localStorage.setItem("userInfo", JSON.stringify(userInfo));
+  }, [userInfo]);
+
   return (
     <div className={cx("container")}>
       <Switch
@@ -38,10 +44,16 @@ export const Header = () => {
       />
 
       <Text className={cx("email")} strong>
-        {userInfo?.email}
+        {userInfo?.admin?.name || userInfo?.teacher?.name || userInfo?.username}
       </Text>
       <Tooltip title={t("app.logout")}>
-        <LogoutOutlined className={cx("logoutIcon")} onClick={() => { }} />
+        <LogoutOutlined
+          className={cx("logoutIcon")}
+          onClick={() => {
+            localStorage.clear();
+            navigateTo("/login", { replace: true });
+          }}
+        />
       </Tooltip>
     </div>
   );

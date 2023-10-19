@@ -7,15 +7,18 @@
   padding: 24px 64px;
   border-bottom: 1px solid #e0e0e0;
   transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+  background-color: #73adb4;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .email {
   padding: 0 12px;
   margin: 0 12px;
   cursor: pointer;
-  border: 1px solid var(--black);
-  color: var(--text);
+  border: 1px solid var(--white);
+  color: var(--white);
   border-radius: 999px;
+
 }
 
 .logoutIcon {

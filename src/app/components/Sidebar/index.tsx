@@ -42,7 +42,7 @@ export const Sidebar = () => {
         </Link>
 
         <Title className={cx("name")} level={2}>
-          Fithou Attendance
+          FITHOU ATTENDANCE
         </Title>
       </div>
 

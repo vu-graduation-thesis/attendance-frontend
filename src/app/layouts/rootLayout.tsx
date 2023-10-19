@@ -21,7 +21,7 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (!token || isError) {
-      navigator("/login");
+      navigator("/login", { replace: true });
     }
   }, [isError]);
 

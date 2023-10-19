@@ -21,4 +21,16 @@ axiosInstance.interceptors.request.use(
   },
 );
 
+axiosInstance.interceptors.response.use(
+  function (response: any) {
+    return response;
+  },
+  function (error: any) {
+    if (error.response?.status === 401) {
+      window.location.replace("/login");
+    }
+    return Promise.reject(error);
+  },
+);
+
 export default axiosInstance;

@@ -14,7 +14,14 @@ function DefaultLayout({ children }: Props): ReactNode {
       <div style={{ flex: 1, overflow: "hidden" }}>
         <Header />
 
-        <div style={{ overflowY: "auto", height: "calc(100vh - 85px)" }}>{children}</div>
+        <div
+          style={{
+            overflowY: "auto",
+            height: "calc(100vh - 85px)",
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

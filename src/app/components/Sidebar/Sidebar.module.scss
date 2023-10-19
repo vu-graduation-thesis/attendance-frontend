@@ -3,6 +3,7 @@
   width: 300px;
   position: relative;
   transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+  background-color: #f9fafb;
 }
 
 .containerCollapsed {
@@ -23,12 +24,14 @@
   height: 85px;
   width: 300px;
   transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+  background: #73adb4;
 
   .name {
     font-size: 18px;
     font-weight: 600;
     margin: 0;
-    margin-left: 12px;
+    margin-right: 12px;
+    color: white;
   }
 }
 
@@ -55,6 +58,7 @@
     &:hover {
       color: var(--primary);
     }
+    color: white;
   }
 }
 

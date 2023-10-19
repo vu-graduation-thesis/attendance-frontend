@@ -29,11 +29,10 @@ export const LoginPage = () => {
       localStorage.setItem("token", res.token);
       const { payload } = jwtDecode(res.token) || {};
       if (payload?.role === ADMIN || payload?.role === TEACHER) {
-        navigateTo("/");
+        navigateTo("/", { replace: true });
       } else {
-        navigateTo("/collect-face");
+        navigateTo("/collect-face", { replace: true });
       }
-      console.log(payload);
     } catch (error) {
       const errorCode = (error as any)?.response?.data?.error?.code;
       if (errorCode === ACCOUNT_NOT_FOUND) {

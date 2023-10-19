@@ -7,11 +7,11 @@ import { teacherMenu } from "./teacher";
 import { userMenu } from "./user";
 
 export const menuList = [
+  statisticMenu,
   teacherMenu,
   classMenu,
   studentMenu,
   subjectMenu,
-  statisticMenu,
   userMenu,
   configMenu,
 ];
