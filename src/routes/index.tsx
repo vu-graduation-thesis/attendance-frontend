@@ -11,6 +11,7 @@ import { LessonPage } from "core/app/pages/Mobile/Lesson/index.tsx";
 import { NotFoundPage } from "core/app/pages/NotFoundPage";
 import { StatisticPage } from "core/app/pages/StatisticPage";
 import { StudentManagementPage } from "core/app/pages/StudentManagementPage/index";
+import { SubjectManagementPage } from "core/app/pages/SubjectManagementPage/index.tsx";
 import { TeacherManagementPage } from "core/app/pages/TeacherManagementPage/index.tsx";
 import { UserPage } from "core/app/pages/UserPage";
 
@@ -49,6 +50,10 @@ const privateRoutes: PrivateRoutes[] = [
   {
     path: routeConfig.notFound,
     component: memo(NotFoundPage),
+  },
+  {
+    path: routeConfig.subject,
+    component: memo(SubjectManagementPage),
   },
 ];
 

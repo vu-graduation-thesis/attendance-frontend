@@ -70,5 +70,17 @@
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
     "usernameExisted": "Tên người dung đã tồn tại"
+  },
+  "subject": {
+    "id": "Mã môn học",
+    "title": "Quản lý môn học",
+    "uploadExcel": "Tải lên file excel",
+    "add": "Thêm môn học",
+    "name": "Tên môn học",
+    "type": "Thể loại",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "see": "Action",
+    "usernameExisted": "Tên người dung đã tồn tại"
   }
 }
