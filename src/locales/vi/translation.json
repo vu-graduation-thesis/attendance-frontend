@@ -56,5 +56,19 @@
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
     "usernameExisted": "Tên người dung đã tồn tại"
+  },
+  "teacher": {
+    "id": "Mã giảng viên",
+    "title": "Quản lý giảng viên",
+    "uploadExcel": "Tải lên file excel",
+    "add": "Thêm giảng viên",
+    "name": "Họ tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "username": "Tên đăng nhập",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "see": "Action",
+    "usernameExisted": "Tên người dung đã tồn tại"
   }
 }

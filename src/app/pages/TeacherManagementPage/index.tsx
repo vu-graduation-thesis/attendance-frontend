@@ -1,0 +1,291 @@
+import { Button, Form, Popconfirm, Table, Typography } from "antd";
+import classNames from "classnames/bind";
+import { DateTime } from "luxon";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
+
+import { EditableCell } from "core/app/components/EditableCell/index.tsx";
+import CheckedIcon from "core/assets/images/checked.png";
+import CloseIcon from "core/assets/images/close.png";
+import DeleteIcon from "core/assets/images/delete.png";
+import EditIcon from "core/assets/images/edit.png";
+import {
+  DEFAULT_CURRENT_PAGE_START_WHITH_1,
+  DEFAULT_PAGE_SIZE,
+} from "core/constants";
+import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
+import { useCreateTeacher, useUpdateTeacher } from "core/mutations/teacher.ts";
+import { useGetTeachers } from "core/queries/teacher.ts";
+
+import styles from "./styles.module.scss";
+
+const cx = classNames.bind(styles);
+
+export const TeacherManagementPage = () => {
+  const { data: teachersData, isLoading, refetch } = useGetTeachers();
+  const { mutateAsync: updateTeacher } = useUpdateTeacher();
+  const { mutateAsync: createTeacher } = useCreateTeacher();
+
+  const [dataTable, setDataTable] = useState<any>();
+
+  const [form] = Form.useForm();
+  const [editingKey, setEditingKey] = useState("");
+  const { t } = useTranslation();
+
+  const [searchParams] = useSearchParams();
+
+  const isEditing = (record: any) => record._id === editingKey;
+
+  const addNewRow = () => {
+    if (editingKey.includes(ADD_PREFIX)) {
+      return;
+    }
+    const newData = {
+      _id: ADD_PREFIX + new Date().getTime(),
+      name: "",
+      phone: "",
+      email: "",
+      username: "",
+    };
+    form.setFieldsValue({ ...newData });
+    setEditingKey(newData._id);
+    setDataTable([newData, ...dataTable]);
+  };
+
+  const edit = (record: any) => {
+    if (editingKey.includes(ADD_PREFIX)) {
+      setDataTable(dataTable.filter((item: any) => item._id !== editingKey));
+    }
+    form.setFieldsValue({
+      ...record,
+    });
+    setEditingKey(record._id);
+  };
+
+  const cancel = () => {
+    if (editingKey.includes(ADD_PREFIX)) {
+      setDataTable(dataTable.filter((item: any) => item._id !== editingKey));
+    }
+    setEditingKey("");
+    form.resetFields();
+  };
+
+  const handleDelete = async (record: any) => {
+    try {
+      await updateTeacher({ id: record?._id, isDeleted: true });
+      refetch();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const save = async (record: any) => {
+    try {
+      const row = await form.validateFields();
+      console.log("row", row, record);
+      if (editingKey.includes(ADD_PREFIX)) {
+        await createTeacher(row);
+      } else {
+        await updateTeacher({ id: record?._id, ...row });
+      }
+      setEditingKey("");
+      form.resetFields();
+      refetch();
+    } catch (errInfo) {
+      if (
+        (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
+      ) {
+        form.setFields([
+          {
+            name: "username",
+            errors: [t("teacher.usernameExisted")],
+          },
+        ]);
+      }
+    }
+  };
+  const pagination = useMemo(
+    () => ({
+      currentPage:
+        Number(searchParams.get("currentPage")) ||
+        DEFAULT_CURRENT_PAGE_START_WHITH_1,
+      pageSize: Number(searchParams.get("pageSize")) || DEFAULT_PAGE_SIZE,
+    }),
+    [searchParams],
+  );
+
+  const tableParams = useMemo(
+    () => ({
+      pagination: {
+        ...pagination,
+        onChange: cancel,
+      },
+    }),
+    [pagination, cancel],
+  );
+
+  const columns: any = useMemo(
+    () => [
+      {
+        title: t("teacher.id"),
+        dataIndex: ["teacher", "_id"],
+        key: ["teacher", "_id"],
+        width: 250,
+      },
+      {
+        title: t("teacher.name"),
+        dataIndex: ["teacher", "name"],
+        key: ["teacher", "name"],
+        width: 250,
+        editable: true,
+      },
+      {
+        title: t("teacher.phone"),
+        dataIndex: "phone",
+        key: "phone",
+        width: 150,
+        editable: true,
+      },
+      {
+        title: t("teacher.email"),
+        dataIndex: "email",
+        key: "email",
+        width: 250,
+        editable: true,
+      },
+      {
+        title: t("teacher.username"),
+        dataIndex: "username",
+        key: "username",
+        width: 150,
+        editable: editingKey.includes(ADD_PREFIX) ? true : false,
+      },
+      {
+        title: t("label.createdAt"),
+        dataIndex: "createdAt",
+        key: "createdAt",
+        width: 250,
+        render: (value: any) =>
+          value ? DateTime.fromISO(value).toFormat("HH:mm:ss dd/MM/yyyy") : "",
+      },
+      {
+        title: t("label.updatedAt"),
+        dataIndex: "updatedAt",
+        key: "updatedAt",
+        width: 250,
+        render: (value: any) =>
+          value ? DateTime.fromISO(value).toFormat("HH:mm:ss dd/MM/yyyy") : "",
+      },
+      {
+        title: t("label.action"),
+        width: 250,
+        key: "action",
+        render: (_: any, record: any) => {
+          const editable = isEditing(record);
+          return editable ? (
+            <span>
+              <Popconfirm
+                title={t("label.confirmSave")}
+                onConfirm={() => save(record)}
+              >
+                <img
+                  src={CheckedIcon}
+                  alt=""
+                  className="cursor-pointer select-none mr-10 w-24"
+                />
+              </Popconfirm>
+
+              <Popconfirm title={t("label.confirmCancel")} onConfirm={cancel}>
+                <img
+                  src={CloseIcon}
+                  alt=""
+                  className="cursor-pointer select-none mr-10 w-24"
+                />
+              </Popconfirm>
+            </span>
+          ) : (
+            <>
+              {!editingKey && (
+                <>
+                  <img
+                    src={EditIcon}
+                    alt=""
+                    className="cursor-pointer select-none mr-10 w-24"
+                    onClick={() => edit(record)}
+                  />
+                  <Popconfirm
+                    title={t("label.confirmDelete")}
+                    onConfirm={() => handleDelete(record)}
+                  >
+                    <img
+                      src={DeleteIcon}
+                      alt=""
+                      className="cursor-pointer select-none mr-10 w-24"
+                    />
+                  </Popconfirm>
+                </>
+              )}
+            </>
+          );
+        },
+        align: "center",
+      },
+    ],
+    [t, isEditing, edit, cancel, save, editingKey],
+  );
+
+  const mergedColumns = columns.map((col: any) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: any) => ({
+        record,
+        inputType: "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
+  useEffect(() => {
+    setDataTable(teachersData);
+  }, [teachersData]);
+
+  return (
+    <div className={cx("container")}>
+      <div className="flex justify-between">
+        <Typography.Title
+          level={4}
+          style={{ marginBottom: 16 }}
+          className={cx("title")}
+        >
+          {t("teacher.title")}
+        </Typography.Title>
+        <div className="flex align-center mb-10">
+          <Button className="mr-10" onClick={addNewRow}>
+            {t("teacher.add")}
+          </Button>
+          <Button type="primary">{t("teacher.uploadExcel")}</Button>
+        </div>
+      </div>
+      <Form form={form} component={false}>
+        <Table
+          bordered
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          dataSource={dataTable || []}
+          columns={mergedColumns}
+          loading={isLoading}
+          {...tableParams}
+        />
+      </Form>
+    </div>
+  );
+};
