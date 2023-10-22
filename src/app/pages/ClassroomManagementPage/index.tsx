@@ -123,14 +123,14 @@ export const ClassroomManagementPage = () => {
     () => [
       {
         title: t("classroom.id"),
-        dataIndex: ["classroom", "_id"],
-        key: ["classroom", "_id"],
+        dataIndex: ["_id"],
+        key: ["_id"],
         width: 250,
       },
       {
         title: t("classroom.name"),
-        dataIndex: ["classroom", "name"],
-        key: ["classroom", "name"],
+        dataIndex: ["name"],
+        key: ["name"],
         width: 250,
         editable: true,
       },

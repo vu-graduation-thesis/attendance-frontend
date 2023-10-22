@@ -44,9 +44,7 @@ export const SubjectManagementPage = () => {
     const newData = {
       _id: ADD_PREFIX + new Date().getTime(),
       name: "",
-      phone: "",
-      email: "",
-      username: "",
+      type: "",
     };
     form.setFieldsValue({ ...newData });
     setEditingKey(newData._id);
@@ -98,7 +96,7 @@ export const SubjectManagementPage = () => {
       ) {
         form.setFields([
           {
-            name: "username",
+            name: "name",
             errors: [t("subject.usernameExisted")],
           },
         ]);
@@ -129,21 +127,21 @@ export const SubjectManagementPage = () => {
     () => [
       {
         title: t("subject.id"),
-        dataIndex: ["subject", "_id"],
-        key: ["subject", "_id"],
+        dataIndex: "_id",
+        key: "_id",
         width: 250,
       },
       {
         title: t("subject.name"),
-        dataIndex: ["subject", "name"],
-        key: ["subject", "name"],
+        dataIndex: ["name"],
+        key: ["name"],
         width: 250,
         editable: true,
       },
       {
         title: t("subject.type"),
-        dataIndex: "phone",
-        key: "phone",
+        dataIndex: "type",
+        key: "type",
         width: 150,
         editable: true,
       },
