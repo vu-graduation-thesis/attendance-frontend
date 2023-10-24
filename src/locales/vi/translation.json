@@ -56,7 +56,11 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại"
+    "usernameExisted": "Tên người dùng đã tồn tại",
+    "studentId": "Mã sinh viên",
+    "status": "Trạng thái xác thực",
+    "verified": "Đã xác thực",
+    "unverified": "Chưa xác thực"
   },
   "teacher": {
     "id": "Mã giảng viên",
