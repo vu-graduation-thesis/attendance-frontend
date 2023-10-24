@@ -43,6 +43,12 @@ body {
   color: yellow;
 }
 
+.text-green {
+  color: green;
+}
+.text-red {
+  color: red;
+}
 .relative {
   position: relative;
 }
@@ -76,6 +82,15 @@ body {
 }
 .mr-10 {
   margin-right: 10px;
+}
+.mr-20 {
+  margin-right: 20px;
+}
+.ml-10 {
+  margin-left: 10px;
+}
+.ml-20 {
+  margin-left: 20px;
 }
 .mb-10 {
   margin-bottom: 10px;

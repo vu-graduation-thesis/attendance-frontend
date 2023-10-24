@@ -2,6 +2,8 @@ export const routeConfig = {
   home: "/",
   users: "/users-management",
   class: "/class-management",
+  classManagement: "/class-management/management",
+  viewClass: "/class-management/schedule",
   config: "/config-management",
   statistic: "/statistic",
   student: "/student-management",

@@ -236,7 +236,9 @@ export const SubjectManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(subjectsData);
+    setDataTable(
+      subjectsData?.map((item: any) => ({ ...item, key: item._id })),
+    );
   }, [subjectsData]);
 
   return (

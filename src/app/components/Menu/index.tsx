@@ -20,7 +20,7 @@ export const MenuOptions = (props: Props) => {
   const { collapsed, onClick } = props;
 
   const { data: userInfo } = useGetUserInfo();
-  const userPermissions = userInfo?.permissions || ['ALL'];
+  const userPermissions = userInfo?.permissions || ["ALL"];
 
   const { t } = useTranslation();
   const location = useLocation();

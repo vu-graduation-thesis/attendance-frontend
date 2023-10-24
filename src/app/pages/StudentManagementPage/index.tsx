@@ -1,4 +1,4 @@
-import { Button, Form, Popconfirm, Table, Typography } from "antd";
+import { Button, Form, Modal, Popconfirm, Table, Typography } from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
@@ -10,6 +10,8 @@ import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
 import EditIcon from "core/assets/images/edit.png";
+import EyeIcon from "core/assets/images/eye.png";
+import MailIcon from "core/assets/images/sending.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
@@ -23,6 +25,7 @@ import styles from "./styles.module.scss";
 const cx = classNames.bind(styles);
 
 export const StudentManagementPage = () => {
+  const [openModal, setOpenModal] = useState(false);
   const { data: studentsData, isLoading, refetch } = useGetStudents();
   const { mutateAsync: updateStudent } = useUpdateStudent();
   const { mutateAsync: createStudent } = useCreateStudent();
@@ -128,9 +131,9 @@ export const StudentManagementPage = () => {
   const columns: any = useMemo(
     () => [
       {
-        title: t("student.id"),
-        dataIndex: ["student", "_id"],
-        key: ["student", "_id"],
+        title: t("student.studentId"),
+        dataIndex: ["student", "studentId"],
+        key: ["student", "studentId"],
         width: 250,
       },
       {
@@ -153,6 +156,19 @@ export const StudentManagementPage = () => {
         key: "email",
         width: 250,
         editable: true,
+      },
+
+      {
+        title: t("student.status"),
+        dataIndex: ["student", "verified"],
+        key: ["student", "verified"],
+        width: 250,
+        render: (value: any) =>
+          value ? (
+            <span className="text-green">{t("student.verified")}</span>
+          ) : (
+            <span className="text-red">{t("student.unverified")}</span>
+          ),
       },
       {
         title: t("student.username"),
@@ -179,7 +195,7 @@ export const StudentManagementPage = () => {
       },
       {
         title: t("label.action"),
-        width: 250,
+        width: 550,
         key: "action",
         render: (_: any, record: any) => {
           const editable = isEditing(record);
@@ -207,11 +223,11 @@ export const StudentManagementPage = () => {
           ) : (
             <>
               {!editingKey && (
-                <>
+                <div className="flex justify-between">
                   <img
                     src={EditIcon}
                     alt=""
-                    className="cursor-pointer select-none mr-10 w-24"
+                    className="cursor-pointer select-none w-24"
                     onClick={() => edit(record)}
                   />
                   <Popconfirm
@@ -221,10 +237,26 @@ export const StudentManagementPage = () => {
                     <img
                       src={DeleteIcon}
                       alt=""
-                      className="cursor-pointer select-none mr-10 w-24"
+                      className="cursor-pointer select-none w-24"
                     />
                   </Popconfirm>
-                </>
+                  <Popconfirm
+                    title={t("label.confirmDelete")}
+                    onConfirm={() => handleDelete(record)}
+                  >
+                    <img
+                      src={MailIcon}
+                      alt=""
+                      className="cursor-pointer select-none w-24"
+                    />
+                  </Popconfirm>
+                  <img
+                    src={EyeIcon}
+                    alt=""
+                    className="cursor-pointer select-none w-24"
+                    onClick={() => setOpenModal(true)}
+                  />
+                </div>
               )}
             </>
           );
@@ -252,7 +284,9 @@ export const StudentManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(studentsData);
+    setDataTable(
+      studentsData?.map((item: any) => ({ ...item, key: item._id })),
+    );
   }, [studentsData]);
 
   return (
@@ -286,6 +320,17 @@ export const StudentManagementPage = () => {
           {...tableParams}
         />
       </Form>
+      <Modal
+        title="Basic Modal"
+        open={openModal}
+        onOk={() => {}}
+        onCancel={() => setOpenModal(false)}
+        footer={null}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     </div>
   );
 };

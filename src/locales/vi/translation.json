@@ -13,7 +13,9 @@
     "student": "Quản lý sinh viên",
     "teacher": "Quản lý giảng viên",
     "subject": "Quản lý môn học",
-    "classroom": "Quản lý phòng học"
+    "classroom": "Quản lý phòng học",
+    "classManagement": "Cập nhật lớp học",
+    "viewClass": "Xem lịch học"
   },
   "label": {
     "updatedAt": "Cập nhật lúc",
@@ -56,7 +58,11 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại"
+    "usernameExisted": "Tên người dùng đã tồn tại",
+    "studentId": "Mã sinh viên",
+    "status": "Trạng thái xác thực",
+    "verified": "Đã xác thực",
+    "unverified": "Chưa xác thực"
   },
   "teacher": {
     "id": "Mã giảng viên",
