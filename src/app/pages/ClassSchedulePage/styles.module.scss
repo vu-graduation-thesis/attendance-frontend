@@ -1,4 +1,14 @@
+@import 'react-big-calendar/lib/sass/styles';
+@import 'react-big-calendar/lib/addons/dragAndDrop/styles';
+
 .container {
     padding: 25px;
     height: calc(100vh - 85px);
+    overflow: hidden;
+}
+
+.scheduleWrapper {
+    margin: 0 auto;
+    // overflow-y: scroll;
+    height: calc(100vh - 200px);
 }

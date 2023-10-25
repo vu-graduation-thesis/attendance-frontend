@@ -22,7 +22,6 @@ const viewClassMenu: MenuItemProps = {
 
 export const classMenu: MenuItemProps = {
   transkey: "menu.class",
-  key: "",
   icon: <img src={TeacherIcon} alt="" className="mr-10" />,
   permission: PERMISSIONS.ALL,
   children: [classManagementMenu, viewClassMenu],

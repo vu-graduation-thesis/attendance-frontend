@@ -1,8 +1,10 @@
 import configs from "core/configs";
 import axiosInstance from "core/utils/api/axiosInstance";
 
-export const getClasses = async () => {
-  const res = await axiosInstance.get(`${configs.apiEndpoint}/classes`);
+export const getClasses = async (filter?: any) => {
+  const res = await axiosInstance.get(`${configs.apiEndpoint}/classes`, {
+    params: filter,
+  });
   return res.data?.data;
 };
 

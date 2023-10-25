@@ -1,85 +1,120 @@
-import type { BadgeProps, CalendarProps } from "antd";
-import { Badge, Calendar } from "antd";
+import { Select, Typography } from "antd";
 import classNames from "classnames/bind";
-import type { Dayjs } from "dayjs";
+import "moment/locale/vi";
+import moment from "moment/min/moment-with-locales";
+import { useEffect, useMemo, useState } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+import OverlayBg from "core/assets/images/overlay_bg.svg";
+import { useGetClasses } from "core/queries/class.js";
+import { useGetLessons } from "core/queries/lesson.js";
+import { useGetTeachers } from "core/queries/teacher.ts";
 
 import styles from "./styles.module.scss";
 
+moment.locale("vi");
+
 const cx = classNames.bind(styles);
+const localizer = momentLocalizer(moment);
 
-const getListData = (value: Dayjs) => {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: "warning", content: "This is warning event." },
-        { type: "success", content: "This is usual event." },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: "warning", content: "This is warning event." },
-        { type: "success", content: "This is usual event." },
-        { type: "error", content: "This is error event." },
-      ];
-      break;
-    case 21:
-      listData = [
-        { type: "warning", content: "This is warning event" },
-        { type: "success", content: "This is very long usual event......" },
-        { type: "error", content: "This is error event 1." },
-        { type: "error", content: "This is error event 2." },
-        { type: "error", content: "This is error event 3." },
-        { type: "error", content: "This is error event 4." },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-};
-
-const getMonthData = (value: Dayjs) => {
-  if (value.month() === 8) {
-    return 1394;
-  }
-};
+const { Title, Text } = Typography;
 
 export const ClassSchedulePage = () => {
-  const monthCellRender = (value: Dayjs) => {
-    const num = getMonthData(value);
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
-  };
+  const [teacher, setTeacher] = useState();
+  const { data: classesData } = useGetClasses(
+    {
+      filter: {
+        teacher,
+      },
+    },
+    !!teacher,
+  );
+  const { data: teachersData } = useGetTeachers();
 
-  const dateCellRender = (value: Dayjs) => {
-    const listData = getListData(value);
-    return (
-      <ul className="events">
-        {listData.map(item => (
-          <li key={item.content}>
-            <Badge
-              status={item.type as BadgeProps["status"]}
-              text={item.content}
-            />
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  const { data: lessonsData } = useGetLessons({
+    filter: {
+      class: classesData?.map((data: any) => data._id),
+    },
+  });
 
-  const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
-    if (info.type === "date") return dateCellRender(current);
-    if (info.type === "month") return monthCellRender(current);
-    return info.originNode;
-  };
+  const events = lessonsData?.map((lesson: any) => ({
+    title: lesson.class.name,
+    start: moment(lesson.lessonDay).toDate(),
+    end: moment(lesson.lessonDay).add(4, "hours").toDate(),
+  }));
+
+  const teachersFormatted = useMemo(
+    () =>
+      teachersData?.map((data: any) => ({
+        value: data.teacher._id,
+        label: data.teacher.name,
+      })) || [],
+    [teachersData],
+  );
+
+  useEffect(() => {
+    setTeacher(teachersFormatted?.[0]?.value);
+  }, [teachersFormatted]);
 
   return (
     <div className={cx("container")}>
-      <Calendar cellRender={cellRender} />
+      <div className="flex justify-between mb-20">
+        <Title level={4}>Lịch dạy</Title>
+        <div className="flex ">
+          <Title level={4} className="mr-10">
+            Chọn giảng viên:
+          </Title>
+          <Select
+            style={{ width: 120 }}
+            onChange={value => setTeacher(value)}
+            options={teachersFormatted}
+            defaultActiveFirstOption
+            value={teacher}
+          />
+        </div>
+      </div>
+      <div className={cx("scheduleWrapper")}>
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          formats={{
+            weekdayFormat: (date, culture, localizer) =>
+              localizer.format(date, "dddd", culture),
+          }}
+          messages={{
+            week: "Tuần",
+            work_week: "Tuần làm việc",
+            day: "Ngày",
+            month: "Tháng",
+            previous: "Trước",
+            next: "Sau",
+            today: `Hôm nay`,
+            agenda: "Lịch công việc",
+            showMore: (total: any) => `+${total} sự kiện khác`,
+          }}
+          dayPropGetter={date => {
+            if (
+              events?.some(event => moment(event.start).isSame(date, "day"))
+            ) {
+              return {
+                style: {
+                  backgroundColor: "#F6F7F7",
+                  padding: "10px !important",
+                },
+              };
+            } else if (moment(date).isSame(moment(), "month")) {
+              return {
+                style: {
+                  backgroundImage: `url(${OverlayBg})`,
+                },
+              };
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };

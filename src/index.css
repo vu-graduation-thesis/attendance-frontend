@@ -173,3 +173,24 @@ body {
 .w-24 {
   width: 24px;
 }
+
+.ant-picker-calendar.ant-picker-calendar-full .ant-picker-panel {
+  text-align: center !important;
+}
+
+.rbc-header {
+  text-transform: capitalize;
+  padding: 10px !important;
+}
+
+.rbc-toolbar-label {
+  text-transform: capitalize;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.rbc-event, .rbc-day-slot .rbc-background-event {
+  background-color: #73adb4 !important;
+}

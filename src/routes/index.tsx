@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import NoLayout from "core/app/layouts/NoLayout/index";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
-import { ClassSchedulePage } from "core/app/pages/ClassSchedulePage/index.tsx";
+import { ClassSchedulePage } from "core/app/pages/ClassSchedulePage/index.js";
 import { ClassroomManagementPage } from "core/app/pages/ClassroomManagementPage/index.tsx";
 import { CollectFacePage } from "core/app/pages/CollectFacePage/index";
 import { ConfigPage } from "core/app/pages/ConfigPage";

@@ -51,7 +51,7 @@
   height: fit-content;
   right: 0;
   top: 0;
-  transform: translate(50%, 50%);
+  transform: translate(50%, 95%);
 
   .collapsedIcon {
     cursor: pointer;
@@ -59,6 +59,7 @@
       color: var(--primary);
     }
     color: white;
+    font-size: 25px;
   }
 }
 

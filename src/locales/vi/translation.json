@@ -15,7 +15,7 @@
     "subject": "Quản lý môn học",
     "classroom": "Quản lý phòng học",
     "classManagement": "Cập nhật lớp học",
-    "viewClass": "Xem lịch học"
+    "viewClass": "Xem lịch dạy"
   },
   "label": {
     "updatedAt": "Cập nhật lúc",
@@ -44,7 +44,8 @@
     "action": "Hành động",
     "teaching_schedule": "Lịch dạy",
     "see": "Xem lớp",
-    "syncCtmsData": "Đồng bộ dữ liệu từ CTMS"
+    "syncCtmsData": "Đồng bộ dữ liệu từ CTMS",
+    "totalNumberOfLessons": "Tổng số buổi học"
   },
   "student": {
     "id": "Mã sinh viên",

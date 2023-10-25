@@ -18,8 +18,8 @@ const cx = classNames.bind(styles);
 const { Title } = Typography;
 
 export const Sidebar = () => {
-  const collapsed = useSystemStore(state => state.collapsed, shallow);
-  const setCollapsed = useSystemStore(state => state.setCollapsed, shallow);
+  const collapsed = useSystemStore((state: any) => state.collapsed, shallow);
+  const setCollapsed = useSystemStore((state: any) => state.setCollapsed, shallow);
 
   const toggleCollapsed = useCallback(
     () => setCollapsed(!collapsed),

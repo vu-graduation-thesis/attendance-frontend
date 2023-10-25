@@ -1,11 +1,11 @@
 export const routeConfig = {
-  home: "/",
+  home: "/home",
   users: "/users-management",
   class: "/class-management",
   classManagement: "/class-management/management",
   viewClass: "/class-management/schedule",
   config: "/config-management",
-  statistic: "/statistic",
+  statistic: "/",
   student: "/student-management",
   subject: "/subject-management",
   teacher: "/teacher-management",
