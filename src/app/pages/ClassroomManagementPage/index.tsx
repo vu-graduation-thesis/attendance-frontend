@@ -246,7 +246,9 @@ export const ClassroomManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(classroomsData);
+    setDataTable(
+      classroomsData?.map((item: any) => ({ ...item, key: item._id })),
+    );
   }, [classroomsData]);
 
   return (

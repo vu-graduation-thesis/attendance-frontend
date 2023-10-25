@@ -20,7 +20,7 @@ export const MenuOptions = (props: Props) => {
   const { collapsed, onClick } = props;
 
   const { data: userInfo } = useGetUserInfo();
-  const userPermissions = userInfo?.permissions || ['ALL'];
+  const userPermissions = userInfo?.permissions || ["ALL"];
 
   const { t } = useTranslation();
   const location = useLocation();
@@ -29,6 +29,8 @@ export const MenuOptions = (props: Props) => {
     () => getAllMenuItems(menuList, t, userPermissions),
     [t, userPermissions],
   );
+
+  console.log(menu);
   return (
     <div className={cx("container")}>
       <Menu

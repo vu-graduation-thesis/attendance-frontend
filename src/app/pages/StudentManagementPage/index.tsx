@@ -282,7 +282,9 @@ export const StudentManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(studentsData);
+    setDataTable(
+      studentsData?.map((item: any) => ({ ...item, key: item._id })),
+    );
   }, [studentsData]);
 
   return (

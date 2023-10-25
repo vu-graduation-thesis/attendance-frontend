@@ -13,7 +13,9 @@
     "student": "Quản lý sinh viên",
     "teacher": "Quản lý giảng viên",
     "subject": "Quản lý môn học",
-    "classroom": "Quản lý phòng học"
+    "classroom": "Quản lý phòng học",
+    "classManagement": "Cập nhật lớp học",
+    "viewClass": "Xem lịch học"
   },
   "label": {
     "updatedAt": "Cập nhật lúc",

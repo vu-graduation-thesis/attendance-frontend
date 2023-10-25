@@ -17,16 +17,22 @@ export function getAllMenuItems(
       if (!checkPermission(permissions, item.permission || "")) {
         continue;
       }
-
       if (item.element) {
         result.push({
           ...item,
           label: t(item.transkey),
         });
       } else {
+        if (item.children) {
+          item.children = traverseMenuItems(item.children, permissions);
+        }
         result.push({
           ...item,
-          label: <Link to={`${item.key}`}>{t(item.transkey)}</Link>,
+          label: item.key ? (
+            <Link to={`${item.key}`}>{t(item.transkey)}</Link>
+          ) : (
+            t(item.transkey)
+          ),
         });
       }
     }
