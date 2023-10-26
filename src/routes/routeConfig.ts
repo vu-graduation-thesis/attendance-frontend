@@ -14,7 +14,9 @@ export const routeConfig = {
   collectFace: "/collect-face",
   mobile: {
     home: "/app/home",
-    lesson: "/app/lesson",
+    lesson: "/app/lesson/:id",
+    schedule: "/app/schedule",
+    attendance: "/app/attendance/:id",
   },
   notFound: "*",
 };

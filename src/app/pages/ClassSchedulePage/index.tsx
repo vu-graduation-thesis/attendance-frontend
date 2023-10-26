@@ -1,10 +1,11 @@
-import { Select, Typography } from "antd";
+import { Modal, Select, Typography } from "antd";
 import classNames from "classnames/bind";
 import "moment/locale/vi";
 import moment from "moment/min/moment-with-locales";
 import { useEffect, useMemo, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useNavigate } from "react-router-dom";
 
 import OverlayBg from "core/assets/images/overlay_bg.svg";
 import { useGetClasses } from "core/queries/class.js";
@@ -18,9 +19,12 @@ moment.locale("vi");
 const cx = classNames.bind(styles);
 const localizer = momentLocalizer(moment);
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export const ClassSchedulePage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>();
+
   const [teacher, setTeacher] = useState();
   const { data: classesData } = useGetClasses(
     {
@@ -38,10 +42,13 @@ export const ClassSchedulePage = () => {
     },
   });
 
+  const navigate = useNavigate();
+
   const events = lessonsData?.map((lesson: any) => ({
     title: lesson.class.name,
     start: moment(lesson.lessonDay).toDate(),
     end: moment(lesson.lessonDay).add(4, "hours").toDate(),
+    lessonId: lesson._id,
   }));
 
   const teachersFormatted = useMemo(
@@ -81,7 +88,7 @@ export const ClassSchedulePage = () => {
           startAccessor="start"
           endAccessor="end"
           formats={{
-            weekdayFormat: (date, culture, localizer) =>
+            weekdayFormat: (date: any, culture: any, localizer: any) =>
               localizer.format(date, "dddd", culture),
           }}
           messages={{
@@ -95,17 +102,26 @@ export const ClassSchedulePage = () => {
             agenda: "Lịch công việc",
             showMore: (total: any) => `+${total} sự kiện khác`,
           }}
-          dayPropGetter={date => {
-            if (
-              events?.some(event => moment(event.start).isSame(date, "day"))
-            ) {
+          dayPropGetter={(date: string) => {
+            if (moment(date).isSame(moment(), "day")) {
+              return;
+            }
+
+            if (!moment(date).isSame(moment(), "month")) {
               return {
                 style: {
                   backgroundColor: "#F6F7F7",
                   padding: "10px !important",
+                  paddingTop: "0px !important",
                 },
               };
-            } else if (moment(date).isSame(moment(), "month")) {
+            }
+
+            if (
+              !events?.some((event: any) =>
+                moment(event.start).isSame(date, "day"),
+              )
+            ) {
               return {
                 style: {
                   backgroundImage: `url(${OverlayBg})`,
@@ -113,8 +129,25 @@ export const ClassSchedulePage = () => {
               };
             }
           }}
+          onSelectEvent={(event: any) => {
+            setSelectedEvent(event);
+            setIsModalOpen(true);
+          }}
         />
       </div>
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onOk={() => navigate(`/app/lesson/${selectedEvent?.lessonId}`)}
+        onCancel={() => {
+          setSelectedEvent(undefined);
+          setIsModalOpen(false);
+        }}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     </div>
   );
 };

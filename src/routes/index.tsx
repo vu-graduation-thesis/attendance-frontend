@@ -65,6 +65,11 @@ const privateRoutes: PrivateRoutes[] = [
     path: routeConfig.viewClass,
     component: memo(ClassSchedulePage),
   },
+  {
+    path: routeConfig.mobile.schedule,
+    component: memo(ClassSchedulePage),
+    layout: NoLayout,
+  },
 ];
 
 const publicRoutes: PublicRoutes[] = [
@@ -79,7 +84,7 @@ const publicRoutes: PublicRoutes[] = [
     layout: NoLayout,
   },
   {
-    path: routeConfig.mobile.home,
+    path: routeConfig.mobile.attendance,
     component: memo(AttendancePage),
     layout: NoLayout,
   },
