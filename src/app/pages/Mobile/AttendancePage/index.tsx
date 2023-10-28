@@ -2,6 +2,7 @@ import { Spin, Typography } from "antd";
 import classNames from "classnames/bind";
 import * as faceapi from "face-api.js";
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { CameraPreview } from "@capacitor-community/camera-preview";
 
@@ -14,6 +15,7 @@ const { Text } = Typography;
 const cx = classNames.bind(styles);
 const threshold = 0.6;
 export const AttendancePage = () => {
+  const { id: lessonId } = useParams();
   const [isLoadingModels, setIsLoadingModels] = useState(true);
   const [faces, setFaces] = useState<any>([]);
   const { mutateAsync: detectFaces } = useDetectFace();
@@ -24,7 +26,10 @@ export const AttendancePage = () => {
       quality: 100,
     });
 
-    const result = await detectFaces(`data:image/jpeg;base64,${capture.value}`);
+    const result = await detectFaces({
+      lessonId,
+      file: `data:image/jpeg;base64,${capture.value}`,
+    });
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { Avatar, Button, List, Skeleton, Spin, Typography } from "antd";
 import classNames from "classnames/bind";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageViewer from "react-simple-image-viewer";
 
@@ -26,7 +26,9 @@ export const LessonPage = () => {
   const [currentResource, setCurrentResource] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [filesMapping, setFilesMapping] = useState<any>({});
+  const [attendanceResource, setAttendanceResource] = useState<any>();
   const { mutateAsync: manualAttendace } = useManualAttendace();
+  const headerRef = useRef<any>();
 
   const {
     data: lessonsData,
@@ -51,19 +53,16 @@ export const LessonPage = () => {
     [lesson],
   );
 
-  const images = [
-    "https://i.imgur.com/2xqCZ3C.jpg",
-    "https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80",
-  ];
-
   const handleOpenImageViewer = useCallback((index: number) => {
     setCurrentResource(index);
     setIsViewerOpen(true);
+    headerRef.current?.classList?.remove("sticky");
   }, []);
 
   const handleCloseImageViewer = () => {
     setCurrentResource(0);
     setIsViewerOpen(false);
+    headerRef.current?.classList?.add("sticky");
   };
 
   const handleManualAttendance = useCallback(
@@ -79,178 +78,198 @@ export const LessonPage = () => {
 
   useEffect(() => {
     if (lessonsData) {
+      // get avatar of students
       (async () => {
-        const students =
-          lesson?.class?.students?.filter((x: any) => x.avatar && x.verified) ||
-          [];
-        const map = students.map((x: any) => ({
-          file: x.avatar,
-          bucket: x.verifiedResource?.bucket,
-        }));
+        try {
+          const students =
+            lesson?.class?.students?.filter(
+              (x: any) => x.avatar && x.verified,
+            ) || [];
+          const map = students.map((x: any) => ({
+            file: x.avatar,
+            bucket: x.verifiedResource?.bucket,
+          }));
 
-        const body = map.reduce((acc: any, cur: any) => {
-          acc[cur.bucket] = acc[cur.bucket] || [];
-          acc[cur.bucket].push(cur.file);
-          return acc;
-        }, {});
+          const body = map.reduce((acc: any, cur: any) => {
+            acc[cur.bucket] = acc[cur.bucket] || [];
+            acc[cur.bucket].push(cur.file);
+            return acc;
+          }, {});
 
-        const res = await Promise.allSettled(
-          Object.keys(body).map(bucket =>
-            getSignedUrls({
-              bucket,
-              files: body[bucket],
-            }),
-          ),
-        );
+          const res = await Promise.allSettled(
+            Object.keys(body).map(bucket =>
+              getSignedUrls({
+                bucket,
+                files: body[bucket],
+              }),
+            ),
+          );
 
-        const data = res.reduce((acc, cur) => {
-          if (cur.status === "fulfilled") {
-            acc = { ...acc, ...cur.value };
-          }
-          return acc;
-        }, {});
-        setFilesMapping(data);
+          const data = res.reduce((acc, cur) => {
+            if (cur.status === "fulfilled") {
+              acc = { ...acc, ...cur.value };
+            }
+            return acc;
+          }, {});
+          setFilesMapping(data);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+
+      (async () => {
+        try {
+          const { bucket, folder } = lesson?.resource || {};
+          const res = await getSignedUrls({
+            bucket,
+            folder,
+          });
+          setAttendanceResource(Object.values(res));
+        } catch (error) {
+          console.log(error);
+        }
       })();
     }
   }, [lessonsData]);
   return (
-    <div className={cx("container")}>
-      <div className="flex justify-between">
-        <Title level={4}>
-          Buổi học: {lesson?.order || "?"}/{lesson?.class?.totalNumberOfLessons}
-        </Title>
+    <div>
+      <div className="p-16 pb-0 sticky bg-white" ref={headerRef}>
+        <div className="flex justify-between">
+          <Title level={4}>
+            Buổi học: {lesson?.order || "?"}/
+            {lesson?.class?.totalNumberOfLessons}
+          </Title>
+          <div>
+            <Button
+              icon={<img src={CameraIcon} alt="" width={40} />}
+              onClick={() => navigator(`${configs.basePath}/attendance/${id}`)}
+              size="large"
+              style={{ height: 55, width: 55 }}
+            ></Button>
+          </div>
+        </div>
+      </div>
+      <div className={cx("container")}>
         <div>
-          <Button
-            icon={<img src={CameraIcon} alt="" style={{ width: 20 }} />}
-            type="primary"
-            onClick={() => navigator(`${configs.basePath}/attendance/${id}`)}
-            size="large"
-          >
-            Khuôn mặt
-          </Button>
+          <Text>Môn học: {lesson?.class?.subject?.name}</Text>
         </div>
-      </div>
-      <div>
-        <Text>Môn học: {lesson?.class?.subject?.name}</Text>
-      </div>
-      <Text>Ca học: 7:30 - 9:30</Text>
-      <div className={cx("", "mb-20")}>
-        <Text>
-          Ngày học:{" "}
-          {lesson?.lessonDay && moment(lesson?.lessonDay).format("DD/MM/yyyy")}
-        </Text>
-      </div>
-
-      <Title level={4}>Dữ liệu ảnh/video</Title>
-      <div className={cx("wrap-resource")}>
-        <div
-          className={cx("resource")}
-          onClick={() => handleOpenImageViewer(0)}
-        >
-          <img src={CheckedIcon} alt="" />
-        </div>
-        <div className={cx("resource")}>
-          <img src={CheckedIcon} alt="" />
-        </div>
-        <div className={cx("resource")}>
-          <img src={CheckedIcon} alt="" />
-        </div>
-        <div className={cx("resource")}>
-          <img src={CheckedIcon} alt="" />
-        </div>
-        <div className={cx("resource")}>
-          <img src={CheckedIcon} alt="" />
-        </div>
-        <div className={cx("resource")}>
-          <img src={CheckedIcon} alt="" />
-        </div>
-      </div>
-
-      {isViewerOpen && (
-        <ImageViewer
-          src={images}
-          currentIndex={currentResource}
-          disableScroll={false}
-          closeOnClickOutside={true}
-          onClose={handleCloseImageViewer}
-        />
-      )}
-
-      <Title level={4}>Danh sách sinh viên</Title>
-      <div>
-        {!!lesson?.attendances?.length && (
+        <Text>Ca học: 7:30 - 9:30</Text>
+        <div className={cx("", "mb-20")}>
           <Text>
-            Đã điểm danh: {lesson?.attendances?.length}/
-            {lesson?.class?.students?.length}
+            Ngày học:{" "}
+            {lesson?.lessonDay &&
+              moment(lesson?.lessonDay).format("DD/MM/yyyy")}
           </Text>
-        )}
-      </div>
-      <List
-        className="demo-loadmore-list"
-        itemLayout="horizontal"
-        dataSource={lesson?.class?.students || [1, 2, 3, 4, 5, 6]}
-        renderItem={(item: any) => (
-          <List.Item>
-            <Skeleton avatar title={false} active loading={lessonLoading}>
-              <List.Item.Meta
-                avatar={<Avatar src={filesMapping?.[item.avatar]} size={60} />}
-                title={<a href="https://ant.design">{item?.name}</a>}
-                description={
-                  <>
-                    <div>
-                      <span>Mã sinh viên: </span>
-                      <Text className="mr-20">
-                        {item?.studentId || "Chưa cập nhật"}
-                      </Text>
-                    </div>
-                    <div>
-                      <span>Lớp hành chính: </span>
-                      <Text className="mr-20">
-                        {item?.administrativeClass || "Chưa cập nhật"}
-                      </Text>
-                    </div>
-                    {!item?.verified && (
-                      <span>
-                        Trạng thái:{" "}
-                        {!item?.verified && (
-                          <Text className="mr-20 text-red">
-                            Chưa cung cấp dữ liệu khuôn mặt
-                          </Text>
-                        )}
-                      </span>
-                    )}
-                    <br />
-                  </>
-                }
-              />
-              <div className={cx("action")}>
-                {attendancesState?.[item?._id] === "MANUAL" ? (
-                  <img
-                    src={CheckedIcon}
-                    alt=""
-                    width={24}
-                    className="relative r-10"
-                  />
-                ) : attendancesState?.[item?._id] === "AI_DETECTED" ? (
-                  <img
-                    src={FaceDetectIcon}
-                    alt=""
-                    width={55}
-                    className="relative r--7"
-                  />
-                ) : (
-                  <img
-                    src={AttendanceManualIcon}
-                    alt=""
-                    onClick={() => handleManualAttendance(item?._id)}
-                    width={40}
-                  />
-                )}
+        </div>
+
+        <Title level={4}>Dữ liệu ảnh/video</Title>
+
+        {!!attendanceResource?.length ? (
+          <div className={cx("wrap-resource")}>
+            {attendanceResource?.map((url: any, index: number) => (
+              <div
+                className={cx("resource")}
+                onClick={() => handleOpenImageViewer(index)}
+                key={index}
+              >
+                <img src={url} alt="" />
               </div>
-            </Skeleton>
-          </List.Item>
+            ))}
+          </div>
+        ) : (
+          <div className={cx("no-resource mb-20 text-red")}>
+            Chưa có dữ liệu
+          </div>
         )}
-      />
+
+        {isViewerOpen && (
+          <ImageViewer
+            src={attendanceResource || []}
+            currentIndex={currentResource}
+            disableScroll={false}
+            closeOnClickOutside={true}
+            onClose={handleCloseImageViewer}
+          />
+        )}
+
+        <Title level={4}>Danh sách sinh viên</Title>
+        <div>
+          {!!lesson?.attendances?.length && (
+            <Text>
+              Đã điểm danh: {lesson?.attendances?.length}/
+              {lesson?.class?.students?.length}
+            </Text>
+          )}
+        </div>
+        <List
+          className="demo-loadmore-list"
+          itemLayout="horizontal"
+          dataSource={lesson?.class?.students || [1, 2, 3, 4, 5, 6]}
+          renderItem={(item: any) => (
+            <List.Item>
+              <Skeleton avatar title={false} active loading={lessonLoading}>
+                <List.Item.Meta
+                  avatar={
+                    <Avatar src={filesMapping?.[item.avatar]} size={60} />
+                  }
+                  title={<a href="https://ant.design">{item?.name}</a>}
+                  description={
+                    <>
+                      <div>
+                        <span>Mã sinh viên: </span>
+                        <Text className="mr-20">
+                          {item?.studentId || "Chưa cập nhật"}
+                        </Text>
+                      </div>
+                      <div>
+                        <span>Lớp hành chính: </span>
+                        <Text className="mr-20">
+                          {item?.administrativeClass || "Chưa cập nhật"}
+                        </Text>
+                      </div>
+                      {!item?.verified && (
+                        <span>
+                          Trạng thái:{" "}
+                          {!item?.verified && (
+                            <Text className="mr-20 text-red">
+                              Chưa cung cấp dữ liệu khuôn mặt
+                            </Text>
+                          )}
+                        </span>
+                      )}
+                      <br />
+                    </>
+                  }
+                />
+                <div className={cx("action")}>
+                  {attendancesState?.[item?._id] === "MANUAL" ? (
+                    <img
+                      src={CheckedIcon}
+                      alt=""
+                      width={24}
+                      className="relative r-10"
+                    />
+                  ) : attendancesState?.[item?._id] === "AI_DETECTED" ? (
+                    <img
+                      src={FaceDetectIcon}
+                      alt=""
+                      width={55}
+                      className="relative r--7"
+                    />
+                  ) : (
+                    <img
+                      src={AttendanceManualIcon}
+                      alt=""
+                      onClick={() => handleManualAttendance(item?._id)}
+                      width={40}
+                    />
+                  )}
+                </div>
+              </Skeleton>
+            </List.Item>
+          )}
+        />
+      </div>
     </div>
   );
 };

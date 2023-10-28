@@ -207,3 +207,21 @@ body {
 .r--7 {
   right: -7px;
 }
+
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.p-16 {
+  padding: 16px;
+}
+
+.pb-0 {
+  padding-bottom: 0px;
+}
+
+.bg-white {
+  background-color: white;
+}
