@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import GoogleIcon from "core/assets/images/google.png";
 import LogoIcon from "core/assets/images/logo.png";
+import configs from "core/configs/index.ts";
 import { ACCOUNT_NOT_FOUND, ADMIN, TEACHER } from "core/constants/auth.js";
 import { useLogin } from "core/mutations/auth.js";
 import { jwtDecode } from "core/utils/jwt.js";
@@ -29,7 +30,8 @@ export const LoginPage = () => {
       localStorage.setItem("token", res.token);
       const { payload } = jwtDecode(res.token) || {};
       if (payload?.role === ADMIN || payload?.role === TEACHER) {
-        navigateTo("/", { replace: true });
+        console.log("navigateTo", configs.basePath);
+        navigateTo(`${configs.basePath}/`, { replace: true });
       } else {
         navigateTo("/collect-face", { replace: true });
       }
@@ -80,7 +82,7 @@ export const LoginPage = () => {
         </Button>
         <div className="mt-20">
           <Text>
-            Hoặc đăng nhập với <b>mail sinh viên</b>
+            Hoặc đăng nhập với <b>mail nhà trường cung cấp</b>
           </Text>
           <Button
             className={cx("btnLoginWithGG", "input", "mb-10", "mt-10")}

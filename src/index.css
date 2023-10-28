@@ -191,6 +191,19 @@ body {
   margin-bottom: 20px;
 }
 
-.rbc-event, .rbc-day-slot .rbc-background-event {
+.rbc-event,
+.rbc-day-slot .rbc-background-event {
   background-color: #73adb4 !important;
+}
+
+.relative {
+  position: relative;
+}
+
+.r-10 {
+  right: 10px;
+}
+
+.r--7 {
+  right: -7px;
 }

@@ -20,3 +20,10 @@ export const createLesson = async (data: any) => {
   const res = await axiosInstance.post(`${configs.apiEndpoint}/lessons`, data);
   return res.data?.data;
 };
+
+export const manualAttendance = async ({ lessonId = "", studentId = "" }) => {
+  const res = await axiosInstance.put(
+    `${configs.apiEndpoint}/lessons/${lessonId}/manual-attendance/${studentId}`,
+  );
+  return res.data?.data;
+};

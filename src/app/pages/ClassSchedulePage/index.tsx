@@ -36,11 +36,14 @@ export const ClassSchedulePage = () => {
   );
   const { data: teachersData } = useGetTeachers();
 
-  const { data: lessonsData } = useGetLessons({
-    filter: {
-      class: classesData?.map((data: any) => data._id),
+  const { data: lessonsData } = useGetLessons(
+    {
+      filter: {
+        class: classesData?.map((data: any) => data._id),
+      },
     },
-  });
+    !!classesData?.length,
+  );
 
   const navigate = useNavigate();
 

@@ -1,4 +1,4 @@
-import { Avatar, List, Skeleton, Typography } from "antd";
+import { Avatar, Button, List, Skeleton, Spin, Typography } from "antd";
 import classNames from "classnames/bind";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -6,10 +6,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import ImageViewer from "react-simple-image-viewer";
 
 import CameraIcon from "core/assets/images/camera.png";
+import AttendanceManualIcon from "core/assets/images/check.png";
 import CheckedIcon from "core/assets/images/checked.png";
+import FaceDetectIcon from "core/assets/images/face-detection.png";
+import configs from "core/configs/index.js";
 import { useGetSignedUrls } from "core/mutations/file.js";
+import { useManualAttendace } from "core/mutations/lesson.js";
 import { useGetLessons } from "core/queries/lesson.js";
-import { routeConfig } from "core/routes/routeConfig.js";
 
 import styles from "./style.module.scss";
 
@@ -23,23 +26,37 @@ export const LessonPage = () => {
   const [currentResource, setCurrentResource] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [filesMapping, setFilesMapping] = useState<any>({});
+  const { mutateAsync: manualAttendace } = useManualAttendace();
 
-  const { data: lessonsData, isLoading: lessonLoading } = useGetLessons({
+  const {
+    data: lessonsData,
+    isLoading: lessonLoading,
+    refetch: refetchLessons,
+  } = useGetLessons({
     filter: {
       _id: id,
     },
   });
 
-  const { mutateAsync, isLoading: filesLoading } = useGetSignedUrls();
+  const { mutateAsync: getSignedUrls, isLoading: filesLoading } =
+    useGetSignedUrls();
 
   const lesson = useMemo(() => lessonsData?.[0], [lessonsData]);
+  const attendancesState = useMemo(
+    () =>
+      lesson?.attendances?.reduce((acc: any, curr: any) => {
+        acc[curr.student] = curr.type;
+        return acc;
+      }, {}),
+    [lesson],
+  );
 
   const images = [
     "https://i.imgur.com/2xqCZ3C.jpg",
     "https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80",
   ];
 
-  const handleOpenImageViewer = useCallback(index => {
+  const handleOpenImageViewer = useCallback((index: number) => {
     setCurrentResource(index);
     setIsViewerOpen(true);
   }, []);
@@ -48,6 +65,17 @@ export const LessonPage = () => {
     setCurrentResource(0);
     setIsViewerOpen(false);
   };
+
+  const handleManualAttendance = useCallback(
+    async (student: string) => {
+      await manualAttendace({
+        lessonId: id!,
+        studentId: student,
+      });
+      refetchLessons();
+    },
+    [id, manualAttendace, refetchLessons],
+  );
 
   useEffect(() => {
     if (lessonsData) {
@@ -60,16 +88,15 @@ export const LessonPage = () => {
           bucket: x.verifiedResource?.bucket,
         }));
 
-        const body = map.reduce((acc, cur) => {
+        const body = map.reduce((acc: any, cur: any) => {
           acc[cur.bucket] = acc[cur.bucket] || [];
           acc[cur.bucket].push(cur.file);
           return acc;
         }, {});
-        console.log(body);
 
         const res = await Promise.allSettled(
           Object.keys(body).map(bucket =>
-            mutateAsync({
+            getSignedUrls({
               bucket,
               files: body[bucket],
             }),
@@ -86,7 +113,6 @@ export const LessonPage = () => {
       })();
     }
   }, [lessonsData]);
-
   return (
     <div className={cx("container")}>
       <div className="flex justify-between">
@@ -94,11 +120,14 @@ export const LessonPage = () => {
           Buổi học: {lesson?.order || "?"}/{lesson?.class?.totalNumberOfLessons}
         </Title>
         <div>
-          <img
-            src={CameraIcon}
-            alt=""
-            onClick={() => navigator(`/app/attendance/${id}`)}
-          />
+          <Button
+            icon={<img src={CameraIcon} alt="" style={{ width: 20 }} />}
+            type="primary"
+            onClick={() => navigator(`${configs.basePath}/attendance/${id}`)}
+            size="large"
+          >
+            Khuôn mặt
+          </Button>
         </div>
       </div>
       <div>
@@ -164,7 +193,7 @@ export const LessonPage = () => {
           <List.Item>
             <Skeleton avatar title={false} active loading={lessonLoading}>
               <List.Item.Meta
-                avatar={<Avatar src={filesMapping?.[item.avatar]} />}
+                avatar={<Avatar src={filesMapping?.[item.avatar]} size={60} />}
                 title={<a href="https://ant.design">{item?.name}</a>}
                 description={
                   <>
@@ -194,7 +223,30 @@ export const LessonPage = () => {
                   </>
                 }
               />
-              <img src={CheckedIcon} alt="" />
+              <div className={cx("action")}>
+                {attendancesState?.[item?._id] === "MANUAL" ? (
+                  <img
+                    src={CheckedIcon}
+                    alt=""
+                    width={24}
+                    className="relative r-10"
+                  />
+                ) : attendancesState?.[item?._id] === "AI_DETECTED" ? (
+                  <img
+                    src={FaceDetectIcon}
+                    alt=""
+                    width={55}
+                    className="relative r--7"
+                  />
+                ) : (
+                  <img
+                    src={AttendanceManualIcon}
+                    alt=""
+                    onClick={() => handleManualAttendance(item?._id)}
+                    width={40}
+                  />
+                )}
+              </div>
             </Skeleton>
           </List.Item>
         )}
