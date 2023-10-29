@@ -225,3 +225,29 @@ body {
 .bg-white {
   background-color: white;
 }
+
+.over-hidden {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.z-1000000 {
+  z-index: 1000000;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+.text-right {
+  text-align: right;
+}
