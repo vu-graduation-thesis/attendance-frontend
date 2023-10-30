@@ -1,4 +1,12 @@
-import { Collapse, Drawer, Image, List, Spin, Typography } from "antd";
+import {
+  Collapse,
+  Drawer,
+  Image,
+  List,
+  Spin,
+  Typography,
+  notification,
+} from "antd";
 import classNames from "classnames/bind";
 import { useEffect, useRef, useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
@@ -23,6 +31,8 @@ export const AttendancePage = () => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [resources, setResources] = useState<any[]>([]);
 
+  const [notiApi, contextHolder] = notification.useNotification();
+
   const navigate = useNavigate();
 
   const handlCapture = async () => {
@@ -39,7 +49,14 @@ export const AttendancePage = () => {
       lessonId,
       file: image,
     });
-    console.log(result);
+
+    notiApi.success({
+      message: "Thành công",
+      description: `Đã nhận diện ${
+        result?.predict?.length || 0
+      } sinh viên trong ảnh vừa chụp`,
+    });
+
     setResources(pre => {
       const index = pre.findIndex(item => item.key === key);
       console.log(index);
@@ -71,6 +88,7 @@ export const AttendancePage = () => {
 
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <div className={cx("fix-top")}>
         <div id="camera"></div>
         <canvas className="canvas" ref={canvasRef}></canvas>
@@ -158,7 +176,9 @@ export const AttendancePage = () => {
                 </div>
                 <Collapse className="mt-20">
                   <Collapse.Panel
-                    header={`Kết quả nhận diện (${item?.predict?.length} sinh viên)`}
+                    header={`Kết quả nhận diện (${
+                      item?.predict?.length || 0
+                    } sinh viên)`}
                     key="1"
                   >
                     {item?.predict?.length > 0 && (
