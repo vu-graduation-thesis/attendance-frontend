@@ -8,8 +8,9 @@ import {
   notification,
 } from "antd";
 import classNames from "classnames/bind";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
+import { useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { CameraPreview } from "@capacitor-community/camera-preview";
@@ -17,6 +18,8 @@ import { CameraPreview } from "@capacitor-community/camera-preview";
 import BackIcon from "core/assets/images/back.png";
 import configs from "core/configs/index.js";
 import { useDetectFace } from "core/mutations/faceRecognition.ts";
+import { useGetSignedUrls } from "core/mutations/file.js";
+import { useGetAttendanceLog } from "core/queries/attendanceLog.js";
 
 import styles from "./style.module.scss";
 
@@ -27,13 +30,18 @@ export const AttendancePage = () => {
   const { id: lessonId } = useParams();
   const { mutateAsync: detectFaces, isLoading: isRecognize } = useDetectFace();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [images, setImages] = useState<string[]>([]);
+  const [latestImage, setLatestImage] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [resources, setResources] = useState<any[]>([]);
-
+  const { data: attendanceLog, refetch: refetchAttendanceLog } =
+    useGetAttendanceLog(lessonId!);
+  const { mutateAsync: getSignedUrls, isLoading: filesLoading } =
+    useGetSignedUrls();
   const [notiApi, contextHolder] = notification.useNotification();
+  const [filesMapping, setFilesMapping] = useState<any>({});
+  const [imageCount, setImageCount] = useState<number>(0);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handlCapture = async () => {
     const capture = await CameraPreview.capture({
@@ -41,9 +49,8 @@ export const AttendancePage = () => {
     });
 
     const image = `data:image/jpeg;base64,${capture.value}`;
-    setImages(pre => [...pre, image]);
-    const key = new Date().getTime();
-    setResources(pre => [...pre, { key, image }]);
+    setLatestImage(image);
+    setImageCount(prev => prev + 1);
 
     const result = await detectFaces({
       lessonId,
@@ -56,19 +63,7 @@ export const AttendancePage = () => {
         result?.predict?.length || 0
       } sinh viên trong ảnh vừa chụp`,
     });
-
-    setResources(pre => {
-      const index = pre.findIndex(item => item.key === key);
-      console.log(index);
-      pre[index] = {
-        ...pre[index],
-        predict: result?.predict,
-      };
-      return [...pre];
-    });
   };
-
-  console.log(resources);
 
   useEffect(() => {
     (async () => {
@@ -86,6 +81,47 @@ export const AttendancePage = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    // update number of images
+    setImageCount(attendanceLog?.logs?.length || 0);
+
+    if (attendanceLog?.logs?.length) {
+      (async () => {
+        const cache: any =
+          queryClient.getQueryData(["attendanceLog", lessonId!]) || {};
+
+        const payloads = attendanceLog?.logs?.reduce((acc: any, cur: any) => {
+          if (!cache[cur.detectedFile]) {
+            acc.push({
+              files: [cur.originalFile, cur.detectedFile],
+              bucket: cur.bucket,
+            });
+          }
+          return acc;
+        }, []);
+
+        const result = await Promise.allSettled(
+          payloads.map((item: any) => getSignedUrls(item)),
+        );
+
+        const files = result.reduce((acc: any, cur: any) => {
+          if (cur.status === "fulfilled") {
+            acc = { ...acc, ...(cur.value || {}) };
+          }
+          return acc;
+        }, {});
+
+        queryClient.setQueryData(["attendanceLog", lessonId!], files);
+        setFilesMapping((prev: any) => ({ ...prev, ...files }));
+      })();
+    }
+  }, [attendanceLog]);
+
+  const logs = useMemo(() => {
+    const newLogs = [...(attendanceLog?.logs || [])];
+    return newLogs.reverse();
+  }, [attendanceLog]);
+
   return (
     <div className={cx("container")}>
       {contextHolder}
@@ -99,20 +135,24 @@ export const AttendancePage = () => {
       <div className={cx("bottom")}>
         <div
           className={cx("image-recents")}
-          onClick={() => setOpenDrawer(true)}
+          onClick={() => {
+            setOpenDrawer(true);
+            refetchAttendanceLog();
+          }}
         >
           <div className="over-hidden">
-            {!!images?.length && (
-              <img src={images?.[images?.length - 1]} alt="" width="100%" />
-            )}
+            <img
+              src={filesMapping?.[logs?.[0]?.originalFile] || latestImage}
+              alt=""
+            />
           </div>
           <div className={cx("progress")}>
             <div className={cx("progress-bar")}>
               <Spin spinning={isRecognize} />
             </div>
           </div>
-          <div className={cx("counter", "relative", "z-1000000")}>
-            <Text className="text-white">{images?.length}</Text>
+          <div className={cx("counter", "z-1000000")}>
+            <Text className="text-white">{imageCount}</Text>
           </div>
         </div>
         <div className={cx("flex", "justify-center", "text-white", "option")}>
@@ -138,38 +178,48 @@ export const AttendancePage = () => {
         </div>
       </div>
       <Drawer
-        title="Ảnh, video vừa chụp"
+        title={
+          <>
+            Ảnh, video vừa chụp
+            <Spin spinning={filesLoading} />
+          </>
+        }
         placement={"bottom"}
         width={window.innerWidth}
         height={window.innerHeight * 0.8}
-        onClose={() => setOpenDrawer(false)}
+        onClose={() => {
+          setOpenDrawer(false);
+          setLatestImage(undefined);
+        }}
         open={openDrawer}
       >
         <List
           className="demo-loadmore-list"
           itemLayout="horizontal"
-          dataSource={resources}
-          renderItem={(item: any) => (
-            <List.Item>
+          dataSource={logs || []}
+          renderItem={(item: any, index: any) => (
+            <List.Item key={index}>
               <div className={cx("draw_images")}>
                 <div className="row justify-between">
                   <div className="col-6">Ảnh gốc</div>
                   <div className="col-6">Ảnh nhận diện</div>
                 </div>
-                <div className="row">
+                <div className="row justify-between">
                   <div className="col-6">
                     <Image
-                      src={item.image}
+                      src={filesMapping?.[item?.originalFile]}
                       style={{
                         height: 100,
+                        paddingRight: 10,
                       }}
                     />
                   </div>
                   <div className="col-6">
                     <Image
-                      src={item.image}
+                      src={filesMapping?.[item?.detectedFile]}
                       style={{
                         height: 100,
+                        paddingLeft: 10,
                       }}
                     />
                   </div>

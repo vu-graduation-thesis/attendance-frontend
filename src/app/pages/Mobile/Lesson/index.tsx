@@ -144,7 +144,7 @@ export const LessonPage = () => {
               icon={<img src={CameraIcon} alt="" width={40} />}
               onClick={() => navigator(`${configs.basePath}/attendance/${id}`)}
               size="large"
-              style={{ height: 55, width: 55 }}
+              style={{ height: 55, width: 55, border: "2px solid #256dd2" }}
             ></Button>
           </div>
         </div>
