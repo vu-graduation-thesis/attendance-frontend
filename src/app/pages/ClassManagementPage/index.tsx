@@ -1,10 +1,11 @@
-import { Button, Popconfirm, Table, Typography } from "antd";
+import { Button, Modal, Popconfirm, Table, Typography } from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
+import { ClassManagement } from "core/app/containers/ClassManagement/index.js";
 import DeleteIcon from "core/assets/images/delete.png";
 import EditIcon from "core/assets/images/edit.png";
 import EyeIcon from "core/assets/images/eye.png";
@@ -14,7 +15,8 @@ import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
-import { useGetClasses } from "core/queries/class.js";
+import { useGetClasses, useUpdateClass } from "core/queries/class.js";
+import { routeConfig } from "core/routes/routeConfig.js";
 
 import styles from "./styles.module.scss";
 
@@ -22,7 +24,10 @@ const cx = classNames.bind(styles);
 
 export const ClassManagementPage = () => {
   const { t } = useTranslation();
-  const { data: classesData } = useGetClasses();
+  const [openModal, setOpenModal] = useState(true);
+  const { data: classesData, refetch } = useGetClasses({});
+  const { mutateAsync: updateClass } = useUpdateClass();
+  const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
 
@@ -35,6 +40,15 @@ export const ClassManagementPage = () => {
     }),
     [searchParams],
   );
+
+  const handleDelete = async (record: any) => {
+    try {
+      await updateClass({ id: record?._id, isDeleted: true } as any);
+      refetch();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const tableParams = useMemo(
     () => ({
@@ -112,16 +126,12 @@ export const ClassManagementPage = () => {
               className="cursor-pointer select-none w-24"
               onClick={() => {}}
             />
-            <Popconfirm title={t("label.confirmDelete")} onConfirm={() => {}}>
+            <Popconfirm
+              title={t("label.confirmDelete")}
+              onConfirm={() => handleDelete(record)}
+            >
               <img
                 src={DeleteIcon}
-                alt=""
-                className="cursor-pointer select-none w-24"
-              />
-            </Popconfirm>
-            <Popconfirm title={t("label.confirmDelete")} onConfirm={() => {}}>
-              <img
-                src={MailIcon}
                 alt=""
                 className="cursor-pointer select-none w-24"
               />
@@ -150,7 +160,9 @@ export const ClassManagementPage = () => {
         >
           {t("class.title")}
         </Typography.Title>
-        <Button type="primary">{t("class.syncCtmsData")}</Button>
+        <Button type="primary" onClick={() => navigate(routeConfig.addClass)}>
+          Thêm lớp học
+        </Button>
       </div>
       <Table
         bordered

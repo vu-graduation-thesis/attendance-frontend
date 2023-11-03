@@ -1,5 +1,6 @@
 import { memo } from "react";
 
+import { ClassManagement } from "core/app/containers/ClassManagement/index.js";
 import NoLayout from "core/app/layouts/NoLayout/index";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
 import { ClassSchedulePage } from "core/app/pages/ClassSchedulePage/index.js";
@@ -69,6 +70,10 @@ const privateRoutes: PrivateRoutes[] = [
     path: routeConfig.mobile.schedule,
     component: memo(ClassSchedulePage),
     layout: NoLayout,
+  },
+  {
+    path: routeConfig.addClass,
+    component: memo(ClassManagement),
   },
 ];
 

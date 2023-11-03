@@ -18,5 +18,6 @@ export const routeConfig = {
     schedule: "/app/schedule",
     attendance: "/app/attendance/:id",
   },
+  addClass: "/class-management/add",
   notFound: "*",
 };
