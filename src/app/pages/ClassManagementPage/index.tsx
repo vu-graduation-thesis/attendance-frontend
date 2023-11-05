@@ -5,12 +5,9 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { ClassManagement } from "core/app/containers/ClassManagement/index.js";
 import DeleteIcon from "core/assets/images/delete.png";
 import EditIcon from "core/assets/images/edit.png";
 import EyeIcon from "core/assets/images/eye.png";
-import IntoIcon from "core/assets/images/into.png";
-import MailIcon from "core/assets/images/sending.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,

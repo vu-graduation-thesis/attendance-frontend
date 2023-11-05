@@ -40,8 +40,9 @@ export const AttendancePage = () => {
   const [filesMapping, setFilesMapping] = useState<any>({});
   const [imageCount, setImageCount] = useState<number>(0);
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
 
   const handlCapture = async () => {
     const capture = await CameraPreview.capture({
@@ -169,11 +170,12 @@ export const AttendancePage = () => {
             src={BackIcon}
             alt=""
             width={32}
-            onClick={() =>
+            onClick={() => {
+              queryClient.refetchQueries(["get-lessons"]);
               navigate(configs.basePath + `/lesson/${lessonId}`, {
                 replace: true,
-              })
-            }
+              });
+            }}
           />
         </div>
       </div>

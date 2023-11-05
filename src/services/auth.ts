@@ -1,12 +1,24 @@
+import axios from "axios";
+
 import configs from "core/configs";
 import axiosInstance from "core/utils/api/axiosInstance";
 
 export const login = async (username: string, password: string) => {
-  const res = await axiosInstance.post(`${configs.apiEndpoint}/auth/login`, {
+  const res = await axios.post(`${configs.apiEndpoint}/auth/login`, {
     username,
     password,
   });
 
+  return res.data?.data;
+};
+
+export const loginWithGoogle = async (idToken: string) => {
+  const res = await axios.post(
+    `${configs.apiEndpoint}/auth/login-with-google`,
+    {
+      idToken,
+    },
+  );
   return res.data?.data;
 };
 

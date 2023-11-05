@@ -6,7 +6,7 @@
     "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái"
   },
   "menu": {
-    "user": "Quản lý người dùng",
+    "user": "Quản lý quản trị viên",
     "class": "Quản lý lớp học",
     "config": "Cài đặt",
     "statistic": "Thống kê",
@@ -27,7 +27,7 @@
     "action": "Hành động"
   },
   "user": {
-    "title": "Quản lý người dùng hệ thống",
+    "title": "Quản lý quản trị viên",
     "email": "Email",
     "name": "Họ tên",
     "createdAt": "Tạo lúc",

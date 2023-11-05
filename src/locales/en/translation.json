@@ -12,7 +12,7 @@
     "student": "Student management"
   },
   "user": {
-    "title": "Quản lý người dùng hệ thống",
+    "title": "Quản lý quản trị viên",
     "email": "Email",
     "name": "Name",
     "createdAt": "Created at",

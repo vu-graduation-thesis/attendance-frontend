@@ -114,7 +114,7 @@ const StudentTableTransfer: React.FC = ({ onChange }: any) => {
   const studentsDataFormatted = useMemo(
     () =>
       studentsData?.map((student: any) => ({
-        key: student?._id,
+        key: student?.student?._id,
         name: student?.student?.name,
         studentId: student?.student?.studentId,
       })) || [],

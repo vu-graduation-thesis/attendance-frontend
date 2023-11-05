@@ -16,6 +16,8 @@ import styles from "./styles.module.scss";
 
 const cx = classNames.bind(styles);
 
+const NUMBER_OF_IMAGES = 10;
+
 export const CollectFacePage = () => {
   const canvasRef = useRef<any>(null);
   const [images, setImages] = useState<any[]>([]);
@@ -34,13 +36,12 @@ export const CollectFacePage = () => {
 
       if (canvasRef.current) {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
-        if (detections?.[0]?.score > 0.6) {
-          const canvas = canvasRef.current.cloneNode();
-          const context: any = canvas.getContext("2d");
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const imageDataURL = canvas.toDataURL("image/png");
+        if (detections?.[0]?.score > 0.5) {
+          const capture = await CameraPreview.capture({});
+
+          const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
           setImages(prev => {
-            if (prev.length >= 30) {
+            if (prev.length >= NUMBER_OF_IMAGES) {
               CameraPreview.stop();
               clearInterval(intervalId);
               collectFaceRef.current.style.display = "none";
@@ -65,8 +66,6 @@ export const CollectFacePage = () => {
       faceapi.draw.drawDetections(canvasRef.current, resized);
     }, 200);
   };
-
-  console.log(images);
 
   const handleCollectStart = () => {
     const size = isMobile()
@@ -100,7 +99,7 @@ export const CollectFacePage = () => {
   }, []);
 
   useEffect(() => {
-    if (images.length === 30) {
+    if (images.length === NUMBER_OF_IMAGES) {
       uploadFaces(images);
     }
   }, [images]);
@@ -122,7 +121,7 @@ export const CollectFacePage = () => {
               <div className={cx("guideInProcess")}>
                 <span className={cx("text")}>Quay các góc mặt</span>
                 <div className={cx("percent")}>
-                  {Math.floor((images.length / 30) * 100)} %
+                  {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
                 </div>
               </div>
             )}

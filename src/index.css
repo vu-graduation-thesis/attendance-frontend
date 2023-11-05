@@ -255,3 +255,22 @@ body {
 .text-right {
   text-align: right;
 }
+
+.px-10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.py-20 {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.my-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.my-5 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

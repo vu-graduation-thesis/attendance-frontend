@@ -1,6 +1,10 @@
 import { useMutation } from "react-query";
 
-import { login } from "core/services/auth.js";
+import { login, loginWithGoogle } from "core/services/auth.js";
 
 export const useLogin = () =>
-  useMutation(({ username, password }: any) => login(username, password));
+  useMutation((body: any) =>
+    body?.idToken
+      ? loginWithGoogle(body?.idToken)
+      : login(body?.username, body?.password),
+  );

@@ -1,4 +1,13 @@
-import { Button, Form, Modal, Popconfirm, Table, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  Form,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Typography,
+} from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
@@ -9,6 +18,7 @@ import { EditableCell } from "core/app/components/EditableCell/index.tsx";
 import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
+import DownIcon from "core/assets/images/down.png";
 import EditIcon from "core/assets/images/edit.png";
 import EyeIcon from "core/assets/images/eye.png";
 import MailIcon from "core/assets/images/sending.png";
@@ -17,18 +27,22 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
+import { useSendMail } from "core/mutations/mail.js";
 import { useCreateStudent, useUpdateStudent } from "core/mutations/student.ts";
 import { useGetStudents } from "core/queries/student.ts";
 
 import styles from "./styles.module.scss";
 
 const cx = classNames.bind(styles);
+const { Text } = Typography;
 
 export const StudentManagementPage = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [modalType, setModalType] = useState<"mail" | "upload">("mail");
   const { data: studentsData, isLoading, refetch } = useGetStudents();
   const { mutateAsync: updateStudent } = useUpdateStudent();
   const { mutateAsync: createStudent } = useCreateStudent();
+  const { mutateAsync: sendMail } = useSendMail();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -141,6 +155,13 @@ export const StudentManagementPage = () => {
         dataIndex: ["student", "name"],
         key: ["student", "name"],
         width: 250,
+        editable: true,
+      },
+      {
+        title: t("student.studentId"),
+        dataIndex: ["student", "studentId"],
+        key: ["student", "studentId"],
+        width: 150,
         editable: true,
       },
       {
@@ -303,7 +324,50 @@ export const StudentManagementPage = () => {
           <Button className="mr-10" onClick={addNewRow}>
             {t("student.add")}
           </Button>
-          <Button type="primary">{t("student.uploadExcel")}</Button>
+          <Dropdown.Button
+            menu={{
+              items: [
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">
+                      Gửi mail yêu cầu thu thập khuôn mặt
+                    </div>
+                  ),
+                  key: 1,
+                  onClick: () => {
+                    setOpenModal(true);
+                    setModalType("mail");
+                  },
+                },
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                  ),
+                  key: 2,
+                  onClick: () => {
+                    alert("item 1");
+                  },
+                },
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">
+                      Tải xuống file excel mẫu
+                    </div>
+                  ),
+                  key: 3,
+                  onClick: () => {
+                    alert("item 1");
+                  },
+                },
+              ],
+            }}
+            trigger={["click"]}
+            className={cx("dropdown")}
+            type="primary"
+            icon={<img src={DownIcon} alt="" height="13" />}
+          >
+            <Space>Hành động</Space>
+          </Dropdown.Button>
         </div>
       </div>
       <Form form={form} component={false}>
@@ -323,13 +387,38 @@ export const StudentManagementPage = () => {
       <Modal
         title="Basic Modal"
         open={openModal}
-        onOk={() => {}}
+        onOk={async () => {
+          if (modalType === "mail") {
+            await sendMail({
+              recipients: studentsData?.reduce((acc: any, curr: any) => {
+                if (!curr?.student?.verified) {
+                  acc.push(curr?.email);
+                }
+                return acc;
+              }, [] as any),
+              mailType: "collect_face",
+            });
+          }
+        }}
         onCancel={() => setOpenModal(false)}
-        footer={null}
+        footer={modalType === "mail" ? undefined : null}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        {modalType === "mail" ? (
+          <div>
+            Xác nhận gửi mail cho{" "}
+            <b>
+              {studentsData?.reduce(
+                (acc: any, curr: any) =>
+                  (curr?.student?.verified ? 0 : 1) + acc,
+                0,
+              )}{" "}
+              sinh viên{" "}
+            </b>
+            chưa cung cấp dữ liệu khuôn mặt
+          </div>
+        ) : (
+          <div></div>
+        )}
       </Modal>
     </div>
   );

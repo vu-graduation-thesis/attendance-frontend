@@ -1,6 +1,8 @@
 import { Button, Input, Typography } from "antd";
 import classNames from "classnames/bind";
-import { useCallback, useState } from "react";
+import * as firebase from "firebase/app";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import GoogleIcon from "core/assets/images/google.png";
@@ -12,6 +14,9 @@ import { jwtDecode } from "core/utils/jwt.js";
 
 import styles from "./styles.module.scss";
 
+const firebaseApp = firebase.initializeApp(configs.firebase);
+const auth = getAuth(firebaseApp);
+
 const { Title, Text } = Typography;
 const cx = classNames.bind(styles);
 export const LoginPage = () => {
@@ -21,11 +26,13 @@ export const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLoginClick = useCallback(async () => {
+  const handleLoginClick = async (idToken?: any) => {
+    console.log("handleLoginClick", username, password, idToken);
     try {
       const res = await handleLogin({
         username,
         password,
+        idToken,
       });
       localStorage.setItem("token", res.token);
       const { payload } = jwtDecode(res.token) || {};
@@ -33,7 +40,7 @@ export const LoginPage = () => {
         console.log("navigateTo", configs.basePath);
         navigateTo(`${configs.basePath}/`, { replace: true });
       } else {
-        navigateTo("/collect-face", { replace: true });
+        navigateTo("/collect_face", { replace: true });
       }
     } catch (error) {
       const errorCode = (error as any)?.response?.data?.error?.code;
@@ -43,7 +50,7 @@ export const LoginPage = () => {
         setMessage("Tài khoản hoặc mật khẩu không đúng");
       }
     }
-  }, [handleLogin, username, password]);
+  };
 
   return (
     <div className={cx("container")}>
@@ -74,7 +81,7 @@ export const LoginPage = () => {
         <Button
           className={cx("input", "mb-10", "mt-20")}
           type="primary"
-          onClick={handleLoginClick}
+          onClick={() => handleLoginClick()}
           size="large"
           loading={isLoading}
         >
@@ -87,6 +94,15 @@ export const LoginPage = () => {
           <Button
             className={cx("btnLoginWithGG", "input", "mb-10", "mt-10")}
             icon={<img src={GoogleIcon} alt="" />}
+            onClick={() => {
+              signInWithPopup(auth, new GoogleAuthProvider())
+                .then((result: any) => {
+                  handleLoginClick(result?._tokenResponse?.oauthIdToken);
+                })
+                .catch(error => {
+                  console.log("error", error);
+                });
+            }}
           >
             Đăng nhập với Google
           </Button>

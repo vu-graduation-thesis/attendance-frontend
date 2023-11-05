@@ -11,7 +11,7 @@ export const routeConfig = {
   teacher: "/teacher-management",
   classroom: "/classroom-management",
   login: "login",
-  collectFace: "/collect-face",
+  collectFace: "/collect_face",
   mobile: {
     home: "/app/home",
     lesson: "/app/lesson/:id",

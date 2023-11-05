@@ -22,6 +22,7 @@ export const ClassManagement = () => {
   const { data: classroomsData } = useGetClassrooms();
   const { data: subjectsData } = useGetSubjects();
   const { mutateAsync: createClass } = useCreateClass();
+  const [numberOfLessonsPerWeek, setNumberOfLessonsPerWeek] = useState(1);
 
   const teachersFormatted = useMemo(() => {
     const result =
@@ -55,14 +56,17 @@ export const ClassManagement = () => {
       name="basic"
       className={cx("container")}
       onFinish={value => {
+        const lessonSchedules = Array(numberOfLessonsPerWeek || 0)
+          .fill(0)
+          .map((_, index) => ({
+            startDay: value[`schedule[${index}]`].format("DD/MM/YYYY"),
+            classroom: value[`classroom[${index}]`],
+          }));
+
         createClass({
           ...value,
           students,
-          lessonSchedules: [
-            {
-              startDay: value.schedule.format("DD/MM/YYYY"),
-            },
-          ],
+          lessonSchedules,
         });
       }}
     >
@@ -170,39 +174,70 @@ export const ClassManagement = () => {
             />
           </Form.Item>
         </div>
+      </div>
 
+      <div className="flex justify-between mb-10">
         <div>
-          <Title level={5}>Lịch dạy</Title>
+          <Title level={5}>Số buổi học trên tuần </Title>
           <Form.Item
+            valuePropName="value"
             rules={[
               {
                 required: true,
                 message: "Please input class code!",
               },
             ]}
-            name="schedule"
+            name="numberOfLessonsPerWeek"
           >
-            <DatePicker style={{ width: "100%", minWidth: "300px" }} />
-          </Form.Item>
-        </div>
-
-        <div>
-          <Title level={5}>Phòng học cố định</Title>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please input class code!",
-              },
-            ]}
-            name="classroom"
-          >
-            <Select
-              style={{ width: "100%", minWidth: "300px" }}
-              options={classroomFormatted}
-              defaultActiveFirstOption
+            <Input
+              type="number"
+              value={numberOfLessonsPerWeek}
+              onChange={e => {
+                setNumberOfLessonsPerWeek(parseInt(e.target.value) || 0);
+              }}
             />
           </Form.Item>
+        </div>
+        <div>
+          {Array(numberOfLessonsPerWeek)
+            .fill(0)
+            .map((_, index) => (
+              <div className="flex justify-between mb-10">
+                <div className="mr-20">
+                  <Title level={5}>Ngày bắt đầu</Title>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input class code!",
+                      },
+                    ]}
+                    name={`schedule[${index}]`}
+                  >
+                    <DatePicker style={{ width: "100%", minWidth: "300px" }} />
+                  </Form.Item>
+                </div>
+
+                <div>
+                  <Title level={5}>Phòng học cố định</Title>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input class code!",
+                      },
+                    ]}
+                    name={`classroom[${index}]`}
+                  >
+                    <Select
+                      style={{ width: "100%", minWidth: "300px" }}
+                      options={classroomFormatted}
+                      defaultActiveFirstOption
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
 

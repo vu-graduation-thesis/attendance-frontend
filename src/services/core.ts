@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import axios from "axios";
 
+import configs from "core/configs/index.js";
+import axiosInstance from "core/utils/api/axiosInstance.js";
+
 export const uploadFaces = async (images: string[]) => {
   const fetchImages = images.map(image => fetch(image).then(res => res.blob()));
   const imageResponse = await Promise.allSettled(fetchImages);
@@ -14,8 +17,8 @@ export const uploadFaces = async (images: string[]) => {
     formData.append(`files`, blob, `image${index + 1}.png`);
   });
 
-  const response = await axios.post(
-    "http://localhost:5000/api/files/batch-upload",
+  const response = await axiosInstance.post(
+    `${configs.apiEndpoint}/face-recognition/training`,
     formData,
     {
       headers: {
