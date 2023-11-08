@@ -38,7 +38,7 @@ export const LoginPage = () => {
       const { payload } = jwtDecode(res.token) || {};
       if (payload?.role === ADMIN || payload?.role === TEACHER) {
         console.log("navigateTo", configs.basePath);
-        navigateTo(`${configs.basePath}/`, { replace: true });
+        navigateTo(`${configs.basePath}/schedule`, { replace: true });
       } else {
         navigateTo("/collect_face", { replace: true });
       }

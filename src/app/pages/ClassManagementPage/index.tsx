@@ -47,6 +47,10 @@ export const ClassManagementPage = () => {
     }
   };
 
+  const handleEdit = async (record: any) => {
+    navigate(`/class-management/edit/${record?._id}`);
+  };
+
   const tableParams = useMemo(
     () => ({
       pagination: {
@@ -121,7 +125,7 @@ export const ClassManagementPage = () => {
               src={EditIcon}
               alt=""
               className="cursor-pointer select-none w-24"
-              onClick={() => {}}
+              onClick={() => handleEdit(record)}
             />
             <Popconfirm
               title={t("label.confirmDelete")}

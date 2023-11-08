@@ -19,5 +19,6 @@ export const routeConfig = {
     attendance: "/app/attendance/:id",
   },
   addClass: "/class-management/add",
+  editClass: "/class-management/edit/:id",
   notFound: "*",
 };

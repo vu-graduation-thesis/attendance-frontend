@@ -7,6 +7,7 @@ import {
   Space,
   Table,
   Typography,
+  notification,
 } from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
@@ -43,6 +44,7 @@ export const StudentManagementPage = () => {
   const { mutateAsync: updateStudent } = useUpdateStudent();
   const { mutateAsync: createStudent } = useCreateStudent();
   const { mutateAsync: sendMail } = useSendMail();
+  const [notiApi, contextHolder] = notification.useNotification();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -312,6 +314,7 @@ export const StudentManagementPage = () => {
 
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <div className="flex justify-between">
         <Typography.Title
           level={4}
@@ -385,7 +388,7 @@ export const StudentManagementPage = () => {
         />
       </Form>
       <Modal
-        title="Basic Modal"
+        title="Gửi mail yêu cầu thu thập khuôn mặt"
         open={openModal}
         onOk={async () => {
           if (modalType === "mail") {
@@ -397,6 +400,12 @@ export const StudentManagementPage = () => {
                 return acc;
               }, [] as any),
               mailType: "collect_face",
+            });
+
+            setOpenModal(false);
+            notiApi.success({
+              message: "Thành công",
+              description: `Đã gửi mail thành công`,
             });
           }
         }}

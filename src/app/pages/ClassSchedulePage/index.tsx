@@ -139,7 +139,7 @@ export const ClassSchedulePage = () => {
         />
       </div>
       <Modal
-        title="Basic Modal"
+        title="Điểm danh lớp học"
         open={isModalOpen}
         onOk={() => navigate(`/app/lesson/${selectedEvent?.lessonId}`)}
         onCancel={() => {
@@ -147,9 +147,10 @@ export const ClassSchedulePage = () => {
           setIsModalOpen(false);
         }}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <p>
+          Thầy cô có thể điểm danh thủ công, chụp nhiều hình ảnh, quay video để
+          điểm danh
+        </p>
       </Modal>
     </div>
   );

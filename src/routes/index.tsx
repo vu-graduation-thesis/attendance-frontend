@@ -75,6 +75,10 @@ const privateRoutes: PrivateRoutes[] = [
     path: routeConfig.addClass,
     component: memo(ClassManagement),
   },
+  {
+    path: routeConfig.editClass,
+    component: memo(ClassManagement),
+  },
 ];
 
 const publicRoutes: PublicRoutes[] = [

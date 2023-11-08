@@ -1,4 +1,12 @@
-import { Button, DatePicker, Form, Input, Select, Typography } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Typography,
+  notification,
+} from "antd";
 import classNames from "classnames/bind";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,6 +31,8 @@ export const ClassManagement = () => {
   const { data: subjectsData } = useGetSubjects();
   const { mutateAsync: createClass } = useCreateClass();
   const [numberOfLessonsPerWeek, setNumberOfLessonsPerWeek] = useState(1);
+  const [notiApi, contextHolder] = notification.useNotification();
+  const [form] = Form.useForm();
 
   const teachersFormatted = useMemo(() => {
     const result =
@@ -55,7 +65,8 @@ export const ClassManagement = () => {
     <Form
       name="basic"
       className={cx("container")}
-      onFinish={value => {
+      form={form}
+      onFinish={async value => {
         const lessonSchedules = Array(numberOfLessonsPerWeek || 0)
           .fill(0)
           .map((_, index) => ({
@@ -63,45 +74,55 @@ export const ClassManagement = () => {
             classroom: value[`classroom[${index}]`],
           }));
 
-        createClass({
+        await createClass({
           ...value,
           students,
           lessonSchedules,
         });
+
+        form.resetFields();
+
+        notiApi.success({
+          message: "Thành công",
+          description: `Đã gửi mail thành công`,
+        });
       }}
     >
+      {contextHolder}
       <Title level={3} className="mb-30">
         Class Management
       </Title>
-      <div className="mb-20 mt-20">
-        <Title level={5}>Mã lớp học </Title>
-        <Form.Item
-          valuePropName="value"
-          rules={[
-            {
-              required: true,
-              message: "Please input class code!",
-            },
-          ]}
-          name="classId"
-        >
-          <Input />
-        </Form.Item>
-      </div>
-      <div className="mb-20">
-        <Title level={5}>Tên lớp học </Title>
-        <Form.Item
-          valuePropName="value"
-          rules={[
-            {
-              required: true,
-              message: "Please input class name!",
-            },
-          ]}
-          name="name"
-        >
-          <Input />
-        </Form.Item>
+      <div className="flex justify-between">
+        <div className="mb-20">
+          <Title level={5}>Mã lớp học </Title>
+          <Form.Item
+            valuePropName="value"
+            rules={[
+              {
+                required: true,
+                message: "Please input class code!",
+              },
+            ]}
+            name="classId"
+          >
+            <Input />
+          </Form.Item>
+        </div>
+        <div className="mb-20">
+          <Title level={5}>Tên lớp học </Title>
+          <Form.Item
+            valuePropName="value"
+            rules={[
+              {
+                required: true,
+                message: "Please input class name!",
+              },
+            ]}
+            name="name"
+          >
+            <Input />
+          </Form.Item>
+        </div>
       </div>
       <div className="flex justify-between">
         <div>
@@ -241,9 +262,17 @@ export const ClassManagement = () => {
         </div>
       </div>
 
-      <StudentTableTransfer onChange={value => setStudents(value)} />
+      <StudentTableTransfer onChange={setStudents} />
 
       <div className="flex flex-end">
+        <Button
+          className="mt-30 mr-20"
+          onClick={() => {
+            form.resetFields();
+          }}
+        >
+          Reset
+        </Button>
         <Button type="primary" htmlType="submit" className="mt-30">
           Submit
         </Button>

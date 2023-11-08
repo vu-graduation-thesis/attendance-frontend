@@ -80,6 +80,9 @@ export const AttendancePage = () => {
         toBack: true,
       });
     })();
+    return () => {
+      CameraPreview.stop();
+    };
   }, []);
 
   useEffect(() => {

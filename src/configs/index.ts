@@ -19,7 +19,7 @@ const configs = {
   apiEndpoint: env.apiEndpoint,
   apiEndpointV2: env.apiEndpointV2,
   s3AssetUrl: env.s3AssetUrl,
-  basePath: !Capacitor.isNativePlatform() ? "/app" : "",
+  basePath: Capacitor.isNativePlatform() ? "/app" : "",
   firebase: env.firebase,
 };
 
