@@ -32,7 +32,8 @@
   border: 3px solid rebeccapurple;
   overflow-y: scroll;
   overflow: hidden;
-
+  background-color: black;
+  transition: background-color 0.3s;
 }
 
 .fix-top video {
@@ -152,4 +153,15 @@
 
 .draw_images {
   width: 100%;
+}
+
+
+.flash {
+  background-color: rgb(255, 255, 255, 0.7); /* Màu nền khi nhấn nút chụp ảnh */
+  position: absolute;
+  z-index: 100000000;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }

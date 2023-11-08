@@ -11,4 +11,5 @@ export const useGetStudents = () =>
 export const useGetStudentDetail = (id: string) =>
   useQuery(["get-student-detail", id], () => getStudentDetail(id), {
     staleTime: STALE_TIME.ONE_HOUR,
+    enabled: !!id,
   });
