@@ -55,7 +55,9 @@ export const LoginPage = () => {
   return (
     <div className={cx("container")}>
       <img className={cx("logo")} src={LogoIcon} alt="" />
-      <h3 className={cx("title")}>Hệ thống điểm danh sinh viên</h3>
+      <h3 className={cx("title")}>
+        Hệ thống điểm danh <br /> sinh viên
+      </h3>
       {message && <Text className={cx("red", "font-16")}>{message}</Text>}
       <div className={cx("loginContainer")}>
         <div className={cx("left")}>

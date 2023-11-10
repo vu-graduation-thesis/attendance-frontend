@@ -39,12 +39,17 @@ export const AttendancePage = () => {
   const [notiApi, contextHolder] = notification.useNotification();
   const [filesMapping, setFilesMapping] = useState<any>({});
   const [imageCount, setImageCount] = useState<number>(0);
+  const [flash, setFlash] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
   const handlCapture = async () => {
+    setFlash(true);
+    setTimeout(() => {
+      setFlash(false);
+    }, 150);
     const capture = await CameraPreview.capture({
       quality: 100,
     });
@@ -130,6 +135,7 @@ export const AttendancePage = () => {
     <div className={cx("container")}>
       {contextHolder}
       <div className={cx("fix-top")}>
+        {flash && <div className={cx("flash")}></div>}
         <div id="camera"></div>
         <canvas className="canvas" ref={canvasRef}></canvas>
         <div className={cx("guide")}>
