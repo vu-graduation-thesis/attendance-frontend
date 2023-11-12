@@ -23,3 +23,11 @@ export const getStudentDetail = async (id: string) => {
   const res = await axiosInstance.get(`${configs.apiEndpoint}/students/${id}`);
   return res.data?.data;
 };
+
+export const batchCreateStudent = async (data: any) => {
+  const res = await axiosInstance.post(
+    `${configs.apiEndpoint}/students/batch`,
+    data,
+  );
+  return res.data?.data;
+};

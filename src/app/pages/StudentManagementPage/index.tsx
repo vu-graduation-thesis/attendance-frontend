@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { EditableCell } from "core/app/components/EditableCell/index.tsx";
+import UploadFile from "core/app/components/Upload/index.js";
 import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
@@ -28,7 +29,9 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
+import { useGetSignedUrls } from "core/mutations/file.js";
 import { useSendMail } from "core/mutations/mail.js";
+import { useBatchCreateStudent } from "core/mutations/student.js";
 import { useCreateStudent, useUpdateStudent } from "core/mutations/student.ts";
 import { useGetStudents } from "core/queries/student.ts";
 
@@ -45,6 +48,8 @@ export const StudentManagementPage = () => {
   const { mutateAsync: createStudent } = useCreateStudent();
   const { mutateAsync: sendMail } = useSendMail();
   const [notiApi, contextHolder] = notification.useNotification();
+  const { mutateAsync: batchCreateStudent } = useBatchCreateStudent();
+  const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -348,7 +353,8 @@ export const StudentManagementPage = () => {
                   ),
                   key: 2,
                   onClick: () => {
-                    alert("item 1");
+                    setOpenModal(true);
+                    setModalType("upload");
                   },
                 },
                 {
@@ -358,8 +364,19 @@ export const StudentManagementPage = () => {
                     </div>
                   ),
                   key: 3,
-                  onClick: () => {
-                    alert("item 1");
+                  onClick: async () => {
+                    const template =
+                      "a-static-file/upload students example.csv";
+                    const response = await getSignedUrls({
+                      bucket: "attendance-resource",
+                      files: [template],
+                    });
+                    response?.[template]
+                      ? window.open(response?.[template], "_blank")
+                      : notiApi.error({
+                          message: "Lỗi",
+                          description: "Không thể tải xuống file mẫu",
+                        });
                   },
                 },
               ],
@@ -388,7 +405,11 @@ export const StudentManagementPage = () => {
         />
       </Form>
       <Modal
-        title="Gửi mail yêu cầu thu thập khuôn mặt"
+        title={
+          modalType === "mail"
+            ? "Gửi mail yêu cầu thu thập khuôn mặt"
+            : "Tải lên danh sách sinh viên từ file Excel/CSV"
+        }
         open={openModal}
         onOk={async () => {
           if (modalType === "mail") {
@@ -425,8 +446,12 @@ export const StudentManagementPage = () => {
             </b>
             chưa cung cấp dữ liệu khuôn mặt
           </div>
+        ) : modalType === "upload" ? (
+          <div>
+            <UploadFile handleUpload={batchCreateStudent} />
+          </div>
         ) : (
-          <div></div>
+          <></>
         )}
       </Modal>
     </div>

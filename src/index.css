@@ -278,3 +278,10 @@ body {
 .flex-grow {
   flex-grow: 1;
 }
+
+/* .ant-upload-list {
+  border-radius: 6px;
+  border: 1px dashed #d9d9d9;
+  margin-top: 15px;
+  /* padding: 0 10px 5px; */
+} */
