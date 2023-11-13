@@ -76,7 +76,9 @@ export const ClassSchedulePage = () => {
             Chọn giảng viên:
           </Title>
           <Select
-            style={{ width: 120 }}
+            style={{
+              minWidth: 200,
+            }}
             onChange={value => setTeacher(value)}
             options={teachersFormatted}
             defaultActiveFirstOption

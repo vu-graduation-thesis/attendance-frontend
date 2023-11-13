@@ -38,7 +38,6 @@ import { useGetStudents } from "core/queries/student.ts";
 import styles from "./styles.module.scss";
 
 const cx = classNames.bind(styles);
-const { Text } = Typography;
 
 export const StudentManagementPage = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -48,7 +47,7 @@ export const StudentManagementPage = () => {
   const { mutateAsync: createStudent } = useCreateStudent();
   const { mutateAsync: sendMail } = useSendMail();
   const [notiApi, contextHolder] = notification.useNotification();
-  const { mutateAsync: batchCreateStudent } = useBatchCreateStudent();
+  const { mutateAsync: batchCreateStudents } = useBatchCreateStudent();
   const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
@@ -436,7 +435,7 @@ export const StudentManagementPage = () => {
         {modalType === "mail" ? (
           <div>
             Xác nhận gửi mail cho{" "}
-            <b>
+            <b className="text-red">
               {studentsData?.reduce(
                 (acc: any, curr: any) =>
                   (curr?.student?.verified ? 0 : 1) + acc,
@@ -448,7 +447,12 @@ export const StudentManagementPage = () => {
           </div>
         ) : modalType === "upload" ? (
           <div>
-            <UploadFile handleUpload={batchCreateStudent} />
+            <UploadFile
+              handleUpload={async file => {
+                await batchCreateStudents(file);
+                setOpenModal(false);
+              }}
+            />
           </div>
         ) : (
           <></>

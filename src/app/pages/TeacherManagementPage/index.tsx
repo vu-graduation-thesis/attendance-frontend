@@ -1,4 +1,14 @@
-import { Button, Form, Popconfirm, Table, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  Form,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Typography,
+  notification,
+} from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
@@ -6,15 +16,19 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { EditableCell } from "core/app/components/EditableCell/index.tsx";
+import UploadFile from "core/app/components/Upload/index.js";
 import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
+import DownIcon from "core/assets/images/down.png";
 import EditIcon from "core/assets/images/edit.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
+import { useGetSignedUrls } from "core/mutations/file.js";
+import { useBatchCreateTeacher } from "core/mutations/teacher.js";
 import { useCreateTeacher, useUpdateTeacher } from "core/mutations/teacher.ts";
 import { useGetTeachers } from "core/queries/teacher.ts";
 
@@ -23,9 +37,13 @@ import styles from "./styles.module.scss";
 const cx = classNames.bind(styles);
 
 export const TeacherManagementPage = () => {
+  const [openModal, setOpenModal] = useState(false);
   const { data: teachersData, isLoading, refetch } = useGetTeachers();
   const { mutateAsync: updateTeacher } = useUpdateTeacher();
   const { mutateAsync: createTeacher } = useCreateTeacher();
+  const [notiApi, contextHolder] = notification.useNotification();
+  const { mutateAsync: batchCreateTeachers } = useBatchCreateTeacher();
+  const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -259,6 +277,7 @@ export const TeacherManagementPage = () => {
 
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <div className="flex justify-between">
         <Typography.Title
           level={4}
@@ -271,9 +290,52 @@ export const TeacherManagementPage = () => {
           <Button className="mr-10" onClick={addNewRow}>
             {t("teacher.add")}
           </Button>
-          <Button type="primary">{t("teacher.uploadExcel")}</Button>
+          <Dropdown.Button
+            menu={{
+              items: [
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                  ),
+                  key: 2,
+                  onClick: () => {
+                    setOpenModal(true);
+                  },
+                },
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">
+                      Tải xuống file excel mẫu
+                    </div>
+                  ),
+                  key: 3,
+                  onClick: async () => {
+                    const template =
+                      "a-static-file/upload teachers example.csv";
+                    const response = await getSignedUrls({
+                      bucket: "attendance-resource",
+                      files: [template],
+                    });
+                    response?.[template]
+                      ? window.open(response?.[template], "_blank")
+                      : notiApi.error({
+                          message: "Lỗi",
+                          description: "Không thể tải xuống file mẫu",
+                        });
+                  },
+                },
+              ],
+            }}
+            trigger={["click"]}
+            className={cx("dropdown")}
+            type="primary"
+            icon={<img src={DownIcon} alt="" height="13" />}
+          >
+            <Space>Hành động</Space>
+          </Dropdown.Button>
         </div>
       </div>
+
       <Form form={form} component={false}>
         <Table
           bordered
@@ -288,6 +350,23 @@ export const TeacherManagementPage = () => {
           {...tableParams}
         />
       </Form>
+
+      <Modal
+        title={"Tải lên danh sách giảng viên từ file Excel/CSV"}
+        open={openModal}
+        onCancel={() => setOpenModal(false)}
+        footer={null}
+      >
+        <div>
+          <UploadFile
+            handleUpload={async file => {
+              await batchCreateTeachers(file);
+              setOpenModal(false);
+              refetch();
+            }}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

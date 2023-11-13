@@ -50,7 +50,9 @@ export const StatisticPage = () => {
           <h3 className="bold mt-10">
             Sinh viên đã cung cấp <br /> dữ liệu khuôn mặt
           </h3>
-          <h3 className="text-center red bold text-28">{`${studentsVerified?.verified} / ${studentsVerified?.total}`}</h3>
+          {studentsVerified && (
+            <h3 className="text-center red bold text-28">{`${studentsVerified?.verified} / ${studentsVerified?.total}`}</h3>
+          )}
         </div>
         <div className={cx("sumary", "flex", "flex-col", "align-center")}>
           <h3 className="bold mt-10">Tỉ lệ điểm danh bằng AI</h3>
