@@ -1,3 +1,4 @@
+import { adminMenu } from "./admin";
 import { classMenu } from "./class";
 import { classroomMenu } from "./classroom";
 import { configMenu } from "./config";
@@ -5,7 +6,6 @@ import { statisticMenu } from "./statistic";
 import { studentMenu } from "./student";
 import { subjectMenu } from "./subject";
 import { teacherMenu } from "./teacher";
-import { userMenu } from "./user";
 
 export const menuList = [
   statisticMenu,
@@ -14,6 +14,6 @@ export const menuList = [
   studentMenu,
   subjectMenu,
   classroomMenu,
-  userMenu,
+  adminMenu,
   configMenu,
 ];

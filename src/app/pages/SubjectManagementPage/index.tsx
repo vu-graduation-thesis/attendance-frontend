@@ -1,4 +1,14 @@
-import { Button, Form, Popconfirm, Table, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  Form,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Typography,
+  notification,
+} from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
@@ -6,15 +16,19 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { EditableCell } from "core/app/components/EditableCell/index.tsx";
+import UploadFile from "core/app/components/Upload/index.js";
 import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
+import DownIcon from "core/assets/images/down.png";
 import EditIcon from "core/assets/images/edit.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
+import { useGetSignedUrls } from "core/mutations/file.js";
+import { useBatchCreateSubject } from "core/mutations/subject.js";
 import { useCreateSubject, useUpdateSubject } from "core/mutations/subject.ts";
 import { useGetSubjects } from "core/queries/subject.ts";
 
@@ -26,6 +40,11 @@ export const SubjectManagementPage = () => {
   const { data: subjectsData, isLoading, refetch } = useGetSubjects();
   const { mutateAsync: updateSubject } = useUpdateSubject();
   const { mutateAsync: createSubject } = useCreateSubject();
+
+  const [openModal, setOpenModal] = useState(false);
+  const [notiApi, contextHolder] = notification.useNotification();
+  const { mutateAsync: batchCreateSubjects } = useBatchCreateSubject();
+  const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -130,6 +149,7 @@ export const SubjectManagementPage = () => {
         dataIndex: "_id",
         key: "_id",
         width: 250,
+        render: (value: any) => (value?.includes(ADD_PREFIX) ? "" : value),
       },
       {
         title: t("subject.name"),
@@ -243,6 +263,7 @@ export const SubjectManagementPage = () => {
 
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <div className="flex justify-between">
         <Typography.Title
           level={4}
@@ -255,7 +276,49 @@ export const SubjectManagementPage = () => {
           <Button className="mr-10" onClick={addNewRow}>
             {t("subject.add")}
           </Button>
-          <Button type="primary">{t("subject.uploadExcel")}</Button>
+          <Dropdown.Button
+            menu={{
+              items: [
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                  ),
+                  key: 2,
+                  onClick: () => {
+                    setOpenModal(true);
+                  },
+                },
+                {
+                  label: (
+                    <div className="px-10 py-10 my-5">
+                      Tải xuống file excel mẫu
+                    </div>
+                  ),
+                  key: 3,
+                  onClick: async () => {
+                    const template =
+                      "a-static-file/upload subjects example.csv";
+                    const response = await getSignedUrls({
+                      bucket: "attendance-resource",
+                      files: [template],
+                    });
+                    response?.[template]
+                      ? window.open(response?.[template], "_blank")
+                      : notiApi.error({
+                          message: "Lỗi",
+                          description: "Không thể tải xuống file mẫu",
+                        });
+                  },
+                },
+              ],
+            }}
+            trigger={["click"]}
+            className={cx("dropdown")}
+            type="primary"
+            icon={<img src={DownIcon} alt="" height="13" />}
+          >
+            <Space>Hành động</Space>
+          </Dropdown.Button>
         </div>
       </div>
       <Form form={form} component={false}>
@@ -272,6 +335,23 @@ export const SubjectManagementPage = () => {
           {...tableParams}
         />
       </Form>
+
+      <Modal
+        title={"Tải lên danh sách môn học từ file CSV"}
+        open={openModal}
+        onCancel={() => setOpenModal(false)}
+        footer={null}
+      >
+        <div>
+          <UploadFile
+            handleUpload={async file => {
+              await batchCreateSubjects(file);
+              setOpenModal(false);
+              refetch();
+            }}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

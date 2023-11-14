@@ -1,6 +1,6 @@
 export const routeConfig = {
   home: "/home",
-  users: "/users-management",
+  admin: "/admin-management",
   class: "/class-management",
   classManagement: "/class-management/management",
   viewClass: "/class-management/schedule",

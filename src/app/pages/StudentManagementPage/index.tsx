@@ -407,7 +407,7 @@ export const StudentManagementPage = () => {
         title={
           modalType === "mail"
             ? "Gửi mail yêu cầu thu thập khuôn mặt"
-            : "Tải lên danh sách sinh viên từ file Excel/CSV"
+            : "Tải lên danh sách sinh viên từ file CSV"
         }
         open={openModal}
         onOk={async () => {

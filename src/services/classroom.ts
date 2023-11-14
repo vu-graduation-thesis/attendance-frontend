@@ -21,3 +21,11 @@ export const createClassroom = async (data: any) => {
   );
   return res.data?.data;
 };
+
+export const batchCreateClassroom = async (data: any) => {
+  const res = await axiosInstance.post(
+    `${configs.apiEndpoint}/classrooms/batch`,
+    data,
+  );
+  return res.data?.data;
+};

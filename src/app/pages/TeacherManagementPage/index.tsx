@@ -150,6 +150,7 @@ export const TeacherManagementPage = () => {
         dataIndex: ["teacher", "_id"],
         key: ["teacher", "_id"],
         width: 250,
+        render: (value: any) => (value?.includes(ADD_PREFIX) ? "" : value),
       },
       {
         title: t("teacher.name"),
@@ -352,7 +353,7 @@ export const TeacherManagementPage = () => {
       </Form>
 
       <Modal
-        title={"Tải lên danh sách giảng viên từ file Excel/CSV"}
+        title={"Tải lên danh sách giảng viên từ file CSV"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         footer={null}

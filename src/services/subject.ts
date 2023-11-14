@@ -21,3 +21,11 @@ export const createSubject = async (data: any) => {
   );
   return res.data?.data;
 }
+
+export const batchCreateSubject = async (data: any) => {
+  const res = await axiosInstance.post(
+    `${configs.apiEndpoint}/subjects/batch`,
+    data,
+  );
+  return res.data?.data;
+};

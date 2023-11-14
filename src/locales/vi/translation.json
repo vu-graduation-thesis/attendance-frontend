@@ -6,7 +6,7 @@
     "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái"
   },
   "menu": {
-    "user": "Quản lý quản trị viên",
+    "admin": "Quản lý quản trị viên",
     "class": "Quản lý lớp học",
     "config": "Cài đặt",
     "statistic": "Thống kê",
@@ -59,7 +59,7 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại",
+    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
     "studentId": "Mã sinh viên",
     "status": "Trạng thái xác thực",
     "verified": "Đã xác thực",
@@ -77,7 +77,20 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại"
+    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác"
+  },
+  "admin": {
+    "id": "Mã quản trị viên",
+    "title": "Quản lý quản trị viên",
+    "add": "Thêm quản trị viên",
+    "name": "Họ tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "username": "Tên đăng nhập",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "see": "Action",
+    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác"
   },
   "subject": {
     "id": "Mã môn học",

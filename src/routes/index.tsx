@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { ClassManagement } from "core/app/containers/ClassManagement/index.js";
 import NoLayout from "core/app/layouts/NoLayout/index";
+import { AdminManagementPage } from "core/app/pages/AdminManagementPage";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
 import { ClassSchedulePage } from "core/app/pages/ClassSchedulePage/index.js";
 import { ClassroomManagementPage } from "core/app/pages/ClassroomManagementPage/index.tsx";
@@ -16,7 +17,6 @@ import { StatisticPage } from "core/app/pages/StatisticPage";
 import { StudentManagementPage } from "core/app/pages/StudentManagementPage/index";
 import { SubjectManagementPage } from "core/app/pages/SubjectManagementPage/index.tsx";
 import { TeacherManagementPage } from "core/app/pages/TeacherManagementPage/index.tsx";
-import { UserPage } from "core/app/pages/UserPage";
 
 import { routeConfig } from "./routeConfig";
 import { PrivateRoutes, PublicRoutes } from "./type";
@@ -27,8 +27,8 @@ const privateRoutes: PrivateRoutes[] = [
     component: memo(HomePage),
   },
   {
-    path: routeConfig.users,
-    component: memo(UserPage),
+    path: routeConfig.admin,
+    component: memo(AdminManagementPage),
   },
   {
     path: routeConfig.class,

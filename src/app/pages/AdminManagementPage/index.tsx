@@ -27,26 +27,20 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
-import { useBatchCreateClassroom } from "core/mutations/classroom.js";
-import {
-  useCreateClassroom,
-  useUpdateClassroom,
-} from "core/mutations/classroom.ts";
+import { useCreateAdmin, useUpdateAdmin } from "core/mutations/admin.ts";
 import { useGetSignedUrls } from "core/mutations/file.js";
-import { useGetClassrooms } from "core/queries/classroom.ts";
+import { useGetAdmins } from "core/queries/admin.ts";
 
 import styles from "./styles.module.scss";
 
 const cx = classNames.bind(styles);
 
-export const ClassroomManagementPage = () => {
-  const { data: classroomsData, isLoading, refetch } = useGetClassrooms();
-  const { mutateAsync: updateClassroom } = useUpdateClassroom();
-  const { mutateAsync: createClassroom } = useCreateClassroom();
-
+export const AdminManagementPage = () => {
   const [openModal, setOpenModal] = useState(false);
+  const { data: adminsData, isLoading, refetch } = useGetAdmins();
+  const { mutateAsync: updateAdmin } = useUpdateAdmin();
+  const { mutateAsync: createAdmin } = useCreateAdmin();
   const [notiApi, contextHolder] = notification.useNotification();
-  const { mutateAsync: batchCreateClassrooms } = useBatchCreateClassroom();
   const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
@@ -66,9 +60,9 @@ export const ClassroomManagementPage = () => {
     const newData = {
       _id: ADD_PREFIX + new Date().getTime(),
       name: "",
-      location: "",
-      numberOfSeats: 0,
-      type: "Offline",
+      phone: "",
+      email: "",
+      username: "",
     };
     form.setFieldsValue({ ...newData });
     setEditingKey(newData._id);
@@ -95,7 +89,7 @@ export const ClassroomManagementPage = () => {
 
   const handleDelete = async (record: any) => {
     try {
-      await updateClassroom({ id: record?._id, isDeleted: true });
+      await updateAdmin({ id: record?._id, isDeleted: true });
       refetch();
     } catch (error) {
       console.log("error", error);
@@ -107,15 +101,24 @@ export const ClassroomManagementPage = () => {
       const row = await form.validateFields();
       console.log("row", row, record);
       if (editingKey.includes(ADD_PREFIX)) {
-        await createClassroom(row);
+        await createAdmin(row);
       } else {
-        await updateClassroom({ id: record?._id, ...row });
+        await updateAdmin({ id: record?._id, ...row });
       }
       setEditingKey("");
       form.resetFields();
       refetch();
     } catch (errInfo) {
-      console.log(errInfo);
+      if (
+        (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
+      ) {
+        form.setFields([
+          {
+            name: "username",
+            errors: [t("admin.usernameExisted")],
+          },
+        ]);
+      }
     }
   };
   const pagination = useMemo(
@@ -141,39 +144,39 @@ export const ClassroomManagementPage = () => {
   const columns: any = useMemo(
     () => [
       {
-        title: t("classroom.id"),
+        title: t("admin.id"),
         dataIndex: ["_id"],
         key: ["_id"],
         width: 250,
         render: (value: any) => (value?.includes(ADD_PREFIX) ? "" : value),
       },
       {
-        title: t("classroom.name"),
-        dataIndex: ["name"],
-        key: ["name"],
+        title: t("admin.name"),
+        dataIndex: ["admin", "name"],
+        key: ["admin", "name"],
         width: 250,
         editable: true,
       },
       {
-        title: t("classroom.location"),
-        dataIndex: "location",
-        key: "location",
+        title: t("admin.phone"),
+        dataIndex: "phone",
+        key: "phone",
         width: 150,
         editable: true,
       },
       {
-        title: t("classroom.numberOfSeats"),
-        dataIndex: "numberOfSeats",
-        key: "numberOfSeats",
-        width: 150,
+        title: t("admin.email"),
+        dataIndex: "email",
+        key: "email",
+        width: 250,
         editable: true,
       },
       {
-        title: t("classroom.type"),
-        dataIndex: "type",
-        key: "type",
+        title: t("admin.username"),
+        dataIndex: "username",
+        key: "username",
         width: 150,
-        editable: true,
+        editable: editingKey.includes(ADD_PREFIX) ? true : false,
       },
       {
         title: t("label.createdAt"),
@@ -266,10 +269,8 @@ export const ClassroomManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(
-      classroomsData?.map((item: any) => ({ ...item, key: item._id })),
-    );
-  }, [classroomsData]);
+    setDataTable(adminsData?.map((item: any) => ({ ...item, key: item._id })));
+  }, [adminsData]);
 
   return (
     <div className={cx("container")}>
@@ -280,57 +281,15 @@ export const ClassroomManagementPage = () => {
           style={{ marginBottom: 16 }}
           className={cx("title")}
         >
-          {t("classroom.title")}
+          {t("admin.title")}
         </Typography.Title>
         <div className="flex align-center mb-10">
-          <Button className="mr-10" onClick={addNewRow}>
-            {t("classroom.add")}
+          <Button className="mr-10" onClick={addNewRow} type="primary">
+            {t("admin.add")}
           </Button>
-          <Dropdown.Button
-            menu={{
-              items: [
-                {
-                  label: (
-                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
-                  ),
-                  key: 2,
-                  onClick: () => {
-                    setOpenModal(true);
-                  },
-                },
-                {
-                  label: (
-                    <div className="px-10 py-10 my-5">
-                      Tải xuống file excel mẫu
-                    </div>
-                  ),
-                  key: 3,
-                  onClick: async () => {
-                    const template =
-                      "a-static-file/upload classrooms example.csv";
-                    const response = await getSignedUrls({
-                      bucket: "attendance-resource",
-                      files: [template],
-                    });
-                    response?.[template]
-                      ? window.open(response?.[template], "_blank")
-                      : notiApi.error({
-                          message: "Lỗi",
-                          description: "Không thể tải xuống file mẫu",
-                        });
-                  },
-                },
-              ],
-            }}
-            trigger={["click"]}
-            className={cx("dropdown")}
-            type="primary"
-            icon={<img src={DownIcon} alt="" height="13" />}
-          >
-            <Space>Hành động</Space>
-          </Dropdown.Button>
         </div>
       </div>
+
       <Form form={form} component={false}>
         <Table
           bordered
@@ -345,23 +304,6 @@ export const ClassroomManagementPage = () => {
           {...tableParams}
         />
       </Form>
-
-      <Modal
-        title={"Tải lên danh sách phòng học từ file CSV"}
-        open={openModal}
-        onCancel={() => setOpenModal(false)}
-        footer={null}
-      >
-        <div>
-          <UploadFile
-            handleUpload={async file => {
-              await batchCreateClassrooms(file);
-              setOpenModal(false);
-              refetch();
-            }}
-          />
-        </div>
-      </Modal>
     </div>
   );
 };
