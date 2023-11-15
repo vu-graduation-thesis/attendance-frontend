@@ -1,37 +1,121 @@
 {
   "app": {
-    "title": "Student attendance management system",
-    "dev": "Student attendance management system",
+    "title": "Student Attendance Management System",
+    "dev": "Student Attendance Management System",
     "logout": "Logout",
-    "homepageDesc": "Please select the function in the menu on the left"
+    "homepageDesc": "Please select a function from the left menu"
   },
   "menu": {
-    "user": "Users management",
+    "admin": "Admin Management",
     "class": "Class Management",
-    "config": "Setting",
-    "student": "Student management"
+    "config": "Settings",
+    "statistic": "Statistics",
+    "student": "Student Management",
+    "teacher": "Teacher Management",
+    "subject": "Subject Management",
+    "classroom": "Classroom Management",
+    "classManagement": "Update Class",
+    "viewClass": "View Class Schedule"
+  },
+  "label": {
+    "updatedAt": "Updated At",
+    "createdAt": "Created At",
+    "name": "Name",
+    "confirmSave": "Save changes?",
+    "confirmDelete": "Confirm deletion?",
+    "confirmCancel": "Cancel changes?",
+    "action": "Action"
   },
   "user": {
-    "title": "Quản lý quản trị viên",
+    "title": "Admin Management",
     "email": "Email",
     "name": "Name",
-    "createdAt": "Created at",
+    "createdAt": "Created At",
     "action": "Action",
     "role": "Role"
   },
   "class": {
-    "title": "Class management",
+    "title": "Class Management",
     "id": "Class ID",
-    "subject": "Subject name",
+    "subject": "Subject",
     "teacher": "Teacher",
-    "credit": "Number of credit",
-    "createdAt": "Created at",
+    "credit": "Credit",
+    "createdAt": "Created At",
     "action": "Action",
-    "teaching_schedule": "Teaching schedule",
-    "see": "See class"
+    "teaching_schedule": "Teaching Schedule",
+    "see": "See Class",
+    "syncCtmsData": "Sync Data from CTMS",
+    "totalNumberOfLessons": "Total Number of Lessons"
   },
   "student": {
-    "uploadExcel": "Upload excel",
-    "add": "Add student"
+    "id": "Student ID",
+    "title": "Student Management",
+    "uploadExcel": "Upload Excel File",
+    "add": "Add Student",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "username": "Username",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "see": "Action",
+    "usernameExisted": "Username already exists or is linked to another account",
+    "studentId": "Student ID",
+    "status": "Authentication Status",
+    "verified": "Verified",
+    "unverified": "Not Verified",
+    "birthday": "Date of Birth"
+  },
+  "teacher": {
+    "id": "Teacher ID",
+    "title": "Teacher Management",
+    "uploadExcel": "Upload Excel File",
+    "add": "Add Teacher",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "username": "Username",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "see": "Action",
+    "usernameExisted": "Username already exists or is linked to another account"
+  },
+  "admin": {
+    "id": "Admin ID",
+    "title": "Admin Management",
+    "add": "Add Admin",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "username": "Username",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "see": "Action",
+    "usernameExisted": "Username already exists or is linked to another account"
+  },
+  "subject": {
+    "id": "Subject ID",
+    "title": "Subject Management",
+    "uploadExcel": "Upload Excel File",
+    "add": "Add Subject",
+    "name": "Subject Name",
+    "type": "Type",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "see": "Action",
+    "usernameExisted": "Subject name already exists"
+  },
+  "classroom": {
+    "id": "Classroom ID",
+    "title": "Classroom Management",
+    "uploadExcel": "Upload Excel File",
+    "add": "Add Classroom",
+    "name": "Classroom Name",
+    "type": "Room Type",
+    "location": "Location",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "see": "Action",
+    "numberOfSeats": "Number of Seats"
   }
 }

@@ -84,7 +84,7 @@ export const ClassManagement = () => {
 
         notiApi.success({
           message: "Thành công",
-          description: `Đã gửi mail thành công`,
+          description: `Tạo lớp học thành công`,
         });
       }}
     >

@@ -8,6 +8,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import DeleteIcon from "core/assets/images/delete.png";
 import EditIcon from "core/assets/images/edit.png";
 import EyeIcon from "core/assets/images/eye.png";
+import DownloadIcon from "core/assets/images/file.png";
+import configs from "core/configs/index.js";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
@@ -89,9 +91,25 @@ export const ClassManagementPage = () => {
       },
       {
         title: t("class.teaching_schedule"),
-        dataIndex: "teaching_schedule",
-        key: "teaching_schedule",
+        dataIndex: "lessonSchedules",
+        key: "lessonSchedules",
         width: 250,
+        render: (value: any) => {
+          return value?.map((item: any) => {
+            return (
+              <>
+                {item?.startDay && (
+                  <div>
+                    {`Thứ ${
+                      DateTime.fromFormat(item?.startDay, "dd/mm/yyyy").weekday
+                    } hàng tuần, từ 
+                  ${item?.startDay || ""}`}
+                  </div>
+                )}
+              </>
+            );
+          });
+        },
       },
       {
         title: t("class.totalNumberOfLessons"),
@@ -142,6 +160,17 @@ export const ClassManagementPage = () => {
               alt=""
               className="cursor-pointer select-none w-24"
               onClick={() => {}}
+            />
+            <img
+              src={DownloadIcon}
+              alt=""
+              className="cursor-pointer select-none w-24"
+              onClick={() => {
+                window.open(
+                  `${configs.apiEndpoint}/classes/${record?._id}/export`,
+                  "_blank",
+                );
+              }}
             />
           </div>
         ),

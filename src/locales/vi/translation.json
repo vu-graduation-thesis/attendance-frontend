@@ -63,7 +63,8 @@
     "studentId": "Mã sinh viên",
     "status": "Trạng thái xác thực",
     "verified": "Đã xác thực",
-    "unverified": "Chưa xác thực"
+    "unverified": "Chưa xác thực",
+    "birthday": "Ngày sinh"
   },
   "teacher": {
     "id": "Mã giảng viên",

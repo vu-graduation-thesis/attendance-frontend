@@ -11,6 +11,7 @@ import {
 } from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
@@ -178,6 +179,15 @@ export const StudentManagementPage = () => {
         editable: true,
       },
       {
+        title: t("student.birthday"),
+        dataIndex: ["student", "birthday"],
+        key: "birthday",
+        width: 150,
+        editable: true,
+        render: (value: any) => value && moment(value).format("DD/MM/YYYY"),
+        inputType: "date",
+      },
+      {
         title: t("student.email"),
         dataIndex: "email",
         key: "email",
@@ -302,7 +312,7 @@ export const StudentManagementPage = () => {
       ...col,
       onCell: (record: any) => ({
         record,
-        inputType: "text",
+        inputType: col.inputType || "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
