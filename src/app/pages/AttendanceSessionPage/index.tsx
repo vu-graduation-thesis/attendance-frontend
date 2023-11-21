@@ -184,11 +184,14 @@ export const AttendanceSessionPage = () => {
       {isLoading && <Spin tip="Đang tải lên..." size="large"></Spin>}
 
       <Button
-        type="primary"
-        onClick={() => navigate("/")}
+        onClick={() => {
+          localStorage.clear();
+          navigate("/login");
+        }}
+        danger
         className={cx("btnBack")}
       >
-        Quay về trang chủ
+        Đăng xuất
       </Button>
     </div>
   );

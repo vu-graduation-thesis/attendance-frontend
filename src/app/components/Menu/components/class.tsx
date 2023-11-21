@@ -9,20 +9,20 @@ import { MenuItemProps } from "../types";
 const classManagementMenu: MenuItemProps = {
   transkey: "menu.classManagement",
   key: routeConfig.class,
-  permission: PERMISSIONS.ALL,
+  permission: PERMISSIONS.TEACHER,
   icon: <img src={ClassIcon} alt="" className="mr-10" />,
 };
 
 const viewClassMenu: MenuItemProps = {
   transkey: "menu.viewClass",
   key: routeConfig.viewClass,
-  permission: PERMISSIONS.ALL,
+  permission: PERMISSIONS.TEACHER,
   icon: <img src={TimeIcon} alt="" className="mr-10" />,
 };
 
 export const classMenu: MenuItemProps = {
   transkey: "menu.class",
   icon: <img src={TeacherIcon} alt="" className="mr-10" />,
-  permission: PERMISSIONS.ALL,
+  permission: PERMISSIONS.TEACHER,
   children: [classManagementMenu, viewClassMenu],
 };

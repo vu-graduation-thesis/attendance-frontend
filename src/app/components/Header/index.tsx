@@ -18,7 +18,6 @@ const cx = classNames.bind(styles);
 export const Header = () => {
   const { i18n, t } = useTranslation();
   const navigateTo = useNavigate();
-
   const { data: userInfo } = useGetUserInfo();
 
   const changeLanguage = useCallback(

@@ -8,5 +8,5 @@ export const classroomMenu = {
   transkey: "menu.classroom",
   key: routeConfig.classroom,
   icon: <img src={TeacherIcon} alt="" className="mr-10" />,
-  permission: PERMISSIONS.ALL,
+  permission: PERMISSIONS.ADMIN,
 } as MenuItemProps;

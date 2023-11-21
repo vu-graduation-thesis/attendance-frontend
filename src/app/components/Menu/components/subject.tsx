@@ -8,5 +8,5 @@ export const subjectMenu = {
   transkey: "menu.subject",
   key: routeConfig.subject,
   icon: <img src={SubjectIcon} alt="" className="mr-10" />,
-  permission: PERMISSIONS.ALL,
+  permission: PERMISSIONS.ADMIN,
 } as MenuItemProps;

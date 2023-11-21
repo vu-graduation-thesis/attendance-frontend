@@ -23,10 +23,12 @@ import { useNavigate } from "react-router-dom";
 import LogoImage from "core/assets/images/logo.png";
 import OverlayBg from "core/assets/images/overlay_bg.svg";
 import configs from "core/configs/index.js";
+import PERMISSIONS from "core/constants/user.ts";
 import { useUpdateLesson } from "core/mutations/lesson.js";
 import { useGetClasses } from "core/queries/class.js";
 import { useGetLessons } from "core/queries/lesson.js";
 import { useGetTeachers } from "core/queries/teacher.ts";
+import { useGetUserInfo } from "core/queries/user.ts";
 
 import styles from "./styles.module.scss";
 
@@ -40,6 +42,7 @@ const localizer = momentLocalizer(moment);
 const { Title } = Typography;
 
 export const ClassSchedulePage = () => {
+  const { data: userInfo } = useGetUserInfo();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>();
   const [invalidTimeSelected, setInvalidTimeSelected] = useState(false);
@@ -91,14 +94,23 @@ export const ClassSchedulePage = () => {
     lessonId: lesson._id,
   }));
 
-  const teachersFormatted = useMemo(
-    () =>
+  const teachersFormatted = useMemo(() => {
+    if (userInfo?.role === PERMISSIONS.TEACHER) {
+      return [
+        {
+          value: userInfo?.teacher?._id,
+          label: userInfo?.teacher?.name,
+        },
+      ];
+    }
+
+    return (
       teachersData?.map((data: any) => ({
         value: data.teacher._id,
         label: data.teacher.name,
-      })) || [],
-    [teachersData],
-  );
+      })) || []
+    );
+  }, [teachersData, userInfo]);
 
   useEffect(() => {
     setTeacher(teachersFormatted?.[0]?.value);
@@ -130,18 +142,27 @@ export const ClassSchedulePage = () => {
       <div className="flex justify-between mb-20">
         <Title level={4}>Lịch dạy</Title>
         <div className="flex ">
-          <Title level={4} className="mr-10">
-            Chọn giảng viên:
-          </Title>
-          <Select
-            style={{
-              minWidth: 200,
-            }}
-            onChange={value => setTeacher(value)}
-            options={teachersFormatted}
-            defaultActiveFirstOption
-            value={teacher}
-          />
+          {userInfo &&
+            (userInfo?.role === PERMISSIONS.ADMIN ? (
+              <>
+                <Title level={4} className="mr-10">
+                  Chọn giảng viên:
+                </Title>
+                <Select
+                  style={{
+                    minWidth: 200,
+                  }}
+                  onChange={value => setTeacher(value)}
+                  options={teachersFormatted}
+                  defaultActiveFirstOption
+                  value={teacher}
+                />
+              </>
+            ) : (
+              <Title level={4} className="mr-10">
+                Giảng viên: {userInfo?.teacher?.name}
+              </Title>
+            ))}
         </div>
       </div>
       <div className={cx("scheduleWrapper")}>
