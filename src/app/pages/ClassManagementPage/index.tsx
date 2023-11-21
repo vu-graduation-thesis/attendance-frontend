@@ -14,7 +14,9 @@ import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
 } from "core/constants";
+import PERMISSIONS from "core/constants/user.ts";
 import { useGetClasses, useUpdateClass } from "core/queries/class.js";
+import { useGetUserInfo } from "core/queries/user.ts";
 import { routeConfig } from "core/routes/routeConfig.js";
 
 import styles from "./styles.module.scss";
@@ -24,11 +26,22 @@ const cx = classNames.bind(styles);
 export const ClassManagementPage = () => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(true);
+  const { data: userInfo } = useGetUserInfo();
   const { data: classesData, refetch } = useGetClasses({});
   const { mutateAsync: updateClass } = useUpdateClass();
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
+
+  const classesFormatted = useMemo(() => {
+    if (userInfo?.role === PERMISSIONS.TEACHER) {
+      return classesData?.filter(
+        (item: any) => item?.teacher?._id === userInfo?.teacher?._id,
+      );
+    }
+
+    return classesData;
+  }, [classesData, userInfo]);
 
   const pagination = useMemo(
     () => ({
@@ -145,16 +158,18 @@ export const ClassManagementPage = () => {
               className="cursor-pointer select-none w-24"
               onClick={() => handleEdit(record)}
             />
-            <Popconfirm
-              title={t("label.confirmDelete")}
-              onConfirm={() => handleDelete(record)}
-            >
-              <img
-                src={DeleteIcon}
-                alt=""
-                className="cursor-pointer select-none w-24"
-              />
-            </Popconfirm>
+            {userInfo?.role === PERMISSIONS.ADMIN && (
+              <Popconfirm
+                title={t("label.confirmDelete")}
+                onConfirm={() => handleDelete(record)}
+              >
+                <img
+                  src={DeleteIcon}
+                  alt=""
+                  className="cursor-pointer select-none w-24"
+                />
+              </Popconfirm>
+            )}
             <img
               src={EyeIcon}
               alt=""
@@ -190,13 +205,15 @@ export const ClassManagementPage = () => {
         >
           {t("class.title")}
         </Typography.Title>
-        <Button type="primary" onClick={() => navigate(routeConfig.addClass)}>
-          Thêm lớp học
-        </Button>
+        {userInfo?.role === PERMISSIONS.ADMIN && (
+          <Button type="primary" onClick={() => navigate(routeConfig.addClass)}>
+            Thêm lớp học
+          </Button>
+        )}
       </div>
       <Table
         bordered
-        dataSource={classesData || []}
+        dataSource={classesFormatted || []}
         columns={columns}
         loading={false}
         onChange={() => {}}
