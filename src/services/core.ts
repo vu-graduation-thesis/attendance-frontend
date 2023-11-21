@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import axios from "axios";
-
 import configs from "core/configs/index.js";
 import axiosInstance from "core/utils/api/axiosInstance.js";
 
@@ -19,6 +17,28 @@ export const uploadFaces = async (images: string[]) => {
 
   const response = await axiosInstance.post(
     `${configs.apiEndpoint}/face-recognition/training`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+
+  return response.data;
+};
+
+export const attendanceSession = async (lessionId: string, image: string) => {
+  console.log(image);
+  const res = await fetch(image);
+  const imageBlob = await res.blob();
+
+  // Tạo FormData để gửi dữ liệu
+  const formData = new FormData();
+  formData.append(`file`, imageBlob, `image-${Date.now()}.png`);
+
+  const response = await axiosInstance.post(
+    `${configs.apiEndpoint}/face-recognition/recognize/${lessionId}/student-upload-image`,
     formData,
     {
       headers: {

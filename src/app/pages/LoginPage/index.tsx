@@ -30,7 +30,7 @@ export const LoginPage = () => {
     console.log("handleLoginClick", username, password, idToken);
     try {
       const res = await handleLogin({
-        username,
+        username: username?.toLocaleLowerCase(),
         password,
         idToken,
       });
@@ -40,7 +40,15 @@ export const LoginPage = () => {
         console.log("navigateTo", configs.basePath);
         navigateTo(`${configs.basePath}/schedule`, { replace: true });
       } else {
-        navigateTo("/collect_face", { replace: true });
+        const url = new URL(window.location.href);
+        const redirectTo = url.searchParams.get("redirect");
+
+        if (!!redirectTo) {
+          console.log("redirectTo", redirectTo);
+          window.location.href = redirectTo;
+        } else {
+          navigateTo("/collect_face", { replace: true });
+        }
       }
     } catch (error) {
       const errorCode = (error as any)?.response?.data?.error?.code;

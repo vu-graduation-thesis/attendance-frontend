@@ -12,6 +12,7 @@ const env = {
     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
     messagingSenderId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string,
   },
+  domain: import.meta.env.VITE_DOMAIN as string,
 };
 
 const configs = {
@@ -21,6 +22,7 @@ const configs = {
   s3AssetUrl: env.s3AssetUrl,
   basePath: Capacitor.isNativePlatform() ? "/app" : "",
   firebase: env.firebase,
+  domain: env.domain,
 };
 
 export default configs;

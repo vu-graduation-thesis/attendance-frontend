@@ -21,7 +21,9 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (!token || isError) {
-      navigator("/login", { replace: true });
+      navigator(`/login?redirect=${window.location.href}`, {
+        replace: true,
+      });
     }
   }, [isError]);
 

@@ -3,7 +3,12 @@
     "title": "Hệ thống quản lý điểm danh sinh viên",
     "dev": "Hệ thống quản lý điểm danh sinh viên",
     "logout": "Đăng xuất",
-    "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái"
+    "homepageDesc": "Vui lòng chọn chức năng ở menu bên trái",
+    "success": "Thành công",
+    "error": "Lỗi",
+    "saveSuccess": "Lưu thành công",
+    "saveError": "Lưu thất bại",
+    "deleteSuccess": "Xoá thành công"
   },
   "menu": {
     "admin": "Quản lý quản trị viên",
@@ -60,11 +65,13 @@
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
     "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
+    "emailExisted": "Email đã tồn tại hoặc đang liên kết tới một tài khoản khác",
     "studentId": "Mã sinh viên",
     "status": "Trạng thái xác thực",
     "verified": "Đã xác thực",
     "unverified": "Chưa xác thực",
     "birthday": "Ngày sinh"
+    
   },
   "teacher": {
     "id": "Mã giảng viên",

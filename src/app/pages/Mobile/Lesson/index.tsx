@@ -2,9 +2,13 @@ import { Avatar, Button, List, Skeleton, Spin, Typography } from "antd";
 import classNames from "classnames/bind";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageViewer from "react-simple-image-viewer";
 
+import { Capacitor } from "@capacitor/core";
+
+import { AttendanceLog } from "core/app/containers/AttendanceLog/index.js";
 import CameraIcon from "core/assets/images/camera.png";
 import AttendanceManualIcon from "core/assets/images/check.png";
 import CheckedIcon from "core/assets/images/checked.png";
@@ -12,6 +16,7 @@ import FaceDetectIcon from "core/assets/images/face-detection.png";
 import configs from "core/configs/index.js";
 import { useGetSignedUrls } from "core/mutations/file.js";
 import { useManualAttendace } from "core/mutations/lesson.js";
+import { useGetAttendanceLog } from "core/queries/attendanceLog.js";
 import { useGetLessons } from "core/queries/lesson.js";
 
 import styles from "./style.module.scss";
@@ -28,8 +33,11 @@ export const LessonPage = () => {
   const [filesMapping, setFilesMapping] = useState<any>({});
   const [attendanceResource, setAttendanceResource] = useState<any>();
   const { mutateAsync: manualAttendace } = useManualAttendace();
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const headerRef = useRef<any>();
-
+  const { data: attendanceLog, refetch: refetchAttendanceLog } =
+    useGetAttendanceLog(id!);
+  const queryClient = useQueryClient();
   const {
     data: lessonsData,
     isLoading: lessonLoading,
@@ -111,7 +119,7 @@ export const LessonPage = () => {
             }
             return acc;
           }, {});
-          setFilesMapping(data);
+          setFilesMapping(prev => ({ ...prev, ...data }));
         } catch (error) {
           console.log(error);
         }
@@ -131,8 +139,47 @@ export const LessonPage = () => {
       })();
     }
   }, [lessonsData]);
+
+  useEffect(() => {
+    if (attendanceLog?.logs?.length) {
+      (async () => {
+        const cache: any =
+          queryClient.getQueryData(["attendanceLog", id!]) || {};
+
+        const payloads = attendanceLog?.logs?.reduce((acc: any, cur: any) => {
+          if (!cache[cur.detectedFile]) {
+            acc.push({
+              files: [cur.originalFile, cur.detectedFile],
+              bucket: cur.bucket,
+            });
+          }
+          return acc;
+        }, []);
+
+        const result = await Promise.allSettled(
+          payloads.map((item: any) => getSignedUrls(item)),
+        );
+
+        const files = result.reduce((acc: any, cur: any) => {
+          if (cur.status === "fulfilled") {
+            acc = { ...acc, ...(cur.value || {}) };
+          }
+          return acc;
+        }, {});
+
+        queryClient.setQueryData(["attendanceLog", id!], files);
+        setFilesMapping((prev: any) => ({ ...prev, ...files }));
+      })();
+    }
+  }, [attendanceLog]);
+
+  const logs = useMemo(() => {
+    const newLogs = [...(attendanceLog?.logs || [])];
+    return newLogs.reverse();
+  }, [attendanceLog]);
+
   return (
-    <div>
+    <div className={cx("container")}>
       <div className="p-16 pb-0 sticky bg-white" ref={headerRef}>
         <div className="flex justify-between">
           <Title level={4}>
@@ -140,12 +187,20 @@ export const LessonPage = () => {
             {lesson?.class?.totalNumberOfLessons}
           </Title>
           <div>
-            <Button
-              icon={<img src={CameraIcon} alt="" width={40} />}
-              onClick={() => navigator(`${configs.basePath}/attendance/${id}`)}
-              size="large"
-              style={{ height: 55, width: 55, border: "2px solid #256dd2" }}
-            ></Button>
+            {Capacitor.isNativePlatform() ? (
+              <Button
+                icon={<img src={CameraIcon} alt="" width={40} />}
+                onClick={() =>
+                  navigator(`${configs.basePath}/attendance/${id}`)
+                }
+                size="large"
+                style={{ height: 55, width: 55, border: "2px solid #256dd2" }}
+              ></Button>
+            ) : (
+              <Button type="primary" onClick={() => setOpenDrawer(true)}>
+                Xem chi tiết
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -161,36 +216,6 @@ export const LessonPage = () => {
               moment(lesson?.lessonDay).format("DD/MM/yyyy")}
           </Text>
         </div>
-
-        <Title level={4}>Dữ liệu ảnh/video</Title>
-
-        {!!attendanceResource?.length ? (
-          <div className={cx("wrap-resource")}>
-            {attendanceResource?.map((url: any, index: number) => (
-              <div
-                className={cx("resource")}
-                onClick={() => handleOpenImageViewer(index)}
-                key={index}
-              >
-                <img src={url} alt="" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={cx("no-resource mb-20 text-red")}>
-            Chưa có dữ liệu
-          </div>
-        )}
-
-        {isViewerOpen && (
-          <ImageViewer
-            src={attendanceResource || []}
-            currentIndex={currentResource}
-            disableScroll={false}
-            closeOnClickOutside={true}
-            onClose={handleCloseImageViewer}
-          />
-        )}
 
         <Title level={4}>Danh sách sinh viên</Title>
         <div>
@@ -270,6 +295,18 @@ export const LessonPage = () => {
           )}
         />
       </div>
+
+      <AttendanceLog
+        isLoading={filesLoading}
+        onClose={() => {
+          setOpenDrawer(false);
+          // setLatestImage(undefined);
+        }}
+        open={openDrawer}
+        dataSource={logs || []}
+        filesMapping={filesMapping}
+        placement="right"
+      />
     </div>
   );
 };

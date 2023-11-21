@@ -3,6 +3,7 @@ import { memo } from "react";
 import { ClassManagement } from "core/app/containers/ClassManagement/index.js";
 import NoLayout from "core/app/layouts/NoLayout/index";
 import { AdminManagementPage } from "core/app/pages/AdminManagementPage";
+import { AttendanceSessionPage } from "core/app/pages/AttendanceSessionPage/index.js";
 import { ClassManagementPage } from "core/app/pages/ClassManagementPage";
 import { ClassSchedulePage } from "core/app/pages/ClassSchedulePage/index.js";
 import { ClassroomManagementPage } from "core/app/pages/ClassroomManagementPage/index.tsx";
@@ -78,6 +79,15 @@ const privateRoutes: PrivateRoutes[] = [
   {
     path: routeConfig.editClass,
     component: memo(ClassManagement),
+  },
+  {
+    path: routeConfig.attendanceSession,
+    component: memo(AttendanceSessionPage),
+    layout: NoLayout,
+  },
+  {
+    path: routeConfig.lessonDetail,
+    component: memo(LessonPage),
   },
 ];
 

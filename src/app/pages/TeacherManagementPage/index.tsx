@@ -93,6 +93,10 @@ export const TeacherManagementPage = () => {
     try {
       await updateTeacher({ id: record?._id, isDeleted: true });
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.deleteSuccess"),
+      });
     } catch (error) {
       console.log("error", error);
     }
@@ -110,16 +114,29 @@ export const TeacherManagementPage = () => {
       setEditingKey("");
       form.resetFields();
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.saveSuccess"),
+      });
     } catch (errInfo) {
       if (
         (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
       ) {
-        form.setFields([
-          {
-            name: "username",
-            errors: [t("teacher.usernameExisted")],
-          },
-        ]);
+        const errorData = (errInfo as any)?.response?.data?.error?.data || {};
+        Object.keys(errorData)?.forEach(key => {
+          if (!!errorData?.[key]) {
+            form.setFields([
+              {
+                name: key,
+                errors: [t(`teacher.${key}Existed`)],
+              },
+            ]);
+          }
+        });
+        notiApi.error({
+          message: t("app.error"),
+          description: t("app.saveError"),
+        });
       }
     }
   };

@@ -11,7 +11,7 @@ import {
 
 import FrameIcon from "core/assets/images/frame.png";
 import LogoIcon from "core/assets/images/logo.png";
-import { useUploadFaces } from "core/mutations/core.js";
+import { useAttendanceSession, useUploadFaces } from "core/mutations/core.js";
 import { useGetStudentDetail } from "core/queries/student.js";
 import { isMobile } from "core/utils/brower.js";
 
@@ -19,16 +19,17 @@ import styles from "./styles.module.scss";
 
 const cx = classNames.bind(styles);
 
-const NUMBER_OF_IMAGES = 10;
+const NUMBER_OF_IMAGES = 1;
 
 const { Text, Title } = Typography;
 
-export const CollectFacePage = () => {
+export const AttendanceSessionPage = () => {
+  const { lessionId } = useParams();
   const canvasRef = useRef<any>(null);
   const [images, setImages] = useState<any[]>([]);
   const collectFaceRef = useRef<any>(null);
   const [openGuide, setOpenGuide] = useState<boolean>(true);
-  const { mutateAsync: uploadFaces, isLoading } = useUploadFaces();
+  const { mutateAsync: uploadFaces, isLoading } = useAttendanceSession();
   const { data: studentData, refetch } = useGetStudentDetail(
     JSON.parse(localStorage.getItem("userInfo") || "{}")?._id || "",
   );
@@ -45,7 +46,7 @@ export const CollectFacePage = () => {
 
       if (canvasRef.current) {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
-        if (detections?.[0]?.score > 0.5) {
+        if (detections?.[0]?.score > 0.7) {
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
@@ -109,7 +110,10 @@ export const CollectFacePage = () => {
 
   useEffect(() => {
     if (images.length === NUMBER_OF_IMAGES) {
-      uploadFaces(images);
+      uploadFaces({
+        lessionId,
+        image: images?.[0],
+      } as any);
       refetch();
     }
   }, [images]);
@@ -117,7 +121,7 @@ export const CollectFacePage = () => {
   return (
     <div className={cx("container")}>
       <img className={cx("logo")} src={LogoIcon} alt="" />
-      <h3 className={cx("title")}>Cung cấp dữ liệu khuôn mặt</h3>
+      <h3 className={cx("title")}>Điểm danh bằng khuôn mặt</h3>
       {!!studentData && (
         <div className={cx("info", "mb-20")}>
           <Title level={5}>Sinh viên: {studentData?.student?.name}</Title>
@@ -145,7 +149,7 @@ export const CollectFacePage = () => {
                 </>
               ) : (
                 <div className={cx("guideInProcess")}>
-                  <span className={cx("text")}>Quay các góc mặt</span>
+                  <span className={cx("text")}>Nhìn thẳng vào camera</span>
                   <div className={cx("percent")}>
                     {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
                   </div>

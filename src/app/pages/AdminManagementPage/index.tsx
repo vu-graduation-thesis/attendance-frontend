@@ -36,12 +36,10 @@ import styles from "./styles.module.scss";
 const cx = classNames.bind(styles);
 
 export const AdminManagementPage = () => {
-  const [openModal, setOpenModal] = useState(false);
   const { data: adminsData, isLoading, refetch } = useGetAdmins();
   const { mutateAsync: updateAdmin } = useUpdateAdmin();
   const { mutateAsync: createAdmin } = useCreateAdmin();
   const [notiApi, contextHolder] = notification.useNotification();
-  const { mutateAsync: getSignedUrls } = useGetSignedUrls();
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -91,6 +89,10 @@ export const AdminManagementPage = () => {
     try {
       await updateAdmin({ id: record?._id, isDeleted: true });
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.deleteSuccess"),
+      });
     } catch (error) {
       console.log("error", error);
     }
@@ -108,16 +110,29 @@ export const AdminManagementPage = () => {
       setEditingKey("");
       form.resetFields();
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.saveSuccess"),
+      });
     } catch (errInfo) {
       if (
         (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
       ) {
-        form.setFields([
-          {
-            name: "username",
-            errors: [t("admin.usernameExisted")],
-          },
-        ]);
+        const errorData = (errInfo as any)?.response?.data?.error?.data || {};
+        Object.keys(errorData)?.forEach(key => {
+          if (!!errorData?.[key]) {
+            form.setFields([
+              {
+                name: key,
+                errors: [t(`admin.${key}Existed`)],
+              },
+            ]);
+          }
+        });
+        notiApi.error({
+          message: t("app.error"),
+          description: t("app.saveError"),
+        });
       }
     }
   };

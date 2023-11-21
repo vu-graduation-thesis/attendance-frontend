@@ -99,6 +99,10 @@ export const StudentManagementPage = () => {
     try {
       await updateStudent({ id: record?._id, isDeleted: true });
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.deleteSuccess"),
+      });
     } catch (error) {
       console.log("error", error);
     }
@@ -116,16 +120,29 @@ export const StudentManagementPage = () => {
       setEditingKey("");
       form.resetFields();
       refetch();
+      notiApi.success({
+        message: t("app.success"),
+        description: t("app.saveSuccess"),
+      });
     } catch (errInfo) {
       if (
         (errInfo as any)?.response?.data?.error?.code === EXISTED_ERROR_CODE
       ) {
-        form.setFields([
-          {
-            name: "username",
-            errors: [t("student.usernameExisted")],
-          },
-        ]);
+        const errorData = (errInfo as any)?.response?.data?.error?.data || {};
+        Object.keys(errorData)?.forEach(key => {
+          if (!!errorData?.[key]) {
+            form.setFields([
+              {
+                name: key,
+                errors: [t(`student.${key}Existed`)],
+              },
+            ]);
+          }
+        });
+        notiApi.error({
+          message: t("app.error"),
+          description: t("app.saveError"),
+        });
       }
     }
   };
@@ -151,12 +168,6 @@ export const StudentManagementPage = () => {
 
   const columns: any = useMemo(
     () => [
-      {
-        title: t("student.studentId"),
-        dataIndex: ["student", "studentId"],
-        key: ["student", "studentId"],
-        width: 250,
-      },
       {
         title: t("student.name"),
         dataIndex: ["student", "name"],
