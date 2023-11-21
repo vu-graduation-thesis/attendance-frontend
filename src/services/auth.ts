@@ -39,3 +39,11 @@ export const getUserInfo = async () => {
   const res = await axiosInstance.get(`${configs.apiEndpoint}/auth/me`);
   return res.data?.data;
 };
+
+export const changePassword = async (data: any) => {
+  const res = await axiosInstance.put(
+    `${configs.apiEndpoint}/auth/change-password`,
+    data,
+  );
+  return res.data?.data;
+};
