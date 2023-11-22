@@ -50,7 +50,10 @@
     "teaching_schedule": "Lịch dạy",
     "see": "Xem lớp",
     "syncCtmsData": "Đồng bộ dữ liệu từ CTMS",
-    "totalNumberOfLessons": "Tổng số buổi học"
+    "totalNumberOfLessons": "Tổng số buổi học",
+    "add": "Thêm lớp học",
+    "selectTeacher": "Chọn giảng viên: ",
+    "schedule": "Lịch dạy"
   },
   "student": {
     "id": "Mã sinh viên",
@@ -71,7 +74,6 @@
     "verified": "Đã xác thực",
     "unverified": "Chưa xác thực",
     "birthday": "Ngày sinh"
-    
   },
   "teacher": {
     "id": "Mã giảng viên",
@@ -85,7 +87,8 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác"
+    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
+    "uploadTitle": "Tải lên danh sách giảng viên từ file CSV"
   },
   "admin": {
     "id": "Mã quản trị viên",
@@ -110,7 +113,8 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên môn học đã tồn tại"
+    "usernameExisted": "Tên môn học đã tồn tại",
+    "uploadFile": "Tải lên danh sách sinh viên từ file CSV"
   },
   "classroom": {
     "id": "Mã phòng học",
@@ -124,5 +128,32 @@
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
     "numberOfSeats": "Số chỗ ngồi"
+  },
+  "common": {
+    "action": "Hành động",
+    "downloadFileError": "Không thể tải xuống file mẫu",
+    "uploadFileExcel": "Tải lên file excel",
+    "downloadExcel": "Tải xuống file excel mẫu",
+    "sendMailVerify": "Gửi mail yêu cầu thu thập khuôn mặt",
+    "confirmSend": "Xác nhận gửi mail cho  ",
+    "student": "sinh viên ",
+    "hasNotVerified": "chưa cung cấp dữ liệu khuôn mặt",
+    "changePassword": "Đổi mật khẩu",
+    "oldPassword": "Mật khẩu cũ",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "required": "Vui lòng nhập trường này!",
+    "save": "Lưu",
+    "week": "Tuần",
+    "day": "Ngày",
+    "month": "Tháng",
+    "previous": "Trước",
+    "next": "Sau",
+    "today": "Hôm nay",
+    "agenda": "Lịch công việc",
+    "moreEvent": "sự kiện khác",
+    "workWeek": "Tuần làm việc",
+    "manualAttendance": "Giảng viên điểm danh",
+    "createAttendanceSession": "Tạo link cho sinh viên tự điểm danh"
   }
 }

@@ -1,5 +1,6 @@
 import { Button, Form, Input, notification } from "antd";
 import classNames from "classnames/bind";
+import { useTranslation } from "react-i18next";
 
 import { useChangePassword } from "core/mutations/auth.ts";
 import { useGetUserInfo } from "core/queries/user.ts";
@@ -12,6 +13,7 @@ export const ConfigPage = () => {
   const { mutateAsync: changePassword } = useChangePassword();
   const [form] = Form.useForm();
   const [notiApi, contextHolder] = notification.useNotification();
+  const { t } = useTranslation();
 
   const handleFinish = async (values: any) => {
     const { oldPassword, newPassword, reNewPassword } = values;
@@ -65,48 +67,42 @@ export const ConfigPage = () => {
             onFinish={handleFinish}
             form={form}
           >
-            <h3>Đổi mật khẩu</h3>
+            <h3>{t("common.changePassword")}</h3>
 
             <div className={cx("ctmsWrapper")}>
               <Form.Item
                 name="oldPassword"
-                rules={[
-                  { required: true, message: "Vui lòng nhập trường này!" },
-                ]}
+                rules={[{ required: true, message: t("common.require") }]}
               >
                 <Input
-                  placeholder="Mật khẩu cũ"
+                  placeholder={t("common.oldPassword")}
                   className={cx("input", "mt-10")}
                 />
               </Form.Item>
 
               <Form.Item
                 name="newPassword"
-                rules={[
-                  { required: true, message: "Vui lòng nhập trường này!" },
-                ]}
+                rules={[{ required: true, message: t("common.require") }]}
               >
                 <Input
-                  placeholder="Mật khẩu mới"
+                  placeholder={t("common.newPassword")}
                   className={cx("input", "mt-10")}
                 />
               </Form.Item>
 
               <Form.Item
                 name="reNewPassword"
-                rules={[
-                  { required: true, message: "Vui lòng nhập trường này!" },
-                ]}
+                rules={[{ required: true, message: t("common.require") }]}
               >
                 <Input
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder={t("common.confirmPassword")}
                   className={cx("input", "mt-10")}
                 />
               </Form.Item>
 
               <div className="flex flex-end">
                 <Button type="primary" className="mt-10" htmlType="submit">
-                  Lưu
+                  {t("common.save")}
                 </Button>
               </div>
             </div>

@@ -291,7 +291,9 @@ export const ClassroomManagementPage = () => {
               items: [
                 {
                   label: (
-                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                    <div className="px-10 py-10 my-5">
+                      {t("common.uploadFileExcel")}
+                    </div>
                   ),
                   key: 2,
                   onClick: () => {
@@ -301,7 +303,7 @@ export const ClassroomManagementPage = () => {
                 {
                   label: (
                     <div className="px-10 py-10 my-5">
-                      Tải xuống file excel mẫu
+                      {t("common.downloadExcel")}
                     </div>
                   ),
                   key: 3,
@@ -327,7 +329,7 @@ export const ClassroomManagementPage = () => {
             type="primary"
             icon={<img src={DownIcon} alt="" height="13" />}
           >
-            <Space>Hành động</Space>
+            <Space>{t("common.action")}</Space>
           </Dropdown.Button>
         </div>
       </div>

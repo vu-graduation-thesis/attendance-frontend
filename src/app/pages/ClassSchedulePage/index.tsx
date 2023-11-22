@@ -17,6 +17,7 @@ import moment from "moment/min/moment-with-locales";
 import { useEffect, useMemo, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +49,7 @@ export const ClassSchedulePage = () => {
   const [invalidTimeSelected, setInvalidTimeSelected] = useState(false);
   const { mutateAsync: updateAttendanceSession } = useUpdateLesson();
   const [notiApi, contextHolder] = notification.useNotification();
+  const { t } = useTranslation();
   const { data: selectedLessonData, refetch: refetchSelectedLessonData } =
     useGetLessons(
       {
@@ -140,13 +142,13 @@ export const ClassSchedulePage = () => {
     <div className={cx("container")}>
       {contextHolder}
       <div className="flex justify-between mb-20">
-        <Title level={4}>Lịch dạy</Title>
+        <Title level={4}>{t("class.schedule")}</Title>
         <div className="flex ">
           {userInfo &&
             (userInfo?.role === PERMISSIONS.ADMIN ? (
               <>
                 <Title level={4} className="mr-10">
-                  Chọn giảng viên:
+                  {t("class.selectTeacher")}
                 </Title>
                 <Select
                   style={{
@@ -160,7 +162,7 @@ export const ClassSchedulePage = () => {
               </>
             ) : (
               <Title level={4} className="mr-10">
-                Giảng viên: {userInfo?.teacher?.name}
+                {t("class.teacher")}: {userInfo?.teacher?.name}
               </Title>
             ))}
         </div>
@@ -176,15 +178,15 @@ export const ClassSchedulePage = () => {
               localizer.format(date, "dddd", culture),
           }}
           messages={{
-            week: "Tuần",
-            work_week: "Tuần làm việc",
-            day: "Ngày",
-            month: "Tháng",
-            previous: "Trước",
-            next: "Sau",
-            today: `Hôm nay`,
-            agenda: "Lịch công việc",
-            showMore: (total: any) => `+${total} sự kiện khác`,
+            week: t("common.week"),
+            work_week: t("common.workWeek"),
+            day: t("common.day"),
+            month: t("common.month"),
+            previous: t("common.previous"),
+            next: t("common.next"),
+            today: t("common.today"),
+            agenda: t("common.agenda"),
+            showMore: (total: any) => `+${total} ${t("common.moreEvent")}`,
           }}
           dayPropGetter={(date: string) => {
             if (moment(date).isSame(moment(), "day")) {
@@ -226,7 +228,7 @@ export const ClassSchedulePage = () => {
                         setIsModalOpen(true);
                       }}
                     >
-                      Giảng viên điểm danh
+                      {t("class.manualAttendance")}
                     </Button>{" "}
                     <br />
                     <Button
@@ -237,7 +239,7 @@ export const ClassSchedulePage = () => {
                         setOpenModalCreateSession(true);
                       }}
                     >
-                      Tạo link cho sinh viên tự điểm danh
+                      {t("class.createAttendanceSession")}
                     </Button>
                   </div>
                 }

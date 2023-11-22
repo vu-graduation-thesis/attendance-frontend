@@ -313,7 +313,9 @@ export const TeacherManagementPage = () => {
               items: [
                 {
                   label: (
-                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                    <div className="px-10 py-10 my-5">
+                      {t("common.uploadFileExcel")}
+                    </div>
                   ),
                   key: 2,
                   onClick: () => {
@@ -323,7 +325,7 @@ export const TeacherManagementPage = () => {
                 {
                   label: (
                     <div className="px-10 py-10 my-5">
-                      Tải xuống file excel mẫu
+                      {t("common.downloadExcel")}
                     </div>
                   ),
                   key: 3,
@@ -338,7 +340,7 @@ export const TeacherManagementPage = () => {
                       ? window.open(response?.[template], "_blank")
                       : notiApi.error({
                           message: "Lỗi",
-                          description: "Không thể tải xuống file mẫu",
+                          description: t("common:downloadFileError"),
                         });
                   },
                 },
@@ -349,7 +351,7 @@ export const TeacherManagementPage = () => {
             type="primary"
             icon={<img src={DownIcon} alt="" height="13" />}
           >
-            <Space>Hành động</Space>
+            <Space>{t("common.action")}</Space>
           </Dropdown.Button>
         </div>
       </div>
@@ -370,7 +372,7 @@ export const TeacherManagementPage = () => {
       </Form>
 
       <Modal
-        title={"Tải lên danh sách giảng viên từ file CSV"}
+        title={t("teacher.uploadTitle")}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         footer={null}

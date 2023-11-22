@@ -288,22 +288,6 @@ export const StudentManagementPage = () => {
                       className="cursor-pointer select-none w-24"
                     />
                   </Popconfirm>
-                  <Popconfirm
-                    title={t("label.confirmDelete")}
-                    onConfirm={() => handleDelete(record)}
-                  >
-                    <img
-                      src={MailIcon}
-                      alt=""
-                      className="cursor-pointer select-none w-24"
-                    />
-                  </Popconfirm>
-                  <img
-                    src={EyeIcon}
-                    alt=""
-                    className="cursor-pointer select-none w-24"
-                    onClick={() => setOpenModal(true)}
-                  />
                 </div>
               )}
             </>
@@ -358,7 +342,7 @@ export const StudentManagementPage = () => {
                 {
                   label: (
                     <div className="px-10 py-10 my-5">
-                      Gửi mail yêu cầu thu thập khuôn mặt
+                      {t("common.sendMailVerify")}
                     </div>
                   ),
                   key: 1,
@@ -369,7 +353,9 @@ export const StudentManagementPage = () => {
                 },
                 {
                   label: (
-                    <div className="px-10 py-10 my-5">Tải lên file excel</div>
+                    <div className="px-10 py-10 my-5">
+                      {t("common.uploadFileExcel")}
+                    </div>
                   ),
                   key: 2,
                   onClick: () => {
@@ -380,7 +366,7 @@ export const StudentManagementPage = () => {
                 {
                   label: (
                     <div className="px-10 py-10 my-5">
-                      Tải xuống file excel mẫu
+                      {t("common.downloadExcel")}
                     </div>
                   ),
                   key: 3,
@@ -406,7 +392,7 @@ export const StudentManagementPage = () => {
             type="primary"
             icon={<img src={DownIcon} alt="" height="13" />}
           >
-            <Space>Hành động</Space>
+            <Space>{t("common.action")}</Space>
           </Dropdown.Button>
         </div>
       </div>
@@ -427,8 +413,8 @@ export const StudentManagementPage = () => {
       <Modal
         title={
           modalType === "mail"
-            ? "Gửi mail yêu cầu thu thập khuôn mặt"
-            : "Tải lên danh sách sinh viên từ file CSV"
+            ? t("common.sendMailVerify")
+            : t("student.uploadFile")
         }
         open={openModal}
         onOk={async () => {
@@ -455,16 +441,16 @@ export const StudentManagementPage = () => {
       >
         {modalType === "mail" ? (
           <div>
-            Xác nhận gửi mail cho{" "}
+            {t("common.confirmSend")}
             <b className="text-red">
               {studentsData?.reduce(
                 (acc: any, curr: any) =>
                   (curr?.student?.verified ? 0 : 1) + acc,
                 0,
               )}{" "}
-              sinh viên{" "}
+              {t("common.student")}
             </b>
-            chưa cung cấp dữ liệu khuôn mặt
+            {t("common.hasNotVerified")}
           </div>
         ) : modalType === "upload" ? (
           <div>

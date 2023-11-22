@@ -98,8 +98,8 @@ export const ClassManagementPage = () => {
       },
       {
         title: t("class.credit"),
-        dataIndex: "numberOfCredit",
-        key: "numberOfCredit",
+        dataIndex: "numberOfCredits",
+        key: "numberOfCredits",
         width: 150,
       },
       {
@@ -148,27 +148,29 @@ export const ClassManagementPage = () => {
       },
       {
         title: t("label.action"),
-        width: 550,
+        width: userInfo?.role === PERMISSIONS.ADMIN ? 250 : 150,
         key: "action",
         render: (_: any, record: any) => (
           <div className="flex justify-between">
-            <img
-              src={EditIcon}
-              alt=""
-              className="cursor-pointer select-none w-24"
-              onClick={() => handleEdit(record)}
-            />
             {userInfo?.role === PERMISSIONS.ADMIN && (
-              <Popconfirm
-                title={t("label.confirmDelete")}
-                onConfirm={() => handleDelete(record)}
-              >
+              <>
                 <img
-                  src={DeleteIcon}
+                  src={EditIcon}
                   alt=""
                   className="cursor-pointer select-none w-24"
+                  onClick={() => handleEdit(record)}
                 />
-              </Popconfirm>
+                <Popconfirm
+                  title={t("label.confirmDelete")}
+                  onConfirm={() => handleDelete(record)}
+                >
+                  <img
+                    src={DeleteIcon}
+                    alt=""
+                    className="cursor-pointer select-none w-24"
+                  />
+                </Popconfirm>
+              </>
             )}
             <img
               src={EyeIcon}
@@ -207,7 +209,7 @@ export const ClassManagementPage = () => {
         </Typography.Title>
         {userInfo?.role === PERMISSIONS.ADMIN && (
           <Button type="primary" onClick={() => navigate(routeConfig.addClass)}>
-            Thêm lớp học
+            {t("class.add")}
           </Button>
         )}
       </div>
