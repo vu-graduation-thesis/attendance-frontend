@@ -47,7 +47,7 @@ export const LoginPage = () => {
           console.log("redirectTo", redirectTo);
           window.location.href = redirectTo;
         } else {
-          navigateTo("/collect_face", { replace: true });
+          navigateTo("/collect-face", { replace: true });
         }
       }
     } catch (error) {
