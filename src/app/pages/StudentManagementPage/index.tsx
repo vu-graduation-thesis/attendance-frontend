@@ -458,6 +458,7 @@ export const StudentManagementPage = () => {
               handleUpload={async file => {
                 await batchCreateStudents(file);
                 setOpenModal(false);
+                refetch();
               }}
             />
           </div>
