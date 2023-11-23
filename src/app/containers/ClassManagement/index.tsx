@@ -8,7 +8,8 @@ import {
   notification,
 } from "antd";
 import classNames from "classnames/bind";
-import { useMemo, useState } from "react";
+import * as dayjs from "dayjs";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useCreateClass } from "core/queries/class.js";
@@ -33,6 +34,10 @@ export const ClassManagement = () => {
   const [numberOfLessonsPerWeek, setNumberOfLessonsPerWeek] = useState(1);
   const [notiApi, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
+  const [firstSelectSchedule, setFirstSelectSchedule] = useState<dayjs.Dayjs>();
+  const childRef = useRef<any>();
+
+  console.log("firstSelectSchedule", firstSelectSchedule);
 
   const teachersFormatted = useMemo(() => {
     const result =
@@ -81,6 +86,9 @@ export const ClassManagement = () => {
         });
 
         form.resetFields();
+
+        childRef.current?.reset();
+        setStudents([]);
 
         notiApi.success({
           message: "Thành công",
@@ -216,53 +224,71 @@ export const ClassManagement = () => {
               onChange={e => {
                 setNumberOfLessonsPerWeek(parseInt(e.target.value) || 0);
               }}
+              defaultValue={1}
             />
           </Form.Item>
         </div>
         <div>
-          {Array(numberOfLessonsPerWeek)
-            .fill(0)
-            .map((_, index) => (
-              <div className="flex justify-between mb-10">
-                <div className="mr-20">
-                  <Title level={5}>Ngày bắt đầu</Title>
-                  <Form.Item
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input class code!",
-                      },
-                    ]}
-                    name={`schedule[${index}]`}
-                  >
-                    <DatePicker style={{ width: "100%", minWidth: "300px" }} />
-                  </Form.Item>
-                </div>
+          {numberOfLessonsPerWeek > 0 &&
+            Array(numberOfLessonsPerWeek)
+              .fill(0)
+              .map((_, index) => (
+                <div className="flex justify-between mb-10">
+                  <div className="mr-20">
+                    <Title level={5}>Ngày bắt đầu</Title>
+                    <Form.Item
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input class code!",
+                        },
+                      ]}
+                      name={`schedule[${index}]`}
+                    >
+                      <DatePicker
+                        style={{ width: "100%", minWidth: "300px" }}
+                        onChange={value => {
+                          if (index === 0) {
+                            setFirstSelectSchedule(value);
+                          }
+                        }}
+                        disabledDate={current => {
+                          if (!firstSelectSchedule || index === 0) {
+                            return false;
+                          }
+                          return (
+                            current &&
+                            !current.isSame(firstSelectSchedule, "week")
+                          );
+                        }}
+                      />
+                    </Form.Item>
+                  </div>
 
-                <div>
-                  <Title level={5}>Phòng học cố định</Title>
-                  <Form.Item
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input class code!",
-                      },
-                    ]}
-                    name={`classroom[${index}]`}
-                  >
-                    <Select
-                      style={{ width: "100%", minWidth: "300px" }}
-                      options={classroomFormatted}
-                      defaultActiveFirstOption
-                    />
-                  </Form.Item>
+                  <div>
+                    <Title level={5}>Phòng học cố định</Title>
+                    <Form.Item
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input class code!",
+                        },
+                      ]}
+                      name={`classroom[${index}]`}
+                    >
+                      <Select
+                        style={{ width: "100%", minWidth: "300px" }}
+                        options={classroomFormatted}
+                        defaultActiveFirstOption
+                      />
+                    </Form.Item>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
 
-      <StudentTableTransfer onChange={setStudents} />
+      <StudentTableTransfer onChange={setStudents} ref={childRef} />
 
       <div className="flex flex-end">
         <Button

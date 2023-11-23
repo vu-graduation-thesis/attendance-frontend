@@ -53,7 +53,9 @@
     "totalNumberOfLessons": "Total number of lessons",
     "add": "Add Class",
     "selectTeacher": "Select teacher: ",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "manualAttendance": "Go to attendance page",
+    "createAttendanceSession": "Create session for students to self-check-in"
   },
   "student": {
     "id": "Student ID",
@@ -154,6 +156,9 @@
     "moreEvent": "more events",
     "workWeek": "Work Week",
     "manualAttendance": "Teacher's manual attendance",
-    "createAttendanceSession": "Create link for students to self-check-in"
+    "createAttendanceSession": "Create link for students to self-check-in",
+    "autoFinishSession": "Automatically finish session at: ",
+    "selectAction": "Select action",
+    "goToAttendancePage": "View details"
   }
 }

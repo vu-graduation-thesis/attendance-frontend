@@ -1,7 +1,7 @@
 import { Button, Modal, Popconfirm, Table, Typography } from "antd";
 import classNames from "classnames/bind";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -66,6 +66,10 @@ export const ClassManagementPage = () => {
     navigate(`/class-management/edit/${record?._id}`);
   };
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const tableParams = useMemo(
     () => ({
       pagination: {
@@ -106,17 +110,17 @@ export const ClassManagementPage = () => {
         title: t("class.teaching_schedule"),
         dataIndex: "lessonSchedules",
         key: "lessonSchedules",
-        width: 250,
+        width: 300,
         render: (value: any) => {
           return value?.map((item: any) => {
             return (
               <>
                 {item?.startDay && (
-                  <div>
+                  <div className="mt-20">
                     {`Thứ ${
                       DateTime.fromFormat(item?.startDay, "dd/mm/yyyy").weekday
-                    } hàng tuần, từ 
-                  ${item?.startDay || ""}`}
+                    } hàng tuần, từ ngày 
+                  ${item?.startDay || ""}`}{" "}
                   </div>
                 )}
               </>

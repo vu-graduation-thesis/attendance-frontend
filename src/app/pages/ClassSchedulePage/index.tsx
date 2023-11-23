@@ -243,7 +243,7 @@ export const ClassSchedulePage = () => {
                     </Button>
                   </div>
                 }
-                title="Chọn hành động"
+                title={t("common.selectAction")}
                 trigger="click"
               >
                 <div>{event.title}</div>
@@ -279,7 +279,7 @@ export const ClassSchedulePage = () => {
               setOpenModalCreateSession(false);
             }}
           >
-            Ok
+            OK
           </Button>,
         ]}
         onCancel={() => {
@@ -289,7 +289,7 @@ export const ClassSchedulePage = () => {
         }}
       >
         <div className="flex align-center mt-20">
-          <h3 className="mr-20">Tự động kết thúc phiên điểm danh lúc: </h3>
+          <h3 className="mr-20">{t("common.autoFinishSession")}: </h3>
           <TimePicker
             value={sessionEndTime}
             onOk={e => {

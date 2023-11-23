@@ -53,7 +53,9 @@
     "totalNumberOfLessons": "Tổng số buổi học",
     "add": "Thêm lớp học",
     "selectTeacher": "Chọn giảng viên: ",
-    "schedule": "Lịch dạy"
+    "schedule": "Lịch dạy",
+    "manualAttendance": "Vào trang điểm danh",
+    "createAttendanceSession": "Tạo phiên cho sinh viên tự điểm danh"
   },
   "student": {
     "id": "Mã sinh viên",
@@ -154,6 +156,9 @@
     "moreEvent": "sự kiện khác",
     "workWeek": "Tuần làm việc",
     "manualAttendance": "Giảng viên điểm danh",
-    "createAttendanceSession": "Tạo link cho sinh viên tự điểm danh"
+    "createAttendanceSession": "Tạo link cho sinh viên tự điểm danh",
+    "autoFinishSession": "Tự động kết thúc phiên điểm danh lúc",
+    "selectAction": "Chọn hành động",
+    "goToAttendancePage": "Xem chi tiết"
   }
 }

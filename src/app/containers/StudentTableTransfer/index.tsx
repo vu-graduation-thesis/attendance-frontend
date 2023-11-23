@@ -1,18 +1,15 @@
-import { Space, Switch, Table, Tag, Transfer } from "antd";
+import { Button, Table, Transfer } from "antd";
 import type { ColumnsType, TableRowSelection } from "antd/es/table/interface";
 import type { TransferItem, TransferProps } from "antd/es/transfer";
 import difference from "lodash/difference";
-import React, { useMemo, useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 
 import { useGetStudents } from "core/queries/student.js";
-
-interface RecordType {
-  key: string;
-  title: string;
-  description: string;
-  disabled: boolean;
-  tag: string;
-}
 
 interface DataType {
   key: string;
@@ -106,7 +103,14 @@ const rightTableColumns: ColumnsType<Pick<DataType, "studentId">> = [
   },
 ];
 
-const StudentTableTransfer: React.FC = ({ onChange }: any) => {
+export default forwardRef<any, {}>((props, ref) => {
+  const { onChange } = props;
+
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      setTargetKeys([]);
+    },
+  }));
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
   const { data: studentsData } = useGetStudents();
@@ -122,6 +126,7 @@ const StudentTableTransfer: React.FC = ({ onChange }: any) => {
   );
 
   const handleChange = (nextTargetKeys: string[]) => {
+    console.log("change");
     setTargetKeys(nextTargetKeys);
     onChange(nextTargetKeys);
   };
@@ -144,6 +149,4 @@ const StudentTableTransfer: React.FC = ({ onChange }: any) => {
       />
     </>
   );
-};
-
-export default StudentTableTransfer;
+});
