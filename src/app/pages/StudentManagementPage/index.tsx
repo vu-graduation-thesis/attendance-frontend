@@ -10,6 +10,7 @@ import {
   notification,
 } from "antd";
 import classNames from "classnames/bind";
+import dayjs from "dayjs";
 import { DateTime } from "luxon";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
@@ -37,7 +38,6 @@ import { useCreateStudent, useUpdateStudent } from "core/mutations/student.ts";
 import { useGetStudents } from "core/queries/student.ts";
 
 import styles from "./styles.module.scss";
-import dayjs from "dayjs";
 
 const cx = classNames.bind(styles);
 
@@ -82,15 +82,14 @@ export const StudentManagementPage = () => {
     if (editingKey.includes(ADD_PREFIX)) {
       setDataTable(dataTable.filter((item: any) => item._id !== editingKey));
     }
-    record.student.birthday = record?.student?.birthday ? 
-              dayjs(record?.student?.birthday) : dayjs("2000-01-01T11:42:28.423Z")
+    record.student.birthday = record?.student?.birthday
+      ? dayjs(record?.student?.birthday)
+      : dayjs("2000-01-01T11:42:28.423Z");
     form.setFieldsValue({
       ...record,
     });
-    console.log(record)
 
     setEditingKey(record._id);
-    console.log(record)
   };
 
   const cancel = () => {
@@ -199,7 +198,7 @@ export const StudentManagementPage = () => {
         title: t("student.birthday"),
         dataIndex: ["student", "birthday"],
         key: ["student", "birthday"],
-        width: 350,
+        width: 250,
         editable: true,
         render: (value: any) => value && moment(value).format("DD/MM/YYYY"),
         inputType: "date",
@@ -249,7 +248,7 @@ export const StudentManagementPage = () => {
       },
       {
         title: t("label.action"),
-        width: 550,
+        width: 150,
         key: "action",
         render: (_: any, record: any) => {
           const editable = isEditing(record);

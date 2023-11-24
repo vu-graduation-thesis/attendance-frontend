@@ -178,6 +178,18 @@ export const LessonPage = () => {
     return newLogs.reverse();
   }, [attendanceLog]);
 
+  const attendanceCount = useMemo(
+    () =>
+      lesson?.class?.students?.reduce(
+        (prev: any, acc: any) =>
+          lesson?.attendances?.some((u: any) => u.student === acc?._id)
+            ? prev + 1
+            : prev,
+        0,
+      ),
+    [lesson],
+  );
+
   return (
     <div className={cx("container")}>
       <div className="p-16 pb-0 sticky bg-white" ref={headerRef}>
@@ -221,8 +233,7 @@ export const LessonPage = () => {
         <div>
           {!!lesson?.attendances?.length && (
             <Text>
-              Đã điểm danh: {lesson?.attendances?.length}/
-              {lesson?.class?.students?.length}
+              Đã điểm danh: {attendanceCount}/{lesson?.class?.students?.length}
             </Text>
           )}
         </div>
@@ -305,7 +316,7 @@ export const LessonPage = () => {
         open={openDrawer}
         dataSource={logs || []}
         filesMapping={filesMapping}
-        placement="right"
+        placement={Capacitor.isNativePlatform() ? "bottom" : "right"}
       />
     </div>
   );
