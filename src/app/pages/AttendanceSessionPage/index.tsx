@@ -1,5 +1,6 @@
-import { Button, Spin, Typography } from "antd";
+import { Button, Spin, Statistic, Typography, notification } from "antd";
 import classNames from "classnames/bind";
+import dayjs from "dayjs";
 import * as faceapi from "face-api.js";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,8 +12,9 @@ import {
 
 import FrameIcon from "core/assets/images/frame.png";
 import LogoIcon from "core/assets/images/logo.png";
+import { EXPIRED_TIME_ERROR } from "core/constants/common.ts";
 import { useAttendanceSession, useUploadFaces } from "core/mutations/core.js";
-import { useGetStudentDetail } from "core/queries/student.js";
+import { useGetLessons } from "core/queries/lesson.ts";
 import { useGetUserInfo } from "core/queries/user.ts";
 import { routeConfig } from "core/routes/routeConfig.ts";
 import { isMobile } from "core/utils/brower.js";
@@ -24,6 +26,7 @@ const cx = classNames.bind(styles);
 const NUMBER_OF_IMAGES = 1;
 
 const { Text, Title } = Typography;
+const { Countdown } = Statistic;
 
 export const AttendanceSessionPage = () => {
   const { lessionId } = useParams();
@@ -34,6 +37,39 @@ export const AttendanceSessionPage = () => {
   const { mutateAsync: uploadFaces, isLoading } = useAttendanceSession();
   const { data: userInfo } = useGetUserInfo();
   const navigate = useNavigate();
+  const [notiApi, contextHolder] = notification.useNotification();
+  const { data: lessonData } = useGetLessons({
+    filter: {
+      _id: lessionId,
+    },
+  });
+
+  const handleUploadFace = (image: string) => {
+    uploadFaces({
+      lessionId,
+      image,
+    } as any)
+      .then(() => {
+        notiApi.success({
+          message: "Thành công",
+          description: `Điểm danh thành công`,
+        });
+      })
+      .catch(err => {
+        if (err?.response?.data?.error?.code === EXPIRED_TIME_ERROR) {
+          setImages([]);
+          notiApi.error({
+            message: "Thất bại",
+            description: `Đã hết thời gian điểm danh`,
+          });
+        } else {
+          notiApi.error({
+            message: "Thất bại",
+            description: `Đã xảy ra lỗi khi nhận diện ảnh`,
+          });
+        }
+      });
+  };
 
   const faceMyDetect = () => {
     const intervalId: any = setInterval(async () => {
@@ -50,16 +86,11 @@ export const AttendanceSessionPage = () => {
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
-          setImages(prev => {
-            if (prev.length >= NUMBER_OF_IMAGES) {
-              CameraPreview.stop();
-              clearInterval(intervalId);
-              collectFaceRef.current.style.display = "none";
-              return prev;
-            } else {
-              return [...prev, imageDataURL];
-            }
-          });
+          handleUploadFace(imageDataURL);
+          CameraPreview.stop();
+          clearInterval(intervalId);
+          collectFaceRef.current.style.display = "none";
+          setImages([...images, imageDataURL]);
         }
       }
 
@@ -107,26 +138,16 @@ export const AttendanceSessionPage = () => {
       },
     );
   }, []);
-
-  useEffect(() => {
-    if (images.length === NUMBER_OF_IMAGES) {
-      uploadFaces({
-        lessionId,
-        image: images?.[0],
-      } as any);
-      refetch();
-    }
-  }, [images]);
-
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <img className={cx("logo")} src={LogoIcon} alt="" />
       <h3 className={cx("title")}>Điểm danh bằng khuôn mặt</h3>
       {!!userInfo && (
         <div className={cx("info", "mb-20")}>
           <Title level={5}>Sinh viên: {userInfo?.student?.name}</Title>
           <Text>Mã sinh viên: {userInfo?.student?.studentId}</Text> <br />
-          <Text>Lớp: {userInfo?.student?.class}</Text> <br />
+          <Text>Email: {userInfo?.email}</Text> <br />
           <Text>
             Trạng thái:{"  "}
             {userInfo?.student?.verified ? (
@@ -136,49 +157,65 @@ export const AttendanceSessionPage = () => {
             )}
           </Text>{" "}
           <br />
+          <Text>
+            Môn học:{" "}
+            {`${lessonData?.[0]?.class?.name || ""} - ${
+              lessonData?.[0]?.classroom?.name || ""
+            }`}
+          </Text>{" "}
+          <br />
+          <div className="flex justify-center flex-col align-center mt-20">
+            <h3>Thời gian còn lại</h3>
+            <Countdown
+              value={dayjs(lessonData?.[0]?.endAttendanceSessionTime).unix()}
+              format="HH:mm:ss"
+            />
+          </div>
         </div>
       )}
       {!!userInfo && userInfo?.student?.verified ? (
-        <div className={cx("wrapperCamera")} ref={collectFaceRef}>
-          <div id="cameraPreview" className={cx("cameraPreview")}>
-            <div className={cx("guide")}>
-              {openGuide ? (
-                <>
-                  <span className={cx("text")}>Đưa khuôn mặt vào khung</span>
-                  <img src={FrameIcon} alt="" className={cx("frame")} />
-                </>
-              ) : (
-                <div className={cx("guideInProcess")}>
-                  <span className={cx("text")}>Nhìn thẳng vào camera</span>
-                  <div className={cx("percent")}>
-                    {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
+        <>
+          <div className={cx("wrapperCamera")} ref={collectFaceRef}>
+            <div id="cameraPreview" className={cx("cameraPreview")}>
+              <div className={cx("guide")}>
+                {openGuide ? (
+                  <>
+                    <span className={cx("text")}>Đưa khuôn mặt vào khung</span>
+                    <img src={FrameIcon} alt="" className={cx("frame")} />
+                  </>
+                ) : (
+                  <div className={cx("guideInProcess")}>
+                    <span className={cx("text")}>Nhìn thẳng vào camera</span>
+                    <div className={cx("percent")}>
+                      {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <canvas
-              width={300}
-              height={400}
-              ref={canvasRef}
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-                zIndex: 999,
-              }}
-            ></canvas>
+              <canvas
+                width={300}
+                height={400}
+                ref={canvasRef}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                  zIndex: 999,
+                }}
+              ></canvas>
+            </div>
+            <Button
+              type="primary"
+              onClick={handleCollectStart}
+              className={cx("btnStart")}
+            >
+              Bắt đầu
+            </Button>
           </div>
-          <Button
-            type="primary"
-            onClick={handleCollectStart}
-            className={cx("btnStart")}
-          >
-            Bắt đầu
-          </Button>
-        </div>
+        </>
       ) : (
         <>
           <Text>Bạn cần cung cấp dữ liệu khuôn mặt trước khi điểm danh</Text>{" "}

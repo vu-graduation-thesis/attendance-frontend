@@ -88,7 +88,7 @@ export const ClassSchedulePage = () => {
   const navigate = useNavigate();
 
   const events = lessonsData?.map((lesson: any) => ({
-    title: lesson.class.name,
+    title: lesson.class?.name + " - " + lesson.classroom?.name,
     start: dayjs(lesson.lessonDay).toDate(),
     end: dayjs(lesson.lessonDay).add(4, "hours").toDate(),
     lessonId: lesson._id,
@@ -111,6 +111,20 @@ export const ClassSchedulePage = () => {
       })) || []
     );
   }, [teachersData, userInfo]);
+
+  const attendanceCount = useMemo(
+    () =>
+      selectedLessonData?.class?.students?.reduce(
+        (prev: any, acc: any) =>
+          selectedLessonData?.attendances?.some(
+            (u: any) => u.student === acc?._id,
+          )
+            ? prev + 1
+            : prev,
+        0,
+      ),
+    [selectedLessonData],
+  );
 
   useEffect(() => {
     setTeacher(teachersFormatted?.[0]?.value);
@@ -288,32 +302,24 @@ export const ClassSchedulePage = () => {
               console.log("vvvv", e?.diff(dayjs(), "hour"));
             }}
             onOk={e => {
-              console.log(
-                e.toDate().toLocaleString(),
-                dayjs().toDate().toLocaleString(),
-                e.isAfter(dayjs()),
-                sessionEndTime.toDate().toLocaleTimeString(),
-              );
               setSessionEndTime(e);
               if (e?.isAfter(dayjs())) {
-                console.log("oke nha");
-                // setInvalidTimeSelected(false);
-                // updateAttendanceSession({
-                //   id: selectedEvent?.lessonId,
-                //   endAttendanceSessionTime: e?.toISOString(),
-                // } as any)
-                //   .then(() => {
-                //     notiApi.success({
-                //       message: "Thành công",
-                //       description:
-                //         "Đã cập nhật thời gian kết thúc phiên điểm danh",
-                //     });
-                //   })
-                //   .catch(() => {});
-                // refetchSelectedLessonData();
+                setInvalidTimeSelected(false);
+                updateAttendanceSession({
+                  id: selectedEvent?.lessonId,
+                  endAttendanceSessionTime: e?.toISOString(),
+                } as any)
+                  .then(() => {
+                    notiApi.success({
+                      message: "Thành công",
+                      description:
+                        "Đã cập nhật thời gian kết thúc phiên điểm danh",
+                    });
+                  })
+                  .catch(() => {});
+                refetchSelectedLessonData();
               } else {
-                // setInvalidTimeSelected(true);
-                console.log("notoke");
+                setInvalidTimeSelected(true);
               }
             }}
           />
@@ -348,7 +354,7 @@ export const ClassSchedulePage = () => {
                 <h3 className="mt-20">
                   Đã có{" "}
                   <b className="text-red">
-                    {selectedLessonData?.[0]?.attendances?.length || 0} /{" "}
+                    {attendanceCount || 0} /{" "}
                     {selectedLessonData?.[0]?.class?.students?.length || 0}
                   </b>{" "}
                   điểm danh

@@ -129,7 +129,6 @@ export const CollectFacePage = () => {
         <div className={cx("info", "mb-20")}>
           <Title level={5}>Sinh viên: {userInfo?.student?.name}</Title>
           <Text>Mã sinh viên: {userInfo?.student?.studentId}</Text> <br />
-          <Text>Lớp: {userInfo?.student?.class}</Text> <br />
           <Text>
             Trạng thái:{"  "}
             {userInfo?.student?.verified ? (
