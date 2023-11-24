@@ -13,6 +13,7 @@ import FrameIcon from "core/assets/images/frame.png";
 import LogoIcon from "core/assets/images/logo.png";
 import { useUploadFaces } from "core/mutations/core.js";
 import { useGetStudentDetail } from "core/queries/student.js";
+import { useGetUserInfo } from "core/queries/user.ts";
 import { isMobile } from "core/utils/brower.js";
 
 import styles from "./styles.module.scss";
@@ -29,9 +30,7 @@ export const CollectFacePage = () => {
   const collectFaceRef = useRef<any>(null);
   const [openGuide, setOpenGuide] = useState<boolean>(true);
   const { mutateAsync: uploadFaces, isLoading } = useUploadFaces();
-  const { data: studentData, refetch } = useGetStudentDetail(
-    JSON.parse(localStorage.getItem("userInfo") || "{}")?._id || "",
-  );
+  const { data: userInfo, refetch } = useGetUserInfo();
   const navigate = useNavigate();
 
   const faceMyDetect = () => {
@@ -108,24 +107,32 @@ export const CollectFacePage = () => {
   }, []);
 
   useEffect(() => {
+    // bad code
+    let interval: any;
     if (images.length === NUMBER_OF_IMAGES) {
       uploadFaces(images);
-      refetch();
+      interval = setInterval(() => {
+        refetch();
+      }, 1500);
     }
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [images]);
 
   return (
     <div className={cx("container")}>
       <img className={cx("logo")} src={LogoIcon} alt="" />
       <h3 className={cx("title")}>Cung cấp dữ liệu khuôn mặt</h3>
-      {!!studentData && (
+      {!!userInfo && (
         <div className={cx("info", "mb-20")}>
-          <Title level={5}>Sinh viên: {studentData?.student?.name}</Title>
-          <Text>Mã sinh viên: {studentData?.student?.studentId}</Text> <br />
-          <Text>Lớp: {studentData?.student?.class}</Text> <br />
+          <Title level={5}>Sinh viên: {userInfo?.student?.name}</Title>
+          <Text>Mã sinh viên: {userInfo?.student?.studentId}</Text> <br />
+          <Text>Lớp: {userInfo?.student?.class}</Text> <br />
           <Text>
             Trạng thái:{"  "}
-            {studentData?.student?.verified ? (
+            {userInfo?.student?.verified ? (
               <b className="text-green">Đã cung cấp dữ liệu khuôn mặt</b>
             ) : (
               <b className="text-red">Chưa cung cấp dữ liệu khuôn mặt</b>
@@ -134,7 +141,7 @@ export const CollectFacePage = () => {
           <br />
         </div>
       )}
-      {!!studentData && !studentData?.student?.verified && (
+      {!!userInfo && !userInfo?.student?.verified && (
         <div className={cx("wrapperCamera")} ref={collectFaceRef}>
           <div id="cameraPreview" className={cx("cameraPreview")}>
             <div className={cx("guide")}>

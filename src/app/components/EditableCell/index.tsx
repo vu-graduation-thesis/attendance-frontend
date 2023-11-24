@@ -15,7 +15,7 @@ export const EditableCell: React.FC<any> = ({
     inputType === "number" ? (
       <InputNumber />
     ) : inputType === "date" ? (
-      <DatePicker />
+      <DatePicker format={"DD/MM/YYYY"} />
     ) : (
       <Input />
     );

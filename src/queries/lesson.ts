@@ -12,7 +12,6 @@ export const useGetLessons = (filter: any, enabled: boolean = true) =>
       enabled,
       refetchInterval: (_, query) => {
         const polling = query?.queryKey?.[2] || false;
-        console.log(polling);
         return polling;
       },
     },

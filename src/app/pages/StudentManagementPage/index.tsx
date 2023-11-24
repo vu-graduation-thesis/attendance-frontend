@@ -37,6 +37,7 @@ import { useCreateStudent, useUpdateStudent } from "core/mutations/student.ts";
 import { useGetStudents } from "core/queries/student.ts";
 
 import styles from "./styles.module.scss";
+import dayjs from "dayjs";
 
 const cx = classNames.bind(styles);
 
@@ -81,10 +82,15 @@ export const StudentManagementPage = () => {
     if (editingKey.includes(ADD_PREFIX)) {
       setDataTable(dataTable.filter((item: any) => item._id !== editingKey));
     }
+    record.student.birthday = record?.student?.birthday ? 
+              dayjs(record?.student?.birthday) : dayjs("2000-01-01T11:42:28.423Z")
     form.setFieldsValue({
       ...record,
     });
+    console.log(record)
+
     setEditingKey(record._id);
+    console.log(record)
   };
 
   const cancel = () => {
@@ -192,8 +198,8 @@ export const StudentManagementPage = () => {
       {
         title: t("student.birthday"),
         dataIndex: ["student", "birthday"],
-        key: "birthday",
-        width: 150,
+        key: ["student", "birthday"],
+        width: 350,
         editable: true,
         render: (value: any) => value && moment(value).format("DD/MM/YYYY"),
         inputType: "date",

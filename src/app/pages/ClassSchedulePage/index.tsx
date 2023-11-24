@@ -11,7 +11,7 @@ import {
   notification,
 } from "antd";
 import classNames from "classnames/bind";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import "moment/locale/vi";
 import moment from "moment/min/moment-with-locales";
 import { useEffect, useMemo, useState } from "react";
@@ -63,9 +63,7 @@ export const ClassSchedulePage = () => {
 
   const [openModalCreateSession, setOpenModalCreateSession] = useState(false);
 
-  const [sessionEndTime, setSessionEndTime] = useState<dayjs.Dayjs>(
-    dayjs.unix(new Date().getTime() / 1000),
-  );
+  const [sessionEndTime, setSessionEndTime] = useState<dayjs.Dayjs>(dayjs());
 
   const [teacher, setTeacher] = useState();
   const { data: classesData } = useGetClasses(
@@ -91,8 +89,8 @@ export const ClassSchedulePage = () => {
 
   const events = lessonsData?.map((lesson: any) => ({
     title: lesson.class.name,
-    start: moment(lesson.lessonDay).toDate(),
-    end: moment(lesson.lessonDay).add(4, "hours").toDate(),
+    start: dayjs(lesson.lessonDay).toDate(),
+    end: dayjs(lesson.lessonDay).add(4, "hours").toDate(),
     lessonId: lesson._id,
   }));
 
@@ -118,19 +116,13 @@ export const ClassSchedulePage = () => {
     setTeacher(teachersFormatted?.[0]?.value);
   }, [teachersFormatted]);
 
-  console.log(
-    "selectedLesson",
-    selectedLessonData?.[0]?.endAttendanceSessionTime,
-    selectedEvent,
-  );
-
   useEffect(() => {
-    setSessionEndTime(
-      dayjs.unix(
-        moment(selectedLessonData?.[0]?.endAttendanceSessionTime).unix(),
-      ),
-    );
-  }, [selectedLessonData]);
+    if (selectedLessonData) {
+      let value = dayjs(selectedLessonData?.[0]?.endAttendanceSessionTime);
+      if (value.isBefore(dayjs())) value = dayjs();
+      setSessionEndTime(value);
+    }
+  }, [selectedLessonData?.[0]?.endAttendanceSessionTime]);
 
   useEffect(() => {
     if (selectedEvent?.lessonId) {
@@ -189,11 +181,11 @@ export const ClassSchedulePage = () => {
             showMore: (total: any) => `+${total} ${t("common.moreEvent")}`,
           }}
           dayPropGetter={(date: string) => {
-            if (moment(date).isSame(moment(), "day")) {
+            if (dayjs(date).isSame(dayjs(), "day")) {
               return;
             }
 
-            if (!moment(date).isSame(moment(), "month")) {
+            if (!dayjs(date).isSame(dayjs(), "month")) {
               return {
                 style: {
                   backgroundColor: "#F6F7F7",
@@ -292,26 +284,36 @@ export const ClassSchedulePage = () => {
           <h3 className="mr-20">{t("common.autoFinishSession")}: </h3>
           <TimePicker
             value={sessionEndTime}
+            onChange={e => {
+              console.log("vvvv", e?.diff(dayjs(), "hour"));
+            }}
             onOk={e => {
-              console.log(e?.toISOString());
-              if (e?.isAfter(moment())) {
-                setSessionEndTime(e);
-                setInvalidTimeSelected(false);
-                updateAttendanceSession({
-                  id: selectedEvent?.lessonId,
-                  endAttendanceSessionTime: e?.toISOString(),
-                } as any)
-                  .then(() => {
-                    notiApi.success({
-                      message: "Thành công",
-                      description:
-                        "Đã cập nhật thời gian kết thúc phiên điểm danh",
-                    });
-                  })
-                  .catch(() => {});
-                refetchSelectedLessonData();
+              console.log(
+                e.toDate().toLocaleString(),
+                dayjs().toDate().toLocaleString(),
+                e.isAfter(dayjs()),
+                sessionEndTime.toDate().toLocaleTimeString(),
+              );
+              setSessionEndTime(e);
+              if (e?.isAfter(dayjs())) {
+                console.log("oke nha");
+                // setInvalidTimeSelected(false);
+                // updateAttendanceSession({
+                //   id: selectedEvent?.lessonId,
+                //   endAttendanceSessionTime: e?.toISOString(),
+                // } as any)
+                //   .then(() => {
+                //     notiApi.success({
+                //       message: "Thành công",
+                //       description:
+                //         "Đã cập nhật thời gian kết thúc phiên điểm danh",
+                //     });
+                //   })
+                //   .catch(() => {});
+                // refetchSelectedLessonData();
               } else {
-                setInvalidTimeSelected(true);
+                // setInvalidTimeSelected(true);
+                console.log("notoke");
               }
             }}
           />
@@ -324,7 +326,7 @@ export const ClassSchedulePage = () => {
             showIcon
           />
         )}
-        {selectedEvent && sessionEndTime?.isAfter(moment()) && (
+        {selectedEvent && sessionEndTime?.isAfter(dayjs()) && (
           <div className="mt-20 mb-20">
             <Alert
               message="Sinh viên quét mã QR để vào link điểm danh"
