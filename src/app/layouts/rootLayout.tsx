@@ -13,11 +13,6 @@ const RootLayout = () => {
   const navigator = useNavigate();
   const token = localStorage.getItem("token");
   const { isError } = useVerifyToken(token as string);
-  useEffect(() => {
-    if (Capacitor.isNativePlatform()) {
-      navigator("/app/home");
-    }
-  }, []);
 
   useEffect(() => {
     if (!token || isError) {

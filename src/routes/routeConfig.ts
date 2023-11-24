@@ -10,7 +10,7 @@ export const routeConfig = {
   subject: "/subject-management",
   teacher: "/teacher-management",
   classroom: "/classroom-management",
-  login: "login",
+  login: "/login",
   collectFace: "/collect-face",
   attendanceSession: "/attendance-session/:lessionId", // for students
   lessonDetail: "/lesson/:id", // for teachers

@@ -1,13 +1,24 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { Capacitor } from "@capacitor/core";
 
 import { Header } from "core/app/components/Header";
 import { Sidebar } from "core/app/components/Sidebar";
+import { routeConfig } from "core/routes/routeConfig.ts";
 
 interface Props {
   children: JSX.Element;
 }
 
 function DefaultLayout({ children }: Props): ReactNode {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      navigate(routeConfig.mobile.schedule);
+    }
+  }, []);
+
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
