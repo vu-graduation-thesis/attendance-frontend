@@ -117,9 +117,9 @@ export const ClassSchedulePage = () => {
 
   const attendanceCount = useMemo(
     () =>
-      selectedLessonData?.class?.students?.reduce(
+      selectedLessonData?.[0]?.class?.students?.reduce(
         (prev: any, acc: any) =>
-          selectedLessonData?.attendances?.some(
+          selectedLessonData?.[0]?.attendances?.some(
             (u: any) => u.student === acc?._id,
           )
             ? prev + 1
@@ -128,6 +128,8 @@ export const ClassSchedulePage = () => {
       ),
     [selectedLessonData],
   );
+
+  console.log(attendanceCount);
 
   useEffect(() => {
     setTeacher(teachersFormatted?.[0]?.value);
