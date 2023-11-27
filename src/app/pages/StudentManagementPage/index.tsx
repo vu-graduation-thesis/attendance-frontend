@@ -138,7 +138,7 @@ export const StudentManagementPage = () => {
           if (!!errorData?.[key]) {
             form.setFields([
               {
-                name: key,
+                name: key === "studentId" ? ["student", "studentId"] : key,
                 errors: [t(`student.${key}Existed`)],
               },
             ]);

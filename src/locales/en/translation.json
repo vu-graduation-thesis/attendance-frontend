@@ -71,6 +71,7 @@
     "see": "Action",
     "usernameExisted": "Username already exists or is linked to another account",
     "emailExisted": "Email already exists or is linked to another account",
+    "studentIdExisted": "Student ID already exists",
     "studentId": "Student ID",
     "status": "Verification status",
     "verified": "Verified",
