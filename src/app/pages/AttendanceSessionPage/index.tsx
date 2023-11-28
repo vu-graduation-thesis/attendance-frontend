@@ -12,12 +12,13 @@ import {
 
 import FrameIcon from "core/assets/images/frame.png";
 import LogoIcon from "core/assets/images/logo.png";
-import { EXPIRED_TIME_ERROR } from "core/constants/common.ts";
+import { DISTANCE_ERROR, EXPIRED_TIME_ERROR } from "core/constants/common.ts";
 import { useAttendanceSession, useUploadFaces } from "core/mutations/core.js";
 import { useGetLessons } from "core/queries/lesson.ts";
 import { useGetUserInfo } from "core/queries/user.ts";
 import { routeConfig } from "core/routes/routeConfig.ts";
 import { isMobile } from "core/utils/brower.js";
+import getLocation from "core/utils/location.ts";
 
 import styles from "./styles.module.scss";
 
@@ -44,10 +45,13 @@ export const AttendanceSessionPage = () => {
     },
   });
 
-  const handleUploadFace = (image: string) => {
+  const handleUploadFace = async (image: string) => {
+    const location = await getLocation();
+
     uploadFaces({
       lessionId,
       image,
+      location,
     } as any)
       .then(() => {
         notiApi.success({
@@ -56,18 +60,29 @@ export const AttendanceSessionPage = () => {
         });
       })
       .catch(err => {
-        if (err?.response?.data?.error?.code === EXPIRED_TIME_ERROR) {
+        const code = err?.response?.data?.error?.code;
+        if (code === EXPIRED_TIME_ERROR) {
           setImages([]);
           notiApi.error({
             message: "Thất bại",
             description: `Đã hết thời gian điểm danh`,
           });
-        } else {
+          return;
+        }
+
+        if (code === DISTANCE_ERROR) {
+          setImages([]);
           notiApi.error({
             message: "Thất bại",
-            description: `Đã xảy ra lỗi khi nhận diện ảnh`,
+            description: `Bạn đang ở quá xa phòng học`,
           });
+          return;
         }
+
+        notiApi.error({
+          message: "Thất bại",
+          description: `Đã xảy ra lỗi khi nhận diện ảnh`,
+        });
       });
   };
 
@@ -82,7 +97,7 @@ export const AttendanceSessionPage = () => {
 
       if (canvasRef.current) {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
-        if (detections?.[0]?.score > 0.7) {
+        if (detections?.length === 1 && detections?.[0]?.score > 0.7) {
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;

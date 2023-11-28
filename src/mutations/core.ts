@@ -6,4 +6,4 @@ export const useUploadFaces = () =>
   useMutation((images: string[]) => uploadFaces(images));
 
 export const useAttendanceSession = () =>
-  useMutation(({ image, lessionId }) => attendanceSession(lessionId, image));
+  useMutation(({ image, lessionId, location }) => attendanceSession(lessionId, image, location));

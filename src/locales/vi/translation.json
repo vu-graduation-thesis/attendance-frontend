@@ -75,7 +75,8 @@
     "status": "Trạng thái xác thực",
     "verified": "Đã xác thực",
     "unverified": "Chưa xác thực",
-    "birthday": "Ngày sinh"
+    "birthday": "Ngày sinh",
+    "uploadFile":"Tải lên danh sách sinh viên từ file CSV"
   },
   "teacher": {
     "id": "Mã giảng viên",

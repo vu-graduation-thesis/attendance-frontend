@@ -30,6 +30,7 @@ import { useGetClasses } from "core/queries/class.js";
 import { useGetLessons } from "core/queries/lesson.js";
 import { useGetTeachers } from "core/queries/teacher.ts";
 import { useGetUserInfo } from "core/queries/user.ts";
+import getLocation from "core/utils/location.ts";
 
 import styles from "./styles.module.scss";
 
@@ -301,13 +302,16 @@ export const ClassSchedulePage = () => {
             onChange={e => {
               console.log("vvvv", e?.diff(dayjs(), "hour"));
             }}
-            onOk={e => {
+            onOk={async e => {
               setSessionEndTime(e);
               if (e?.isAfter(dayjs())) {
                 setInvalidTimeSelected(false);
+                const location = await getLocation();
+
                 updateAttendanceSession({
                   id: selectedEvent?.lessonId,
                   endAttendanceSessionTime: e?.toISOString(),
+                  location,
                 } as any)
                   .then(() => {
                     notiApi.success({

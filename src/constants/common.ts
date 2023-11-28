@@ -43,3 +43,5 @@ export const ADD_PREFIX = "ADD_";
 export const EXISTED_ERROR_CODE = "EXISTED_ERROR_CODE";
 
 export const EXPIRED_TIME_ERROR = "EXPIRED_TIME_ERROR";
+
+export const DISTANCE_ERROR = "DISTANCE_ERROR";

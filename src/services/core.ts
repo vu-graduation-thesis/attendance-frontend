@@ -28,7 +28,7 @@ export const uploadFaces = async (images: string[]) => {
   return response.data;
 };
 
-export const attendanceSession = async (lessionId: string, image: string) => {
+export const attendanceSession = async (lessionId: string, image: string, location: any) => {
   console.log(image);
   const res = await fetch(image);
   const imageBlob = await res.blob();
@@ -36,6 +36,8 @@ export const attendanceSession = async (lessionId: string, image: string) => {
   // Tạo FormData để gửi dữ liệu
   const formData = new FormData();
   formData.append(`file`, imageBlob, `image-${Date.now()}.png`);
+  formData.append(`latitude`, location.latitude);
+  formData.append(`longitude`, location.longitude);
 
   const response = await axiosInstance.post(
     `${configs.apiEndpoint}/face-recognition/recognize/${lessionId}/student-upload-image`,
