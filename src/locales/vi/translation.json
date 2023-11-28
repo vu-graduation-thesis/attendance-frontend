@@ -71,6 +71,7 @@
     "see": "Action",
     "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
     "emailExisted": "Email đã tồn tại hoặc đang liên kết tới một tài khoản khác",
+    "studentIdExisted": "Mã sinh viên đã tồn tại",
     "studentId": "Mã sinh viên",
     "status": "Trạng thái xác thực",
     "verified": "Đã xác thực",

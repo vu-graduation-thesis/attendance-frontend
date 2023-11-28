@@ -21,6 +21,8 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
+import { Capacitor } from "@capacitor/core";
+
 import LogoImage from "core/assets/images/logo.png";
 import OverlayBg from "core/assets/images/overlay_bg.svg";
 import configs from "core/configs/index.js";
@@ -30,6 +32,7 @@ import { useGetClasses } from "core/queries/class.js";
 import { useGetLessons } from "core/queries/lesson.js";
 import { useGetTeachers } from "core/queries/teacher.ts";
 import { useGetUserInfo } from "core/queries/user.ts";
+import { routeConfig } from "core/routes/routeConfig.ts";
 import getLocation from "core/utils/location.ts";
 
 import styles from "./styles.module.scss";
@@ -115,9 +118,9 @@ export const ClassSchedulePage = () => {
 
   const attendanceCount = useMemo(
     () =>
-      selectedLessonData?.class?.students?.reduce(
+      selectedLessonData?.[0]?.class?.students?.reduce(
         (prev: any, acc: any) =>
-          selectedLessonData?.attendances?.some(
+          selectedLessonData?.[0]?.attendances?.some(
             (u: any) => u.student === acc?._id,
           )
             ? prev + 1
@@ -126,6 +129,8 @@ export const ClassSchedulePage = () => {
       ),
     [selectedLessonData],
   );
+
+  console.log(attendanceCount);
 
   useEffect(() => {
     setTeacher(teachersFormatted?.[0]?.value);
@@ -368,6 +373,23 @@ export const ClassSchedulePage = () => {
           </div>
         )}
       </Modal>
+
+      {Capacitor.isNativePlatform() && (
+        <div className="p-16 mt-20 flex justify-center">
+          <Button
+            danger
+            onClick={() => {
+              localStorage.clear();
+              navigate(routeConfig.login, {
+                replace: true,
+              });
+            }}
+            className={cx("logoutButton")}
+          >
+            Đăng xuất
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

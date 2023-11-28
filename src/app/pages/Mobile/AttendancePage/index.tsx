@@ -1,12 +1,4 @@
-import {
-  Collapse,
-  Drawer,
-  Image,
-  List,
-  Spin,
-  Typography,
-  notification,
-} from "antd";
+import { Spin, Typography, notification } from "antd";
 import classNames from "classnames/bind";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
@@ -41,6 +33,8 @@ export const AttendancePage = () => {
   const [filesMapping, setFilesMapping] = useState<any>({});
   const [imageCount, setImageCount] = useState<number>(0);
   const [flash, setFlash] = useState<boolean>(false);
+  const topContainerRef = useRef<HTMLDivElement>(null);
+  const [isOpenCamera, setIsOpenCamera] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
@@ -60,7 +54,7 @@ export const AttendancePage = () => {
     setImageCount(prev => prev + 1);
 
     const result = await detectFaces({
-      lessonId,
+      lessonId: lessonId!,
       file: image,
     });
 
@@ -74,7 +68,6 @@ export const AttendancePage = () => {
 
   useEffect(() => {
     (async () => {
-      // document.body.style.backgroundColor = "transparent !important";
       await CameraPreview.start({
         parent: "camera",
         position: "rear",
@@ -85,6 +78,7 @@ export const AttendancePage = () => {
         enableZoom: true,
         toBack: true,
       });
+      setIsOpenCamera(true);
     })();
     return () => {
       CameraPreview.stop();
@@ -132,10 +126,16 @@ export const AttendancePage = () => {
     return newLogs.reverse();
   }, [attendanceLog]);
 
+  useEffect(() => {
+    if (topContainerRef.current && isOpenCamera) {
+      topContainerRef.current.style.backgroundColor = "transparent";
+    }
+  }, [topContainerRef.current, isOpenCamera]);
+
   return (
     <div className={cx("container")}>
       {contextHolder}
-      <div className={cx("fix-top")}>
+      <div className={cx("fix-top")} ref={topContainerRef}>
         {flash && <div className={cx("flash")}></div>}
         <div id="camera"></div>
         <canvas className="canvas" ref={canvasRef}></canvas>

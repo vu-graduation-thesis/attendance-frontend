@@ -1,10 +1,9 @@
-import { Avatar, Button, List, Skeleton, Spin, Typography } from "antd";
+import { Avatar, Button, List, Skeleton, Typography } from "antd";
 import classNames from "classnames/bind";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import ImageViewer from "react-simple-image-viewer";
 
 import { Capacitor } from "@capacitor/core";
 
@@ -13,11 +12,13 @@ import CameraIcon from "core/assets/images/camera.png";
 import AttendanceManualIcon from "core/assets/images/check.png";
 import CheckedIcon from "core/assets/images/checked.png";
 import FaceDetectIcon from "core/assets/images/face-detection.png";
+import PeriousIcon from "core/assets/images/previous.png";
 import configs from "core/configs/index.js";
 import { useGetSignedUrls } from "core/mutations/file.js";
 import { useManualAttendace } from "core/mutations/lesson.js";
 import { useGetAttendanceLog } from "core/queries/attendanceLog.js";
 import { useGetLessons } from "core/queries/lesson.js";
+import { routeConfig } from "core/routes/routeConfig.ts";
 
 import styles from "./style.module.scss";
 
@@ -28,10 +29,7 @@ const cx = classNames.bind(styles);
 export const LessonPage = () => {
   const { id } = useParams();
   const navigator = useNavigate();
-  const [currentResource, setCurrentResource] = useState(0);
-  const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [filesMapping, setFilesMapping] = useState<any>({});
-  const [attendanceResource, setAttendanceResource] = useState<any>();
   const { mutateAsync: manualAttendace } = useManualAttendace();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const headerRef = useRef<any>();
@@ -60,18 +58,6 @@ export const LessonPage = () => {
       }, {}),
     [lesson],
   );
-
-  const handleOpenImageViewer = useCallback((index: number) => {
-    setCurrentResource(index);
-    setIsViewerOpen(true);
-    headerRef.current?.classList?.remove("sticky");
-  }, []);
-
-  const handleCloseImageViewer = () => {
-    setCurrentResource(0);
-    setIsViewerOpen(false);
-    headerRef.current?.classList?.add("sticky");
-  };
 
   const handleManualAttendance = useCallback(
     async (student: string) => {
@@ -120,19 +106,6 @@ export const LessonPage = () => {
             return acc;
           }, {});
           setFilesMapping(prev => ({ ...prev, ...data }));
-        } catch (error) {
-          console.log(error);
-        }
-      })();
-
-      (async () => {
-        try {
-          const { bucket, folder } = lesson?.resource || {};
-          const res = await getSignedUrls({
-            bucket,
-            folder,
-          });
-          setAttendanceResource(Object.values(res));
         } catch (error) {
           console.log(error);
         }
@@ -190,14 +163,29 @@ export const LessonPage = () => {
     [lesson],
   );
 
+  useEffect(() => {
+    refetchAttendanceLog();
+  }, []);
+
   return (
     <div className={cx("container")}>
       <div className="p-16 pb-0 sticky bg-white" ref={headerRef}>
         <div className="flex justify-between">
-          <Title level={4}>
-            Buổi học: {lesson?.order || "?"}/
-            {lesson?.class?.totalNumberOfLessons}
-          </Title>
+          <div className="flex align-center">
+            {Capacitor.isNativePlatform() && (
+              <img
+                src={PeriousIcon}
+                alt=""
+                onClick={() => navigator(routeConfig.mobile.schedule)}
+                width={24}
+                className="mb-10 mr-20"
+              />
+            )}
+            <Title level={4}>
+              Buổi học: {lesson?.order || "?"}/
+              {lesson?.class?.totalNumberOfLessons}
+            </Title>
+          </div>
           <div>
             {Capacitor.isNativePlatform() ? (
               <Button
@@ -296,6 +284,7 @@ export const LessonPage = () => {
                     <img
                       src={AttendanceManualIcon}
                       alt=""
+                      className="cursor-pointer"
                       onClick={() => handleManualAttendance(item?._id)}
                       width={40}
                     />
