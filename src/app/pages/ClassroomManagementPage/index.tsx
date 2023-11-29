@@ -2,6 +2,7 @@ import {
   Button,
   Dropdown,
   Form,
+  Input,
   Modal,
   Popconfirm,
   Space,
@@ -48,6 +49,7 @@ export const ClassroomManagementPage = () => {
   const [notiApi, contextHolder] = notification.useNotification();
   const { mutateAsync: batchCreateClassrooms } = useBatchCreateClassroom();
   const { mutateAsync: getSignedUrls } = useGetSignedUrls();
+  const [search, setSearch] = useState<any>("");
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -267,9 +269,21 @@ export const ClassroomManagementPage = () => {
 
   useEffect(() => {
     setDataTable(
-      classroomsData?.map((item: any) => ({ ...item, key: item._id })),
+      classroomsData?.reduce((acc: any, item: any) => {
+        const match =
+          item?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.location?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.numberOfSeats?.toString().includes(search.toLowerCase()) ||
+          item?.type?.toLowerCase().includes(search.toLowerCase());
+
+        if (match) {
+          acc.push({ ...item, key: item._id });
+        }
+
+        return acc;
+      }, []),
     );
-  }, [classroomsData]);
+  }, [classroomsData, search]);
 
   return (
     <div className={cx("container")}>
@@ -332,6 +346,14 @@ export const ClassroomManagementPage = () => {
             <Space>{t("common.action")}</Space>
           </Dropdown.Button>
         </div>
+      </div>
+      <div>
+        <Input
+          placeholder={t("common.searchClassroomBy")}
+          className="mt-10 mb-20 w-300"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
       <Form form={form} component={false}>
         <Table

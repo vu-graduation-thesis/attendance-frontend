@@ -2,6 +2,7 @@ import {
   Button,
   Dropdown,
   Form,
+  Input,
   Modal,
   Popconfirm,
   Space,
@@ -16,11 +17,9 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { EditableCell } from "core/app/components/EditableCell/index.tsx";
-import UploadFile from "core/app/components/Upload/index.js";
 import CheckedIcon from "core/assets/images/checked.png";
 import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
-import DownIcon from "core/assets/images/down.png";
 import EditIcon from "core/assets/images/edit.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
@@ -28,7 +27,6 @@ import {
 } from "core/constants";
 import { ADD_PREFIX, EXISTED_ERROR_CODE } from "core/constants/common.ts";
 import { useCreateAdmin, useUpdateAdmin } from "core/mutations/admin.ts";
-import { useGetSignedUrls } from "core/mutations/file.js";
 import { useGetAdmins } from "core/queries/admin.ts";
 
 import styles from "./styles.module.scss";
@@ -40,7 +38,7 @@ export const AdminManagementPage = () => {
   const { mutateAsync: updateAdmin } = useUpdateAdmin();
   const { mutateAsync: createAdmin } = useCreateAdmin();
   const [notiApi, contextHolder] = notification.useNotification();
-
+  const [search, setSearch] = useState<any>("");
   const [dataTable, setDataTable] = useState<any>();
 
   const [form] = Form.useForm();
@@ -284,8 +282,20 @@ export const AdminManagementPage = () => {
   });
 
   useEffect(() => {
-    setDataTable(adminsData?.map((item: any) => ({ ...item, key: item._id })));
-  }, [adminsData]);
+    setDataTable(
+      adminsData?.reduce((acc: any, item: any) => {
+        const match =
+          item?.admin?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.phone?.includes(search) ||
+          item?.email?.includes(search);
+        if (match) {
+          acc.push({ ...item, key: item._id });
+        }
+
+        return acc;
+      }, []),
+    );
+  }, [adminsData, search]);
 
   return (
     <div className={cx("container")}>
@@ -303,6 +313,15 @@ export const AdminManagementPage = () => {
             {t("admin.add")}
           </Button>
         </div>
+      </div>
+
+      <div>
+        <Input
+          placeholder={t("common.searchBy")}
+          className="mt-10 mb-20 w-300"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
 
       <Form form={form} component={false}>

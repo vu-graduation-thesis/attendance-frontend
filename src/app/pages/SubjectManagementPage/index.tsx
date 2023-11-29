@@ -2,6 +2,7 @@ import {
   Button,
   Dropdown,
   Form,
+  Input,
   Modal,
   Popconfirm,
   Space,
@@ -40,6 +41,7 @@ export const SubjectManagementPage = () => {
   const { data: subjectsData, isLoading, refetch } = useGetSubjects();
   const { mutateAsync: updateSubject } = useUpdateSubject();
   const { mutateAsync: createSubject } = useCreateSubject();
+  const [search, setSearch] = useState<any>("");
 
   const [openModal, setOpenModal] = useState(false);
   const [notiApi, contextHolder] = notification.useNotification();
@@ -257,9 +259,20 @@ export const SubjectManagementPage = () => {
 
   useEffect(() => {
     setDataTable(
-      subjectsData?.map((item: any) => ({ ...item, key: item._id })),
+      subjectsData?.reduce((acc: any, item: any) => {
+        console.log("item", item);
+        const match =
+          item?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.type?.toLowerCase().includes(search.toLowerCase());
+
+        if (match) {
+          acc.push({ ...item, key: item._id });
+        }
+
+        return acc;
+      }, []),
     );
-  }, [subjectsData]);
+  }, [subjectsData, search]);
 
   return (
     <div className={cx("container")}>
@@ -323,6 +336,16 @@ export const SubjectManagementPage = () => {
           </Dropdown.Button>
         </div>
       </div>
+
+      <div>
+        <Input
+          placeholder={t("common.searchSubjectBy")}
+          className="mt-10 mb-20 w-300"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       <Form form={form} component={false}>
         <Table
           bordered

@@ -2,6 +2,7 @@ import {
   Button,
   Dropdown,
   Form,
+  Input,
   Modal,
   Popconfirm,
   Space,
@@ -44,6 +45,7 @@ export const TeacherManagementPage = () => {
   const [notiApi, contextHolder] = notification.useNotification();
   const { mutateAsync: batchCreateTeachers } = useBatchCreateTeacher();
   const { mutateAsync: getSignedUrls } = useGetSignedUrls();
+  const [search, setSearch] = useState<any>("");
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -289,13 +291,25 @@ export const TeacherManagementPage = () => {
 
   useEffect(() => {
     setDataTable(
-      teachersData?.map((item: any) => ({ ...item, key: item._id })),
+      teachersData?.reduce((acc: any, item: any) => {
+        const match =
+          item?.teacher?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.phone?.includes(search) ||
+          item?.email?.includes(search);
+
+        if (match) {
+          acc.push({ ...item, key: item._id });
+        }
+
+        return acc;
+      }, []),
     );
-  }, [teachersData]);
+  }, [teachersData, search]);
 
   return (
     <div className={cx("container")}>
       {contextHolder}
+
       <div className="flex justify-between">
         <Typography.Title
           level={4}
@@ -354,6 +368,15 @@ export const TeacherManagementPage = () => {
             <Space>{t("common.action")}</Space>
           </Dropdown.Button>
         </div>
+      </div>
+
+      <div>
+        <Input
+          placeholder={t("common.searchBy")}
+          className="mt-10 mb-20 w-300"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
 
       <Form form={form} component={false}>

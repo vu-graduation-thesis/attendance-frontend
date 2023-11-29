@@ -161,6 +161,10 @@
     "createAttendanceSession": "Tạo link cho sinh viên tự điểm danh",
     "autoFinishSession": "Tự động kết thúc phiên điểm danh lúc",
     "selectAction": "Chọn hành động",
-    "goToAttendancePage": "Xem chi tiết"
+    "goToAttendancePage": "Xem chi tiết",
+    "btnSearch": "Tìm kiếm",
+    "searchBy": "Tìm kiếm theo tên, mã hoặc email",
+    "searchSubjectBy": "Tìm kiếm theo tên hoặc thể loại",
+    "searchClassroomBy": "Tìm kiếm theo tên, loại phòng, số chỗ ngồ hoặc vị trí"
   }
 }

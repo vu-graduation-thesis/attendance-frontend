@@ -2,6 +2,7 @@ import {
   Button,
   Dropdown,
   Form,
+  Input,
   Modal,
   Popconfirm,
   Space,
@@ -24,8 +25,6 @@ import CloseIcon from "core/assets/images/close.png";
 import DeleteIcon from "core/assets/images/delete.png";
 import DownIcon from "core/assets/images/down.png";
 import EditIcon from "core/assets/images/edit.png";
-import EyeIcon from "core/assets/images/eye.png";
-import MailIcon from "core/assets/images/sending.png";
 import {
   DEFAULT_CURRENT_PAGE_START_WHITH_1,
   DEFAULT_PAGE_SIZE,
@@ -51,6 +50,7 @@ export const StudentManagementPage = () => {
   const [notiApi, contextHolder] = notification.useNotification();
   const { mutateAsync: batchCreateStudents } = useBatchCreateStudent();
   const { mutateAsync: getSignedUrls } = useGetSignedUrls();
+  const [search, setSearch] = useState<any>("");
 
   const [dataTable, setDataTable] = useState<any>();
 
@@ -322,13 +322,26 @@ export const StudentManagementPage = () => {
 
   useEffect(() => {
     setDataTable(
-      studentsData?.map((item: any) => ({ ...item, key: item._id })),
+      studentsData?.reduce((acc: any, item: any) => {
+        const match =
+          item?.student?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          item?.student?.studentId?.includes(search) ||
+          item?.phone?.includes(search) ||
+          item?.email?.includes(search);
+
+        if (match) {
+          acc.push({ ...item, key: item._id });
+        }
+
+        return acc;
+      }, []),
     );
-  }, [studentsData]);
+  }, [studentsData, search]);
 
   return (
     <div className={cx("container")}>
       {contextHolder}
+
       <div className="flex justify-between">
         <Typography.Title
           level={4}
@@ -401,6 +414,16 @@ export const StudentManagementPage = () => {
           </Dropdown.Button>
         </div>
       </div>
+
+      <div>
+        <Input
+          placeholder={t("common.searchBy")}
+          className="mt-10 mb-20 w-300"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       <Form form={form} component={false}>
         <Table
           bordered

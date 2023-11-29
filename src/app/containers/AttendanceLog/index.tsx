@@ -17,7 +17,7 @@ export const AttendanceLog = ({
     <Drawer
       title={
         <>
-          Ảnh, video vừa chụp
+          Ảnh vừa chụp
           <Spin spinning={isLoading} />
         </>
       }
