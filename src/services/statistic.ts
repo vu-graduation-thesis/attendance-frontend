@@ -25,3 +25,10 @@ export const statisticStudentVerified = async () => {
   );
   return res.data?.data;
 }
+
+export const countAttendanceByType = async () => {
+  const res = await axiosInstance.get(
+    `${configs.apiEndpoint}/statistics/classes/count-by-attdance-type`,
+  );
+  return res.data?.data;
+}

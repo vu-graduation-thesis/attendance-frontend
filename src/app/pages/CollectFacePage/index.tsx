@@ -44,7 +44,7 @@ export const CollectFacePage = () => {
 
       if (canvasRef.current) {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
-        if (detections?.[0]?.score > 0.5) {
+        if (detections?.length < 2 && detections?.[0]?.score > 0.5) {
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
@@ -99,11 +99,14 @@ export const CollectFacePage = () => {
   };
 
   useEffect(() => {
-    Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri("/models")]).then(
-      () => {
-        console.log("Models loaded");
-      },
-    );
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/models"),
+    ]).then(() => {
+      console.log("Models loaded");
+    });
   }, []);
 
   useEffect(() => {

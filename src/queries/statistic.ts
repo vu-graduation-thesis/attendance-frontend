@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 
 import { STALE_TIME } from "core/constants";
 import {
+  countAttendanceByType,
   statisticStudentVerified,
   statisticsClassAttendanceStatus,
 } from "core/services/statistic.js";
@@ -22,5 +23,10 @@ export const useStatisticsClassAttendanceStatus = ({
 
 export const useStatisticStudentsVerified = () =>
   useQuery(["statisticStudentVerified"], () => statisticStudentVerified(), {
+    staleTime: STALE_TIME.FIVE_MINS,
+  });
+
+export const useCountAttendanceByType = () =>
+  useQuery(["countAttendanceByType"], () => countAttendanceByType(), {
     staleTime: STALE_TIME.FIVE_MINS,
   });
