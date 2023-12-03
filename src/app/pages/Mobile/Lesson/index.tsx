@@ -1,4 +1,4 @@
-import { Avatar, Button, List, Skeleton, Typography } from "antd";
+import { Avatar, Button, Image, List, Skeleton, Typography } from "antd";
 import classNames from "classnames/bind";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -163,6 +163,30 @@ export const LessonPage = () => {
     [lesson],
   );
 
+  const predictMap = useMemo(() => {
+    if (logs?.length > 0) {
+      const predicts = logs.reduce((acc: any, cur: any) => {
+        if (cur.predict) {
+          acc = acc.concat(cur.predict);
+        }
+        return acc;
+      }, []);
+
+      const uniqueMax = predicts.reduce((acc: any, cur: any) => {
+        if (acc[cur.label]) {
+          acc[cur.label] = Math.max(acc[cur.label].confidence, cur.confidence);
+        } else {
+          acc[cur.label] = cur;
+        }
+        return acc;
+      }, {});
+
+      return uniqueMax;
+    }
+  }, [logs]);
+
+  console.log("predictMap", predictMap);
+
   useEffect(() => {
     refetchAttendanceLog();
   }, []);
@@ -265,6 +289,20 @@ export const LessonPage = () => {
                     </>
                   }
                 />
+
+                {predictMap?.[item?.studentId] ? (
+                  <Image
+                    src={`${configs.apiEndpoint.replace("api", "uploads")}/${
+                      predictMap?.[item?.studentId]?.imageDetector
+                    }`}
+                    style={{
+                      marginRight: "30px",
+                    }}
+                  />
+                ) : (
+                  <div></div>
+                )}
+
                 <div className={cx("action")}>
                   {attendancesState?.[item?._id] === "MANUAL" ? (
                     <img

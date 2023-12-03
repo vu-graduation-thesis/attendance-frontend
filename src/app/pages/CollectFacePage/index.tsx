@@ -195,6 +195,16 @@ export const CollectFacePage = () => {
       >
         Quay về trang chủ
       </Button>
+      <Button
+        onClick={() => {
+          localStorage.clear();
+          navigate("/login");
+        }}
+        danger
+        className={cx("btnBack")}
+      >
+        Đăng xuất
+      </Button>
     </div>
   );
 };
