@@ -55,7 +55,7 @@ export const ClassManagementPage = () => {
 
   const handleDelete = async (record: any) => {
     try {
-      await updateClass({ id: record?._id, isDeleted: true } as any);
+      await updateClass({ classId: record?._id, isDeleted: true } as any);
       refetch();
     } catch (error) {
       console.log("error", error);

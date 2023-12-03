@@ -10,7 +10,7 @@ export const getClasses = async (filter?: any) => {
 
 export const updateClass = async (data: any) => {
   const res = await axiosInstance.put(
-    `${configs.apiEndpoint}/classes/${data.id}`,
+    `${configs.apiEndpoint}/classes/${data.classId}`,
     data,
   );
   return res.data?.data;

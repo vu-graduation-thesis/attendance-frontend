@@ -4,6 +4,7 @@ import type { TransferItem, TransferProps } from "antd/es/transfer";
 import difference from "lodash/difference";
 import React, {
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useState,
@@ -104,7 +105,7 @@ const rightTableColumns: ColumnsType<Pick<DataType, "studentId">> = [
 ];
 
 export default forwardRef<any, {}>((props, ref) => {
-  const { onChange } = props;
+  const { onChange, initTargetKeys } = props;
 
   useImperativeHandle(ref, () => ({
     reset: () => {
@@ -126,10 +127,16 @@ export default forwardRef<any, {}>((props, ref) => {
   );
 
   const handleChange = (nextTargetKeys: string[]) => {
-    console.log("change");
+    console.log("change", nextTargetKeys);
     setTargetKeys(nextTargetKeys);
     onChange(nextTargetKeys);
   };
+
+  useEffect(() => {
+    if (initTargetKeys?.length) {
+      setTargetKeys(initTargetKeys);
+    }
+  }, [initTargetKeys?.length]);
 
   return (
     <>

@@ -41,8 +41,8 @@ export const MenuOptions = (props: Props) => {
   );
 
   useEffect(() => {
-    if (userInfo?.role === PERMISSIONS.STUDENT) {
-      navigate(routeConfig.attendanceSession);
+    if (userInfo && userInfo?.role === PERMISSIONS.STUDENT) {
+      navigate(routeConfig.collectFace, { replace: true });
       return;
     }
   }, [navigate, userInfo]);
