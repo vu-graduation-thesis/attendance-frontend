@@ -12,9 +12,9 @@ import {
 import FrameIcon from "core/assets/images/frame.png";
 import LogoIcon from "core/assets/images/logo.png";
 import { useUploadFaces } from "core/mutations/core.js";
-import { useGetStudentDetail } from "core/queries/student.js";
 import { useGetUserInfo } from "core/queries/user.ts";
 import { isMobile } from "core/utils/brower.js";
+import { sleep } from "core/utils/util.ts";
 
 import styles from "./styles.module.scss";
 
@@ -31,6 +31,7 @@ export const CollectFacePage = () => {
   const [openGuide, setOpenGuide] = useState<boolean>(true);
   const { mutateAsync: uploadFaces, isLoading } = useUploadFaces();
   const { data: userInfo, refetch } = useGetUserInfo();
+  const [textGuide, setTextGuide] = useState<string>("Nhìn thẳng");
   const navigate = useNavigate();
 
   const faceMyDetect = () => {
@@ -45,6 +46,19 @@ export const CollectFacePage = () => {
       if (canvasRef.current) {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
         if (detections?.length < 2 && detections?.[0]?.score > 0.5) {
+          /// add
+          if (images?.length >= 5 && textGuide === "Nhìn thẳng") {
+            setTextGuide("Hơi quay mặt sang trái");
+            await sleep(3000);
+            return;
+          }
+
+          if (images?.length >= 7 && textGuide === "Hơi quay mặt sang trái") {
+            setTextGuide("Hơi quay mặt sang phải");
+            await sleep(3000);
+            return;
+          }
+
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
@@ -154,7 +168,7 @@ export const CollectFacePage = () => {
                 </>
               ) : (
                 <div className={cx("guideInProcess")}>
-                  <span className={cx("text")}>Quay các góc mặt</span>
+                  <span className={cx("text")}>{textGuide}</span>
                   <div className={cx("percent")}>
                     {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
                   </div>
