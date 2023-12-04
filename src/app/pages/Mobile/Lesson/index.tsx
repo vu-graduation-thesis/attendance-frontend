@@ -292,7 +292,8 @@ export const LessonPage = () => {
 
                 {predictMap?.[item?.studentId] ? (
                   <Image
-                    src={`${configs.apiEndpoint.replace("api", "uploads")}/${
+                    width={60}
+                    src={`${configs.apiEndpoint?.replace("api", "")}/${
                       predictMap?.[item?.studentId]?.imageDetector
                     }`}
                     style={{
