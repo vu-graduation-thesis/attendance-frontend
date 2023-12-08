@@ -91,12 +91,18 @@ export const ClassSchedulePage = () => {
 
   const navigate = useNavigate();
 
-  const events = lessonsData?.map((lesson: any) => ({
-    title: lesson.class?.name + " - " + lesson.classroom?.name,
-    start: dayjs(lesson.lessonDay).toDate(),
-    end: dayjs(lesson.lessonDay).add(4, "hours").toDate(),
-    lessonId: lesson._id,
-  }));
+  const events = lessonsData?.map((lesson: any) => {
+    const startTime =
+      lesson?.session === 3 ? 17 : lesson?.session === 2 ? 13 : 7;
+    return {
+      title: lesson.class?.name + " - " + lesson.classroom?.name,
+      start: dayjs(lesson.lessonDay).add(startTime, "hours").toDate(),
+      end: dayjs(lesson.lessonDay)
+        .add(startTime + 4, "hours")
+        .toDate(),
+      lessonId: lesson._id,
+    };
+  });
 
   const teachersFormatted = useMemo(() => {
     if (userInfo?.role === PERMISSIONS.TEACHER) {

@@ -72,6 +72,9 @@ export const StudentManagementPage = () => {
       phone: "",
       email: "",
       username: "",
+      student: {
+        birthday: dayjs("2000-01-01T11:42:28.423Z"),
+      },
     };
     form.setFieldsValue({ ...newData });
     setEditingKey(newData._id);

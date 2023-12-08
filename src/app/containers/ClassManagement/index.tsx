@@ -35,11 +35,14 @@ export const ClassManagement = () => {
     classId ? "update" : "create",
   );
 
-  const { data: classesData } = useGetClasses({
-    filter: {
-      _id: classId,
+  const { data: classesData } = useGetClasses(
+    {
+      filter: {
+        _id: classId,
+      },
     },
-  });
+    !!classId,
+  );
 
   console.log("classesData", classesData);
 
@@ -115,6 +118,7 @@ export const ClassManagement = () => {
           .map((_, index) => ({
             startDay: value?.[`schedule[${index}]`]?.format("DD/MM/YYYY"),
             classroom: value?.[`classroom[${index}]`],
+            session: value?.[`session[${index}]`],
           }));
 
         if (mode === "create") {
@@ -262,7 +266,7 @@ export const ClassManagement = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input class code!",
+                    message: "Please input number of lessons per week!",
                   },
                 ]}
                 name="numberOfLessonsPerWeek"
@@ -328,6 +332,39 @@ export const ClassManagement = () => {
                           <Select
                             style={{ width: "100%", minWidth: "300px" }}
                             options={classroomFormatted}
+                            defaultActiveFirstOption
+                          />
+                        </Form.Item>
+                      </div>
+
+                      <div className="ml-20">
+                        <Title level={5}>Ca học</Title>
+                        <Form.Item
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please select!",
+                            },
+                          ]}
+                          valuePropName="value"
+                          name={`session[${index}]`}
+                        >
+                          <Select
+                            style={{ width: "100%", minWidth: "200px" }}
+                            options={[
+                              {
+                                value: "1",
+                                label: "Ca sáng (7h00 - 11h00)",
+                              },
+                              {
+                                value: "2",
+                                label: "Ca chiều (13h00 - 17h00)",
+                              },
+                              {
+                                value: "3",
+                                label: "Ca tối (17h - 21h00)",
+                              },
+                            ]}
                             defaultActiveFirstOption
                           />
                         </Form.Item>

@@ -92,7 +92,8 @@
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
     "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
-    "uploadTitle": "Tải lên danh sách giảng viên từ file CSV"
+    "uploadTitle": "Tải lên danh sách giảng viên từ file CSV",
+    "emailExisted": "Email đã tồn tại hoặc đang liên kết tới một tài khoản khác"
   },
   "admin": {
     "id": "Mã quản trị viên",
@@ -105,7 +106,8 @@
     "createdAt": "Tạo lúc",
     "updatedAt": "Cập nhật lúc",
     "see": "Action",
-    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác"
+    "usernameExisted": "Tên người dùng đã tồn tại hoặc đang liên kết tới một tài khoản khác",
+    "emailExisted": "Email đã tồn tại hoặc đang liên kết tới một tài khoản khác"
   },
   "subject": {
     "id": "Mã môn học",
