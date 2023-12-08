@@ -182,7 +182,9 @@ export const AttendanceSessionPage = () => {
           <div className="flex justify-center flex-col align-center mt-20">
             <h3>Thời gian còn lại</h3>
             <Countdown
-              value={dayjs(lessonData?.[0]?.endAttendanceSessionTime).unix()}
+              value={
+                dayjs(lessonData?.[0]?.endAttendanceSessionTime).unix() * 1000
+              }
               format="HH:mm:ss"
             />
           </div>

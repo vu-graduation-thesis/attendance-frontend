@@ -81,7 +81,7 @@ export const LessonPage = () => {
             ) || [];
           const map = students.map((x: any) => ({
             file: x.avatar,
-            bucket: x.verifiedResource?.bucket,
+            bucket: x.verifiedResource?.bucket || "face-recognition-service",
           }));
 
           const body = map.reduce((acc: any, cur: any) => {
@@ -258,7 +258,11 @@ export const LessonPage = () => {
               <Skeleton avatar title={false} active loading={lessonLoading}>
                 <List.Item.Meta
                   avatar={
-                    <Avatar src={filesMapping?.[item.avatar]} size={60} />
+                    <Image
+                      src={filesMapping?.[item.avatar]}
+                      width={60}
+                      height={60}
+                    />
                   }
                   title={<a href="https://ant.design">{item?.name}</a>}
                   description={
@@ -292,7 +296,8 @@ export const LessonPage = () => {
 
                 {predictMap?.[item?.studentId] ? (
                   <Image
-                    src={`${configs.apiEndpoint.replace("api", "uploads")}/${
+                    width={60}
+                    src={`${configs.apiEndpoint?.replace("api", "")}/${
                       predictMap?.[item?.studentId]?.imageDetector
                     }`}
                     style={{

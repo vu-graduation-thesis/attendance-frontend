@@ -47,22 +47,19 @@ export const CollectFacePage = () => {
         canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(video);
         if (detections?.length < 2 && detections?.[0]?.score > 0.5) {
           /// add
-          if (images?.length >= 5 && textGuide === "Nhìn thẳng") {
-            setTextGuide("Hơi quay mặt sang trái");
-            await sleep(3000);
-            return;
-          }
-
-          if (images?.length >= 7 && textGuide === "Hơi quay mặt sang trái") {
-            setTextGuide("Hơi quay mặt sang phải");
-            await sleep(3000);
-            return;
-          }
 
           const capture = await CameraPreview.capture({});
 
           const imageDataURL = `data:image/jpeg;base64,${capture.value}`;
           setImages(prev => {
+            if (prev?.length == 5) {
+              clearInterval(intervalId);
+            }
+
+            if (prev?.length == 8) {
+              clearInterval(intervalId);
+            }
+
             if (prev.length >= NUMBER_OF_IMAGES) {
               CameraPreview.stop();
               clearInterval(intervalId);
@@ -106,7 +103,6 @@ export const CollectFacePage = () => {
     };
 
     CameraPreview.start(cameraPreviewOptions).then(() => {
-      console.log("Camera preview started");
       setOpenGuide(false);
       faceMyDetect();
     });
@@ -118,12 +114,27 @@ export const CollectFacePage = () => {
       faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
       faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
       faceapi.nets.faceExpressionNet.loadFromUri("/models"),
-    ]).then(() => {
-      console.log("Models loaded");
-    });
+    ]).then(() => {});
   }, []);
 
   useEffect(() => {
+    if (images?.length >= 5 && textGuide === "Nhìn thẳng") {
+      setTextGuide("Hơi quay mặt sang trái");
+      sleep(3500).then(() => {
+        faceMyDetect();
+      });
+      return;
+    }
+
+    if (images?.length >= 8 && textGuide === "Hơi quay mặt sang trái") {
+      setTextGuide("Hơi quay mặt sang phải");
+      sleep(3500).then(() => {
+        faceMyDetect();
+      });
+
+      return;
+    }
+
     // bad code
     let interval: any;
     if (images.length === NUMBER_OF_IMAGES) {
@@ -136,7 +147,7 @@ export const CollectFacePage = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [images]);
+  }, [images, textGuide]);
 
   return (
     <div className={cx("container")}>
@@ -168,7 +179,19 @@ export const CollectFacePage = () => {
                 </>
               ) : (
                 <div className={cx("guideInProcess")}>
-                  <span className={cx("text")}>{textGuide}</span>
+                  <span
+                    className={cx("text")}
+                    style={{
+                      color:
+                        textGuide === "Nhìn thẳng"
+                          ? "white"
+                          : textGuide === "Hơi quay mặt sang trái"
+                          ? "orange"
+                          : "red",
+                    }}
+                  >
+                    {textGuide}
+                  </span>
                   <div className={cx("percent")}>
                     {Math.floor((images.length / NUMBER_OF_IMAGES) * 100)} %
                   </div>
