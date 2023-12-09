@@ -168,7 +168,7 @@ export const AttendancePage = () => {
         </div>
         <div className={cx("flex", "justify-center", "text-white", "option")}>
           <Text className="text-yellow m-5">Ảnh</Text>
-          <Text className="text-white m-5">Video</Text>
+          <Text className="text-white m-5 disable">Video</Text>
         </div>
         <div className={cx("takePhoto")} onClick={handlCapture}>
           <div className={cx("takePhoto2")}>

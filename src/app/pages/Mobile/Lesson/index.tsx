@@ -174,7 +174,14 @@ export const LessonPage = () => {
 
       const uniqueMax = predicts.reduce((acc: any, cur: any) => {
         if (acc[cur.label]) {
-          acc[cur.label] = Math.max(acc[cur.label].confidence, cur.confidence);
+          if (
+            acc?.[cur?.label]?.confidence > cur?.confidence &&
+            acc?.[cur?.label]?.imageDetector
+          ) {
+            acc[cur.label] = acc?.[cur?.label];
+          } else {
+            acc[cur.label] = cur;
+          }
         } else {
           acc[cur.label] = cur;
         }
@@ -297,7 +304,7 @@ export const LessonPage = () => {
                 {predictMap?.[item?.studentId] ? (
                   <Image
                     width={60}
-                    src={`${configs.apiEndpoint?.replace("api", "")}/${
+                    src={`${new URL(configs.apiEndpoint).origin}/${
                       predictMap?.[item?.studentId]?.imageDetector
                     }`}
                     style={{
