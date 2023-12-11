@@ -123,7 +123,12 @@ export const StatisticPage = () => {
           <StackedChart configs={classAttendanceStatusData} />
         </div>
 
-        <div className="flex w-full flex-end align-center mt-30">
+        <div
+          className="flex w-full flex-end align-center mt-30"
+          style={{
+            display: "none",
+          }}
+        >
           <h3 className="bold mt-10 mr-20 ">Chọn giảng viên</h3>
 
           <Select
