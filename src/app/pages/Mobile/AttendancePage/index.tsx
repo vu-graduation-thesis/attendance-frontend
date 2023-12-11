@@ -57,6 +57,7 @@ export const AttendancePage = () => {
       lessonId: lessonId!,
       file: image,
     });
+    refetchAttendanceLog();
 
     notiApi.success({
       message: "Thành công",
@@ -88,21 +89,27 @@ export const AttendancePage = () => {
   useEffect(() => {
     // update number of images
     setImageCount(attendanceLog?.logs?.length || 0);
-
+    console.log("attendanceLog", attendanceLog);
     if (attendanceLog?.logs?.length) {
       (async () => {
-        const cache: any =
-          queryClient.getQueryData(["attendanceLog", lessonId!]) || {};
+        // const cache: any =
+        //   queryClient.getQueryData(["attendanceLog", lessonId!]) || {};
 
-        const payloads = attendanceLog?.logs?.reduce((acc: any, cur: any) => {
-          if (!cache[cur.detectedFile]) {
-            acc.push({
-              files: [cur.originalFile, cur.detectedFile],
-              bucket: cur.bucket,
-            });
-          }
-          return acc;
-        }, []);
+        // console.log("payloads", cache);
+
+        // const payloads = attendanceLog?.logs?.reduce((acc: any, cur: any) => {
+        //   if (!cache[cur.detectedFile]) {
+        //     acc.push({
+        //       files: [cur.originalFile, cur.detectedFile],
+        //       bucket: cur.bucket,
+        //     });
+        //   }
+        //   return acc;
+        // }, []);
+        const payloads = attendanceLog?.logs?.map((item: any) => ({
+          files: [item.originalFile, item.detectedFile],
+          bucket: item.bucket,
+        }));
 
         const result = await Promise.allSettled(
           payloads.map((item: any) => getSignedUrls(item)),

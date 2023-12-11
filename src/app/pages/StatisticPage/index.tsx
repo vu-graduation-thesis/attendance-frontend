@@ -145,7 +145,7 @@ export const StatisticPage = () => {
             marginBottom: "50px",
           }}
         >
-          <BarChart />
+          {/* <BarChart /> */}
         </div>
 
         {/* <HorizontalBarChart /> */}
